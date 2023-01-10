@@ -1,0 +1,65 @@
+{% extends 'backboard/base.html' %} {% block content %}
+<div class="main">
+  <div class="card-body bg-light">
+    <div class="row">
+      <div class="col"></div>
+
+      <div class="col-lg-6 col-md-8 col-sm-8">
+        <div class="my-3 text-center">
+          <h4>帳務統計</h4>
+        </div>
+        
+        <p>上月統計 {{ last_month_day.year }} / {{ last_month_day.month }} 月</p>
+        <div class="table-responsive scrollbar">
+          <table class="table table-hover table-striped overflow-hidden">
+            <thead>
+              <tr class="table-head-custom">
+                <th scope="col">總入帳</th>
+                <th scope="col">業主A總扣帳</th>
+                <th scope="col">業主B總扣帳</th>
+                <th scope="col">總司機欠帳</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="align-middle">
+                <td class="text-nowrap">{{ summarys.0.month_store_money }}</td>
+                <td class="text-nowrap">{{ summarys.0.month_owner_a_money }}</td>
+                <td class="text-nowrap">{{ summarys.0.month_owner_b_money }}</td>
+                <td class="text-nowrap">{{ summarys.0.month_driver_arrears }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="mt-5">
+          <p>上上月統計{{ last_2_month_day.year }} / {{ last_2_month_day.month }} 月</p>
+        </div>
+
+        <div class="table-responsive scrollbar">
+          <table class="table table-hover table-striped overflow-hidden">
+            <thead>
+              <tr class="table-head-custom">
+                <th scope="col">總入帳</th>
+                <th scope="col">業主A總扣帳</th>
+                <th scope="col">業主B總扣帳</th>
+                <th scope="col">總司機欠帳</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="align-middle">
+                <td class="text-nowrap">{{ summarys.1.month_store_money }}</td>
+                <td class="text-nowrap">{{ summarys.1.month_owner_a_money }}</td>
+                <td class="text-nowrap">{{ summarys.1.month_owner_b_money }}</td>
+                <td class="text-nowrap">{{ summarys.1.month_driver_arrears }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="col"></div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,420 @@
+{% extends 'backboard/base.html' %} {% block content %}
+<div class="main">
+  <div class="card-body bg-light">
+    <div class="row">
+      <div class="col-sm"></div>
+
+      <div class="col-sm">
+        <div class="my-3 text-center">
+          <h4>所有司機</h4>
+        </div>
+        
+        <form method="get">
+          {% comment %} <input name="q" type="text" placeholder="Search..."> {% endcomment %}
+        
+          <div class="mb-2 mx-3">
+            <input
+              class="form-control"
+              type="phoneNumber"
+              placeholder="台號"
+              name="q"
+            />
+          </div>
+
+          <div class="mb-1 mx-5">
+            <button class="btn btn-primary d-block w-100 mt-3 text-light"
+              onclick="location.href='{% url 'drivers' %}'"
+            >
+              <b>查詢</b>
+            </button>
+          </div>
+        </form>
+
+        <div class="mt-5">
+          <div class="table-responsive scrollbar">
+            <table class="table table-hover table-striped overflow-hidden">
+              <thead>
+                <tr class="table-head-custom">
+                  <th scope="col">業主</th>
+                  <th scope="col">審核</th>
+                  <th scope="col">姓名</th>
+                  <th scope="col">台號</th>
+                  <th scope="col">車牌</th>
+                  <th scope="col">屬性</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for driver in drivers %}
+                  <tr class="align-middle">
+                    <td class="text-nowrap">
+                      <button class="btn p-0" type="button" data-bs-toggle="modal" 
+                      
+                      data-bs-target="#modal{{driver.id}}"
+                    
+                      >
+                        <span class="text-500 fas fa-edit"></span>
+                      </button>
+                      {{ driver.owner }}
+                    </td>
+                    <td class="text-nowrap">
+                      {% if driver.is_passed %}
+                        通過
+                      {% else %}
+                        未通過
+                      {% endif %}
+                    </td>
+                    <td class="text-nowrap">{{ driver.name }}</td>
+                    <td class="text-nowrap">{{ driver.idNumber }}</td>
+                    <td class="text-nowrap">{{ driver.vehicalLicence }}</td> 
+                    <td class="text-nowrap">{{ driver.car_color }} {{ driver.car_model }} {{ driver.number_sites }} 人 
+                      {% if driver.type == 'car' %}
+                        房車
+                      {% elif driver.type == 'suv' %}
+                        休旅車
+                      {% elif driver.type == 'sports_car' %}
+                        跑車
+                      {% elif driver.type == 'van' %}
+                        箱型車
+                      {% endif %}
+                      {{ theType }} 
+                      
+                      {% if driver.category == 'taxi' %}
+                        計程車
+                      {% elif driver.category == 'diversity' %}
+                        多元
+                      {% elif driver.category == 'rental_car' %}
+                        租賃車
+                      {% elif driver.category == 'x_card' %}
+                        X牌
+                      {% endif %}
+                    </td>
+                  </tr>
+
+                  <div class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"
+                        id="modal{{driver.id}}"
+                       >
+                    <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 500px">
+                      <div class="modal-content position-relative">
+                        <div class="position-absolute top-0 end-0 mt-2 me-2 z-index-1">
+                          <button
+                            class="btn-close btn btn-sm btn-circle d-flex flex-center transition-base"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                          ></button>
+                        </div>
+                        <div class="modal-body p-0">
+                          <div class="rounded-top-lg py-3 ps-4 pe-6 bg-light">
+                            <h4 class="mb-1" id="modalExampleDemoLabel">編輯司機</h4>
+                          </div>
+                          <div class="p-4 pb-0">
+                            <form method="post">{% csrf_token %}
+                              <div class="mb-3">
+                                <label class="col-form-label" for="isPartTime">管理</label>
+                                
+                                <div class="row justify-content-start align-items-start">
+                                  <div class="col-2">
+                                    <div class="mb-3">
+                                      <input
+                                        type="checkbox"
+                                        id="isPassed"
+                                        name="isPassed"
+                                        value=true
+                                        {% if driver.is_passed %}
+                                          checked
+                                        {% endif %}
+                                      />
+                                      <label for="isPassed"> 審核</label>
+                                    </div>
+                                  </div>
+                                  <div class="col-2">
+                                    <div class="mb-3">
+                                      <label for="selectOwner"> 業主</label>
+                                      <select class="" id="selectOwner"  name="selectOwner">
+                                        <option value="0"></option>
+                                        {% for owner in owners %}
+                                          <option value= {{owner.id}} 
+                                            {% if driver.owner == owner %}
+                                              selected
+                                            {% endif %}
+                                          > 
+                                            {{owner.name}}
+                                          </option>
+                                        {% endfor %}
+                                        {% comment %} <option value="0"></option>
+                                        <option value="1">A業主</option>
+                                        <option value="2">B業主</option> {% endcomment %}
+                                      </select>
+                                    </div>
+                                  </div>
+                                  <div class="col">
+                                    <h6 style="display: inline">派遣費用</h6>
+                                    <input id="dispatch_fee_percent" type="text" placeholder="10" style="width: 40px" name="dispatch_fee_percent"
+                                      value={{driver.dispatch_fee_percent_integer}}
+                                    />
+                                    %
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div class="mb-3">
+                                <label class="col-form-label" for="username">
+                                  真實姓名
+                                </label>
+                                <input class="form-control" id="username" name="username" type="text" value="{{ driver.name }}"/>
+                              </div>
+                              <div class="mb-3">
+                                <label class="col-form-label" for="userIdNumber"
+                                  >台號(身分證後五碼)</label
+                                >
+                                <input
+                                  class="form-control"
+                                  id="userIdNumber"
+                                  type="text"
+                                  value="{{ driver.userId }}"
+                                  name="userIdNumber"
+                                />
+                              </div>
+                              <div class="mb-3">
+                                <label class="col-form-label" for="vehicalLicenceNumber"
+                                  >車號(ABC-123)</label
+                                >
+                                <input
+                                  class="form-control"
+                                  id="vehicalLicenceNumber"
+                                  type="text"
+                                  value="{{ driver.vehicalLicence }}"
+                                  name="vehicalLicenceNumber"
+
+                                />
+                              </div>
+                              <div class="mb-3">
+                                <label class="col-form-label" for="phoneNumber"
+                                  >手機號碼</label
+                                >
+                                <input
+                                  class="form-control"
+                                  id="phoneNumber"
+                                  type="text"
+                                  value="{{ driver.phone }}"
+                                  name="phoneNumber"
+                                />
+                              </div>
+                              <div class="mb-3">
+                                <label class="col-form-label" for="IDNumber"
+                                  >身分證字號
+                                </label>
+                                <input 
+                                  class="form-control" 
+                                  id="IDNumber" 
+                                  type="text" 
+                                  value="{{ driver.idNumber }}"
+                                  name="IDNumber"
+                                />
+                              </div>
+          
+                              <div class="mb-3">
+                                <label class="col-form-label" for="driverGender">
+                                  性別
+                                </label>
+                                <div class="row">
+                                  <div class="mb-3">
+                                    <label class="form-label mb-0" for="driverGender">
+                                      <input 
+                                        class="form-check-input" 
+                                        id="driverGender" 
+                                        type="radio" 
+                                        name="driverGender" 
+                                        value="男"
+                                        {% if driver.gender == "男" %}
+                                          checked
+                                        {% endif %}
+                                        />
+                                      男
+                                    </label>
+                                    <label class="form-label mb-0" for="driverGender">
+                                      <input 
+                                        class="form-check-input" 
+                                        id="driverGender" 
+                                        type="radio" 
+                                        name="driverGender"
+                                        value="女"
+                                        {% if driver.gender == "女" %}
+                                          checked
+                                        {% endif %}
+                                        />
+                                      女
+                                    </label>
+                                  </div>
+                                </div>
+                              </div>
+          
+                              <div class="mb-3">
+                                <label class="col-form-label" for="carType"
+                                  >車別</label
+                                >
+                                <div class="row">
+                                  <div class="mb-3">
+                                    <label class="form-label mb-0" for="carType">
+                                      <input class="form-check-input" id="carType" type="radio" name="carType" checked="" value="car" 
+                                      {% if driver.type == "car" %}
+                                          checked
+                                      {% endif %}
+                                      />
+                                      轎車
+                                    </label>
+                                    <label class="form-label mb-0" for="carType">
+                                      <input class="form-check-input" id="carType" type="radio" name="carType" value="suv" 
+                                      {% if driver.type == "suv" %}
+                                          checked
+                                      {% endif %}
+                                      />
+                                      休旅車
+                                    </label>
+                                    <label class="form-label mb-0" for="carType">
+                                      <input class="form-check-input" id="carType" type="radio" name="carType" value="sports_car" 
+                                      {% if driver.type == "sports_car" %}
+                                          checked
+                                      {% endif %}
+                                      />
+                                      跑車
+                                    </label>
+                                    <label class="form-label mb-0" for="carType">
+                                      <input class="form-check-input" id="carType" type="radio" name="carType" value="van"
+                                      {% if driver.type == "van" %}
+                                          checked
+                                      {% endif %}
+                                      />
+                                      箱型車
+                                    </label>
+                                  </div>
+                                </div>
+                              </div>
+          
+                              <div class="mb-3">
+                                <label class="col-form-label" for="carCategory"
+                                  >車類</label
+                                >
+                                <div class="row">
+                                  <div class="mb-3">
+                                    <label class="form-label mb-0" for="carCategory">
+                                      <input class="form-check-input" id="carCategory" type="radio" name="carCategory" value="taxi"
+                                      {% if driver.category == "taxi" %}
+                                          checked
+                                      {% endif %}
+                                      />
+                                      計程車
+                                    </label>
+                                    <label class="form-label mb-0" for="carCategory">
+                                      <input class="form-check-input" id="carCategory" type="radio" name="carCategory" value="diversity"
+                                      {% if driver.category == "diversity" %}
+                                          checked
+                                      {% endif %}
+                                      />
+                                      多元
+                                    </label>
+                                    <label class="form-label mb-0" for="carCategory">
+                                      <input class="form-check-input" id="carCategory" type="radio" name="carCategory" value="rental_car"
+                                      {% if driver.category == "rental_car" %}
+                                          checked
+                                      {% endif %}
+                                      />
+                                      租賃車
+                                    </label>
+                                    <label class="form-label mb-0" for="carCategory">
+                                      <input class="form-check-input" id="carCategory" type="radio" name="carCategory" value="x_card"
+                                      {% if driver.category == "x_card" %}
+                                          checked
+                                      {% endif %}
+                                      />
+                                      X牌
+                                    </label>
+                                  </div>
+                                </div>
+                              </div>
+          
+                              <div class="mb-3">
+                                <label class="col-form-label" for="carModelName"
+                                  >車型</label
+                                >
+                                <input class="form-control" id="carModelName" type="text" placeholder="Toyota Wish" name="carModelName" value="{{ driver.car_model }}"/>
+                              </div>
+          
+                              <div class="mb-3">
+                                <label class="col-form-label" for="car-Color"
+                                  >顏色</label
+                                >
+                                <input class="form-control" id="car-Color" type="text" placeholder="白" name="car-Color" value="{{ driver.car_color }}"/>
+                              </div>
+          
+                              <div class="mb-3">
+                                <label class="col-form-label" for="sitesNumber"
+                                  >座位數</label
+                                >
+                                <input class="form-control" id="sitesNumber" type="text" placeholder="4" name="sitesNumber" value="{{ driver.number_sites }}"/>
+                              </div>
+                              
+                              <input type="hidden" id="userId" name="userId" value={{driver.id}}>
+
+                              <div class="modal-footer">
+                                <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">
+                                  取消
+                                </button>
+                                <button class="btn btn-primary" type="submit" name="submit" value="ok" onclick="location.href='{% url 'drivers' %}'">
+                                  儲存
+                                </button>
+                                {% comment %} <input type="submit" name="next" value="ok" /> {% endcomment %}
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {% comment %} <div class="pagination">
+          <span class="step-links">
+              {% if drivers.has_previous %}
+                  <a href="?page=1">&laquo; 第 1 頁 </a>
+                  <a href="?page={{ drivers.previous_page_number }}"> &nbsp;前頁&nbsp;  </a>
+              {% endif %}
+      
+              <span class="current">
+                  第 {{ drivers.number }} / {{ drivers.paginator.num_pages }} 頁
+              </span>
+      
+              {% if drivers.has_next %}
+                  <a href="?page={{ drivers.next_page_number }}"> &nbsp;下一頁&nbsp; </a>
+                  <a href="?page={{ drivers.paginator.num_pages }}">最後一頁 &raquo;</a>
+              {% endif %}
+          </span>
+        </div> {% endcomment %}
+        <div class="text-center">
+          {% for page_number in drivers.adjusted_elided_pages %}
+              {% if page_number == drivers.paginator.ELLIPSIS %}
+                  {{page_number}}
+              {% else %}
+                  <a
+                      href="?page={{page_number}}"
+                      class="{% if page_number == drivers.number %}current{% endif %}"
+                  >
+                  &nbsp;&nbsp;{{page_number}}&nbsp;&nbsp;
+                  </a>
+              {% endif %}
+          {% endfor %}
+        </div>
+
+        <div class="col"></div>
+      </div>
+      
+
+      <div class="col-sm"></div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,54 @@
+* {
+    margin: 0;
+  }
+  
+  #map{ 
+      position: absolute;
+      z-index:1; 
+      width:100vw; 
+      height:100vh; 
+    }
+
+  .info{ 
+      
+      padding: 20px;
+      width:100vw; 
+      height:32%; 
+      position: absolute;
+      bottom: 0px; 
+      background:rgba(26,26, 26, 0.9); 
+      color:#fff; 
+      z-index:2;
+    }
+
+  #popwrap {
+      position: fixed;
+      top: 0; left: 0;
+      z-index: 2;
+      width: 100vw; height: 100vh;
+      background: rgba(0,0, 0, 0.5);
+
+      display: none;
+      justify-content: center;
+      align-items: center;
+  }
+
+  #popbox{
+      position: relative;
+      min-width: 320px;
+      background: white;
+  }
+
+ #poptitle{
+     background: #CEEAFF;
+     padding: 10px;
+ }
+
+ #poptext{
+     padding: 10px;
+ }
+
+
+ 
+ 
+

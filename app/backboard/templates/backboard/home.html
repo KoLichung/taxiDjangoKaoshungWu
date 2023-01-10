@@ -1,0 +1,95 @@
+{% extends 'backboard/base.html' %} {% block content %}
+
+<div class="main">
+  <div class="card-body bg-light">
+    <div class="row">
+      <div class="col"></div>
+
+      <div class="col-lg-4 col-sm-8">
+        <div class="my-3 text-center">
+          <h4>新增派車</h4>
+        </div>
+        
+        {% if message %}
+          <div class="my-3 text-center">
+            <h5>{{ message }}!!</h5>
+          </div>
+        {% endif %}
+
+        <form method="post">{% csrf_token %}
+          <div class="mb-2 mx-3">
+            <input class="form-control" name="passengerPhone" placeholder="乘客電話"/>
+          </div>
+          <div class="mb-2 mx-3">
+            <input class="form-control" name="passengerName" placeholder="乘客名稱"/>
+          </div>
+          <div class="mb-2 mx-3">
+            <input class="form-control" name="departure" placeholder="上車地點"/>
+          </div>
+          <div class="mb-2 mx-3">
+            <input class="form-control" name="destination" placeholder="下車地點"/>
+          </div>
+
+          <div class="mb-2 mx-3">
+            <select class="form-select js-choice" id="numberOfCars" size="1" name="numberOfCars"
+              data-options='{"removeItemButton":true,"placeholder":true}'
+            >
+              <option value="1">1輛車</option>
+              <option value="2">2輛車</option>
+              <option value="3">3輛車</option>
+              <option value="4">4輛車</option>
+              <option value="5">5輛車</option>
+            </select>
+          </div>
+
+          {% comment %} <div class="mb-2 mx-3">
+            <select
+              class="form-select js-choice"
+              id="typeOfCars"
+              size="1"
+              name="typeOfCars"
+              data-options='{"removeItemButton":true,"placeholder":true}'
+            >
+              <option value="">不指定車別</option>
+              <option >多元</option>
+              <option>x牌</option>
+              <option>休旅車</option>
+              <option>廂型車</option>
+            </select>
+          </div> {% endcomment %}
+
+          <div class="mb-2 mx-3">
+            <div class="input-group">
+              <textarea class="form-control" aria-label="With textarea" placeholder="備註" name="memo"></textarea>
+            </div>
+          </div>
+
+          <div class="mb-1 mx-5">
+            <button class="btn btn-warning d-block w-100 mt-3 text-light"
+              type="submit"
+              name="submit"
+              value="ok"
+              onclick="location.href='{% url 'home' %}'"
+            >
+              <b>派遣</b>
+            </button>
+          </div>
+        </form>
+
+        <div class="mb-3 mx-5">
+          <button class="btn btn-outlined text-yellow d-block w-100 mt-3"
+            type="reset"
+            value="reset"
+            onclick="location.href='home'"
+          >
+            <b>清空</b>
+          </button>
+        </div>
+      </div>
+
+      <div class="col"></div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

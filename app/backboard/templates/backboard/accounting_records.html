@@ -1,0 +1,57 @@
+{% extends 'backboard/base.html' %} {% block content %}
+<div class="main">
+  <div class="card-body bg-light">
+    <div class="row">
+      <div class="col"></div>
+
+      <div class="col-lg-6 col-md-8 col-sm-8">
+        <div class="my-3 text-center">
+          <h4>帳務紀錄</h4>
+        </div>
+ 
+        <div class="table-responsive scrollbar">
+          <table class="table table-hover table-striped overflow-hidden">
+            <thead>
+              <tr class="table-head-custom">
+                <th scope="col">日期</th>
+                <th scope="col">司機</th>
+                <th scope="col">入扣帳金額</th>
+                <th scope="col">當時餘額</th>
+                <th scope="col">結算餘額</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for userStoreMoney in userStoreMoneys %}
+              <tr class="align-middle">
+                <td class="text-nowrap">{{ userStoreMoney.date.date }}</td>
+                <td class="text-nowrap">{{ userStoreMoney.user }}</td>
+                <td class="text-nowrap">{{ userStoreMoney.increase_money }}</td>
+                <td class="text-nowrap">{{ userStoreMoney.user_left_money }}</td>
+                <td class="text-nowrap">{{ userStoreMoney.sum_money }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="text-center">
+          {% for page_number in userStoreMoneys.adjusted_elided_pages %}
+              {% if page_number == userStoreMoneys.paginator.ELLIPSIS %}
+                  {{page_number}}
+              {% else %}
+                  <a
+                      href="?page={{page_number}}"
+                      class="{% if page_number == userStoreMoneys.number %}current{% endif %}"
+                  >
+                  &nbsp;&nbsp;{{page_number}}&nbsp;&nbsp;
+                  </a>
+              {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="col"></div>
+    </div>
+  </div>
+</div>
+{% endblock %}

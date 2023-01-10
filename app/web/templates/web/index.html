@@ -1,0 +1,44 @@
+{% extends 'web/base.html' %} {% block content %}
+<!-- <p>userID: <span id="userId"></span></p>
+    <p>displayName:<span id="displayName"></span></p>
+    <p>pictureUrl:<span id="pictureUrl"></span></p>
+    <p>statusMessage:<span id="statusMessage"></span></p>
+    <script>
+      var liffId = "1657040448-POOY6wdv"; //開發者後台的 LIFF ID
+      liff
+        .init({
+          liffId: liffId,
+        })
+        .then(() => {
+          var islogin = liff.isLoggedIn();
+          console.log("islogin", islogin);
+          if (islogin) {
+            liff
+              .getProfile()
+              .then((profile) => {
+                console.log("profile", profile);
+                document.getElementById("userId").innerHTML = profile.userId;
+                document.getElementById("displayName").innerHTML =
+                  profile.displayName;
+                document.getElementById("pictureUrl").innerHTML =
+                  profile.pictureUrl;
+                document.getElementById("statusMessage").innerHTML =
+                  profile.statusMessage;
+              })
+              .catch((err) => {
+                console.log("error", err);
+              });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    </script> -->
+
+<button type="button" class="btn btn-success">GET</button>
+
+<ul id="seconds"></ul>
+
+<ul id="right"></ul>
+
+{% endblock %}

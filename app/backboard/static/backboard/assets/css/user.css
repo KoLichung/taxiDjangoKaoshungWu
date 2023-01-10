@@ -1,0 +1,37 @@
+/* -------------------------------------------------------------------------- */
+/*                                chijia Button                               */
+/* -------------------------------------------------------------------------- */
+/* prettier-ignore */
+/*# sourceMappingURL=user.css.map */
+
+.text-yellow {
+  color: #ffc701 !important;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #2D9CDB !important;
+}
+
+.btn-warning {
+  color: #fff;
+  background-color: #ffc701 !important;
+  border-color: #ffc701 !important;
+}
+
+.btn-outlined {
+  color: #fff;
+  background-color: #fff;
+  border-color: #ffc701 !important;
+}
+
+.table-head-custom{
+  background-color: #CEEAFF;
+}
+
+#map {
+  height: 400px;
+  /* The height is 400 pixels */
+  width: 100%;
+  /* The width is the width of the web page */
+}

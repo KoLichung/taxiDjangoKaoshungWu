@@ -1,0 +1,76 @@
+{% extends 'backboard/base.html' %} {% block content %}
+<div class="main card-body bg-light">
+  <div class="row">
+    <div class="col-1"></div>
+
+    <div class="col-10">
+      <div class="my-3 text-center">
+        <h4>派車管理</h4>
+        <p>
+          上線 <span style="color: red"><b>{{ numOfDrivers }}</b></span> 車
+        </p>
+      </div>
+
+      <div class="table-responsive scrollbar">
+        <table class="table table-hover table-striped overflow-hidden">
+          <thead>
+            <tr class="table-head-custom">
+              <th scope="col">台號</th>
+              <th scope="col">車牌</th>
+              <th scope="col">屬性</th>
+            </tr>
+          </thead>
+          <tbody>
+
+            {% for driver in drivers %}
+              <tr class="align-middle">
+                <td class="text-nowrap">{{ driver.userId }}</td>
+                <td class="text-nowrap">{{ driver.vehicalLicence }}</td>
+                <td class="text-nowrap">{{ driver.car_color }} {{ driver.car_model }} {{ driver.number_sites }} 人 
+                  {% if driver.type == 'car' %}
+                    房車
+                  {% elif driver.type == 'suv' %}
+                    休旅車
+                  {% elif driver.type == 'sports_car' %}
+                    跑車
+                  {% elif driver.type == 'van' %}
+                    箱型車
+                  {% endif %}
+                  {{ theType }} 
+                  
+                  {% if driver.category == 'taxi' %}
+                    計程車
+                  {% elif driver.category == 'diversity' %}
+                    多元
+                  {% elif driver.category == 'rental_car' %}
+                    租賃車
+                  {% elif driver.category == 'x_card' %}
+                    X牌
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        <div class="text-center">
+          {% for page_number in drivers.adjusted_elided_pages %}
+              {% if page_number == drivers.paginator.ELLIPSIS %}
+                  {{page_number}}
+              {% else %}
+                  <a
+                      href="?page={{page_number}}"
+                      class="{% if page_number == drivers.number %}current{% endif %}"
+                  >
+                  &nbsp;&nbsp;{{page_number}}&nbsp;&nbsp;
+                  </a>
+              {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div class="col-1"></div>
+  </div>
+</div>
+{% endblock %}

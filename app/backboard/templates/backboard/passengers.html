@@ -1,0 +1,91 @@
+{% extends 'backboard/base.html' %} {% block content %}
+<div class="main">
+  <div class="card-body bg-light">
+    <div class="row">
+      <div class="col"></div>
+
+      <div class="col-lg-5 col-md-7 col-sm-10">
+        <div class="my-3 text-center">
+          <h4>所有乘客</h4>
+        </div>
+
+        <form method="get">
+          <div class="mb-3 row">
+            <label class="col-sm-2 col-form-label" for="inputName"
+              >姓名：</label
+            >
+            <div class="col-sm-10">
+              <input
+                class="form-control"
+                id="inputName"
+                name="qName"
+              />
+            </div>
+          </div>
+
+          <div class="mb-3 row">
+            <label class="col-sm-2 col-form-label" for="inputPhone"
+              >電話：</label
+            >
+            <div class="col-sm-10">
+              <input class="form-control" id="inputPhone" name="qPhone" />
+            </div>
+          </div>
+
+          <div class="mb-1 mx-5">
+            <button
+              class="btn btn-primary d-block w-100 mt-3 text-light"
+              onclick="location.href='{% url 'passengers' %}'"
+            >
+              <b>查詢</b>
+            </button>
+          </div>
+        </form>
+
+        <div class="mt-5">
+          <div class="table-responsive scrollbar">
+            <table class="table table-hover table-striped overflow-hidden">
+              <thead>
+                <tr class="table-head-custom">
+                  <th scope="col">業主</th>
+                  <th scope="col">姓名</th>
+                  <th scope="col">電話</th>
+                  {% comment %}
+                  <th scope="col">建檔日期</th>
+                  {% endcomment %}
+                </tr>
+              </thead>
+              <tbody>
+                {% for customer in customers %}
+                <tr class="align-middle">
+                  <td class="text-nowrap">{{ customer.owner }}</td>
+                  <td class="text-nowrap">{{ customer.name }}</td>
+                  <td class="text-nowrap">{{ customer.phone }}</td>
+
+                  {% comment %}
+                  <td class="text-nowrap">2022-03-23</td>
+                  {% endcomment %}
+                </tr>
+
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="text-center">
+          {% for page_number in customers.adjusted_elided_pages %} 
+            {% if page_number == customers.paginator.ELLIPSIS %} 
+              {{page_number}} 
+            {% else %}
+              <a href="?page={{page_number}}" class="{% if page_number == customers.number %}current{% endif %}">&nbsp;&nbsp;{{page_number}}&nbsp;&nbsp;</a>
+            {% endif %} 
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="col"></div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,208 @@
+{% extends 'web/base.html' %} {% block content %}
+
+<div class="container">
+  <div class="row">
+    <div class="col"></div>
+    <div class="col-lg-8">
+    
+      <script>
+        var liffId = "1657014064-B7lE5MjK"; //開發者後台的 LIFF ID
+        var a = "{{back}}";
+
+        liff.init({liffId: liffId,}).then(() => {
+            var islogin = liff.isLoggedIn();
+            console.log("islogin", islogin);
+            
+
+            if (islogin) {
+              liff.getProfile().then((profile) => {
+                    console.log("profile", profile);
+                    document.getElementById("displayName").innerHTML = profile.displayName;
+                    document.getElementById("displayName").value = profile.displayName;
+                    document.getElementById("displayUserId").innerHTML = profile.userId;
+                    document.getElementById("displayUserId").value = profile.userId;
+                  
+                    var id_data = { 
+                        line_id: profile.userId,
+                    }
+                    
+                    if(a!="true"){
+                        $.ajax({
+                            //傳 LINE ID 回後台
+                            url: "{% url 'ajax_check_user_phone_and_direct_call' %}",
+                            data: id_data,
+                            type: "GET",
+                
+                            success: function (response) {
+                                var obj = JSON.parse(response); //JSON.parse() = convert text into a JavaScript object
+                                if(obj.phone){
+                                    location.href = "{% url 'map' %}" + "?line_id="+id_data.line_id;
+                                }
+                            },
+                
+                            error: function () {
+                                console.log("error");
+                            },
+                        });
+                    }else{
+                        $.ajax({
+                            //傳 LINE ID 回後台
+                            url: "{% url 'ajax_check_user_phone_and_direct_call' %}",
+                            data: id_data,
+                            type: "GET",
+                
+                            success: function (response) {
+                                var obj = JSON.parse(response); //JSON.parse() = convert text into a JavaScript object
+                                if(obj.phone){
+                                    document.getElementById("phoneNumber").value = obj.phone;
+                                }
+                            },
+                
+                            error: function () {
+                                console.log("error");
+                            },
+                        });
+                    }
+
+                }).catch((err) => {
+                    console.log("error", err);
+                });
+            }
+        }).catch((err) => {
+            console.log(err);
+        });
+      </script>
+
+      <div class="my-5 text-center">
+        <h4>直接叫車 測試</h4>
+      </div>
+
+      <!-- <form method="GET"> -->
+      {% csrf_token %}
+      <div class="mb-3 px-5 row">
+        <p><span id="displayName"></span> 您好</p>
+        <span id="displayUserId" hidden></span>
+        <label class="col-sm-2" for="phoneNumber">請輸入您的電話</label>
+        <div class="col-sm-12">
+          <input class="form-control" id="phoneNumber" name="inputPhoneNumber"/>
+        </div>
+      </div>
+
+      <div class="mb-1 mx-5">
+        <button class="btn btn-warning d-block w-100 mt-3 text-light" type="submit" name="submit" id="btn" >
+          <!-- button按了之後要把資料(fake line id)傳給 views 下的 class (method) -->
+          <!-- V 然後還要接一個參數 taxi_id 給這頁 -->
+
+          <b>確認，開始叫車</b>
+        </button>
+      </div>
+      <!-- </form> -->
+
+      {% comment %} <script>
+        
+      </script> {% endcomment %}
+
+      <!-- 後台傳回的 taxi_id -->
+      {% comment %}
+      <script>
+        var theTaxi = {{ objs|safe }}
+        console.log(theTaxi.taxi_id)
+        // console.log(theTaxi['taxi_id']);
+      </script>
+      {% endcomment %}
+
+      <!-- pop up 視窗 尋找車輛中-->
+      <div id="popwrap">
+        <div id="popbox">
+          <h5 id="poptitle"></h5>
+          <p class="text-center" id="poptext"></p>
+          <div class="mb-2 text-center">
+            <button
+              class="btn btn-success rounded-pill"
+              type="cancel"
+              onclick="pop.hide()"
+            >
+              <i class="fa-solid fa-eraser"></i> 取消派車
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        var myVar;
+
+        $("#btn").click(function () {
+          //彈出視窗
+          pop.show("派車中", "系統車輛尋找中，請稍候...");          
+        });
+
+        var pop = {
+          show: function (title, text) {
+            document.getElementById("poptitle").innerHTML = title;
+            document.getElementById("poptext").innerHTML = text;
+            document.getElementById("popwrap").style.display = "flex";
+
+            var id_data = { 
+              line_id: document.getElementById("displayUserId").value,
+              name: document.getElementById("displayName").value,
+              phone: document.getElementById("phoneNumber").value,
+            };
+            
+            
+            $.ajax({
+                //傳 LINE ID 回後台
+                url: "{% url 'ajax_check_user_phone_and_direct_call' %}",
+                data: id_data,
+                type: "GET",
+
+                success: function (response) {
+                    console.log("ajax success");
+
+                    //回傳配對到的 taxi_id 到頁面
+                    console.log(response); //response type: python dictionary
+                    var obj = JSON.parse(response); //JSON.parse() = convert text into a JavaScript object
+                    console.log(obj.case_id);
+
+                    //redirect and pass taxi_id
+                    location.href = "{% url 'map' %}" + "?line_id="+id_data.line_id+"&phone="+id_data.phone;
+                    pop.hide();
+                },
+
+                error: function () {
+                    console.log("error");
+                },
+            });
+
+          },
+
+          hide: function () {
+            document.getElementById("popwrap").style.display = "none";
+            clearInterval(myVar);
+            //cancel 派車
+            var id_data = { 
+              line_id: document.getElementById("displayUserId").value,
+            };
+
+            $.ajax({
+              //傳 LINE ID 回後台
+              url: "{% url 'ajax_cancel_case' %}",
+              data: id_data,
+              type: "GET",
+  
+              success: function (response) {
+                console.log("ajax success");
+              },
+  
+              error: function () {
+                console.log("error");
+              },
+            });
+          },
+        };
+      </script>
+    </div>
+    <div class="col"></div>
+  </div>
+</div>
+
+{% endblock %}

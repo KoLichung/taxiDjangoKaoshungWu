@@ -1,0 +1,88 @@
+{% extends 'backboard/base.html' %} {% block content %}
+<div class="main">
+  <div class="card-body bg-light">
+    <div class="row">
+      <div class="col"></div>
+      
+
+      <div class="col-lg-6 col-sm-8 mx-3">
+        {% if message %}
+          <div class="my-3 text-center">
+            <h5>{{ message }}!!</h5>
+          </div>
+        {% endif %}
+
+        <div class="my-3 text-center">
+          <h4>儲值作業</h4>
+        </div>
+
+        <form method="post">{% csrf_token %}
+          <div class="mb-3 row">
+            <label class="col-sm-2 col-form-label" for="inputPassword">台號</label>
+            <div class="col-sm-10">
+              <input
+                class="form-control"
+                placeholder="台號"
+                name='userId'
+              />
+            </div>
+          </div>
+  
+          <div class="mb-3 row">
+            <label class="col-sm-2 col-form-label" for="inputPassword">支出類型</label>
+            <div class="col-sm-10 mt-2">
+              <label class="form-label mb-0" for="increaseMoney">
+                <input class="form-check-input" type="radio" name="moneyType" value="increase" checked="">  入帳
+              </label>
+              <label class="form-label mb-0" for="decreaseMoney">
+                <input class="form-check-input" type="radio" name="moneyType" value="decrease">  出帳
+              </label>
+            </div>
+          </div>
+  
+          <div class="mb-3 row">
+            <label class="col-sm-2 col-form-label" for="inputPassword">金額</label>
+            <div class="col-sm-10">
+              <input class="form-control"
+                placeholder="0"
+                name="money"
+              />
+            </div>
+          </div>
+  
+          {% comment %} <div class="mb-3 row">
+            <label class="col-sm-2 col-form-label" for="inputPassword">明細</label>
+            <div class="col-sm-10">
+              <input
+                class="form-control"
+                id="inputPassword"
+                type="password"
+                placeholder="明細"
+              />
+            </div>
+          </div> {% endcomment %}
+  
+          <div class="mb-1 mx-5">
+            <button
+              class="btn btn-warning d-block w-100 mt-3 text-light"
+              type="submit"
+              name="submit"
+              value="ok"
+              onclick="location.href='{% url 'credit_topup' %}'"
+            >
+              <b>儲存</b>
+            </button>
+          </div>
+
+
+        </form>
+
+        
+      </div>
+
+      <div class="col"></div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

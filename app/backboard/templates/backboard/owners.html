@@ -1,0 +1,68 @@
+{% extends 'backboard/base.html' %} {% block content %}
+<div class="main">
+  <div class="card-body bg-light">
+    <div class="row">
+      <div class="col"></div>
+
+      <div class="col-lg-4 col-md-6 col-sm-8">
+        <div class="my-3 text-center">
+          <h4>所有業主</h4>
+        </div>
+
+        {% comment %}
+        <div class="mb-2 mx-3">
+          <input class="form-control" type="phoneNumber" placeholder="名稱" />
+        </div>
+
+        <div class="mb-1 mx-5">
+          <button
+            class="btn btn-primary d-block w-100 mt-3 text-light"
+            type="submit"
+            name="submit"
+            onclick="location.href='#'"
+          >
+            <b>查詢</b>
+          </button>
+        </div>
+        {% endcomment %}
+
+        <div class="mt-5">
+          <div class="table-responsive scrollbar">
+            <table class="table table-hover table-striped overflow-hidden">
+              <thead>
+                <tr class="table-head-custom">
+                  <th scope="col">名稱</th>
+                  <th scope="col">司機數</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for owner in owners %}
+                <tr class="align-middle">
+                  <td class="text-nowrap">{{ owner.name }}</td>
+                    <td class="text-nowrap">{{ owner.driverNum }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+          {% comment %}
+          <div class="mb-1 mx-5">
+            <button
+              class="btn btn-warning d-block w-100 mt-3 text-light"
+              type="submit"
+              name="submit"
+              onclick="location.href='#'"
+            >
+              <b>新增</b>
+            </button>
+          </div>
+          {% endcomment %}
+        </div>
+      </div>
+
+      <div class="col"></div>
+    </div>
+  </div>
+</div>
+{% endblock %}
