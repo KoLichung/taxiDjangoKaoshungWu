@@ -149,9 +149,9 @@ WSGI_APPLICATION = 'app.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': os.environ.get('DB_NAME','djangogeo'),
-        'USER': os.environ.get('DB_USER','django_geo'),
-        'PASSWORD': os.environ.get('DB_PASS','django_geo'),
+        'NAME': os.environ.get('DB_NAME','mydatabase'),
+        'USER': os.environ.get('DB_USER','mydatabaseuser'),
+        'PASSWORD': os.environ.get('DB_PASS','mypassword'),
         'HOST': os.environ.get('DB_HOST','localhost'),
         'PORT': '5432',
     }
