@@ -3,7 +3,7 @@
 set -e
 
 # TODO: Set to URL of git repo.
-PROJECT_GIT_URL='https://github.com/KoLichung/taxi_django.git'
+PROJECT_GIT_URL='https://github.com/KoLichung/taxiDjangoKaoshungWu.git'
 
 PROJECT_BASE_PATH='/usr/local/apps'
 
