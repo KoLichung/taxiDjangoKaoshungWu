@@ -11,7 +11,7 @@ PROJECT_PATH='/usr/local/apps/app'
 
 echo "Installing dependencies..."
 apt-get update
-apt-get install -y python3-dev python3-venv sqlite python-pip supervisor nginx git
+apt-get install -y python3-dev python3-venv sqlite python-pip supervisor nginx git binutils libproj-dev gdal-bin
 
 # Create project directorycd
 mkdir -p $PROJECT_BASE_PATH
