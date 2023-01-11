@@ -68,6 +68,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     car_model = models.CharField(max_length=128, default='', blank = True, null=True)
     car_color = models.CharField(max_length=20, default='', blank = True, null=True)
     number_sites = models.IntegerField(default=0, blank = True, null=True)
+    
+    car_memo = models.TextField(default='', blank = True, null=True)
+
     is_online = models.BooleanField(default=False)
     left_money = models.IntegerField(default=0)
 
