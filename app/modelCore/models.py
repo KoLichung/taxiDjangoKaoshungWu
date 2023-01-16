@@ -32,6 +32,7 @@ class UserManager(BaseUserManager):
             car_model=extra_fields.get('car_model'),
             car_color=extra_fields.get('car_color'),
             number_sites=extra_fields.get('number_sites'),
+            car_memo=extra_fields.get('car_memo'),
         )
         user.set_password(password)
         user.save(using=self._db)
