@@ -5,7 +5,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from modelCore.models import User, Case, Owner, Customer, UserCaseShip, UserStoreMoney
+from modelCore.models import User, Case, Owner, Customer, UserCaseShip, UserStoreMoney, AppVersion
 from taxiApi import serializers
 from django.utils import timezone as datetime
 from django.contrib.gis.geos import Point
@@ -234,3 +234,10 @@ class UpdateUserOnlineState(APIView):
         else:
             print("not sure")
             return Response({'message': "no left money"})
+
+
+class AppVersionView(APIView):
+
+    def get(self, request, format=None):
+        appVersion = AppVersion.objects.all().order_by('-id').first()
+        return Response({'ios': appVersion.iOS_current_version, 'android': appVersion.android_current_version})

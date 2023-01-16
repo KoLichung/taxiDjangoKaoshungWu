@@ -224,3 +224,6 @@ class MonthSummary(models.Model):
     month_owner_b_money = models.IntegerField(default=0)
     month_driver_arrears = models.IntegerField(default=0)
 
+class AppVersion(models.Model):
+    iOS_current_version = models.CharField(max_length=10, default='', blank = True, null=True)
+    android_current_version = models.CharField(max_length=10, default='', blank = True, null=True)
