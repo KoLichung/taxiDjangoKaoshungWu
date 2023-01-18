@@ -171,10 +171,9 @@ class CaseFinishedView(APIView):
                     case.case_money = case_money
 
                     dispatch_fee = case_money * case.user.dispatch_fee_percent_integer / 100
-                    if dispatch_fee == int(dispatch_fee):
-                        case.dispatch_fee = dispatch_fee
-                    else:
-                        case.dispatch_fee = int(dispatch_fee)+1
+                    
+                    dispatch_fee = int(dispatch_fee) // 10 * 10
+
                     # case.dispatch_fee = int(case_money * case.user.dispatch_fee_percent_integer / 100)
                     case.save()
 

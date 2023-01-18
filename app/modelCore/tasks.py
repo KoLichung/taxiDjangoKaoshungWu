@@ -1,4 +1,4 @@
-from modelCore.models import User, Case, Owner, Customer, UserCaseShip, UserStoreMoney
+from modelCore.models import User, Case, Customer, UserCaseShip, UserStoreMoney
 from datetime import timedelta
 from django.utils import timezone as datetime 
 from random import randint
@@ -6,11 +6,6 @@ from django.contrib.gis.geos import Point
 
 #from modelCore.tasks import fakeData
 def fakeData():    
-
-    print('fake owner 1')
-    owner = Owner()
-    owner.name = "A業主"
-    owner.save()
 
     print("fake user 1")
     user = User()
@@ -51,7 +46,6 @@ def fakeData():
     customer = Customer()
     customer.name = "消費者1"
     customer.phone = "0911123456"
-    customer.owner = owner
     customer.line_id = "customer_line_id_1"
     customer.save()
 
@@ -63,7 +57,6 @@ def fakeData():
     case.customer_name = customer.name
     case.customer_phone = customer.phone
     
-    case.owner =  owner
     
     case.on_lat = 24.127190
     case.on_lng = 120.670372
@@ -90,7 +83,6 @@ def fakeData():
     case.customer_name = customer.name
     case.customer_phone = customer.phone
     
-    case.owner =  owner
     case.user = user
 
     case.on_lat = 24.127190
@@ -114,11 +106,6 @@ def fakeData():
     case.save()
 
     ############################
-    print('fake owner 2')
-    owner = Owner()
-    owner.name = "B業主"
-    owner.save()
-
     print("fake user 2")
     user = User()
     user.phone = "0944123456"
@@ -156,7 +143,6 @@ def fakeData():
     customer = Customer()
     customer.name = "消費者2"
     customer.phone = "0922123456"
-    customer.owner = owner
     customer.line_id = "customer_line_id_2"
     customer.save()
     
@@ -167,8 +153,7 @@ def fakeData():
     case.customer = customer
     case.customer_name = customer.name
     case.customer_phone = customer.phone
-    
-    case.owner =  owner
+
     case.user = user
 
     case.on_lat = 24.127190
