@@ -3,7 +3,7 @@ from datetime import datetime, date, time, timedelta
 from multiprocessing import context
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from modelCore.models import User, Owner, Customer, Case, UserStoreMoney, MonthSummary
+from modelCore.models import User, Customer, Case, UserStoreMoney
 from django.db.models import Q
 from django.core.paginator import Paginator
 import requests
@@ -180,8 +180,6 @@ def drivers(request):
         else:
             drivers = User.objects.filter(~Q(id=1)).order_by('-id')
             # drivers = User.objects.all()
-        
-        owners = Owner.objects.all()
 
         paginator = Paginator(drivers, 10)
         if request.GET.get('page') != None:
@@ -191,7 +189,7 @@ def drivers(request):
         page_obj = paginator.get_page(page_number)
 
         page_obj.adjusted_elided_pages = paginator.get_elided_page_range(page_number)
-        return render(request, 'backboard/drivers.html', {'drivers': page_obj, 'owners': owners})
+        return render(request, 'backboard/drivers.html', {'drivers': page_obj})
     elif request.method == 'POST':
         user = User.objects.get(id=request.POST.get("userId"))
 
@@ -199,8 +197,6 @@ def drivers(request):
             user.is_passed = True
         else:
             user.is_passed = False
-        if(request.POST.get("selectOwner")!=0):
-            user.owner = Owner.objects.get(id=request.POST.get("selectOwner"))
 
         if(request.POST.get("dispatch_fee_percent")!=""):
             try:
@@ -222,14 +218,6 @@ def drivers(request):
         user.save()
         return redirect('/backboard/drivers')
 
-def owners(request):
-    owners = Owner.objects.order_by('id')
-    for owner in owners:
-        owner.driverNum = User.objects.filter(owner=owner).count()
-        owner.save()
-
-    return render(request, 'backboard/owners.html',{'owners': owners})
-
 def accounting_records(request):
     userStoreMoneys = UserStoreMoney.objects.order_by('-id')
     print(userStoreMoneys.count())
@@ -245,13 +233,13 @@ def accounting_records(request):
 
     return render(request, 'backboard/accounting_records.html',{'userStoreMoneys': page_obj})
 
-def accounting_statistics(request):
-    summarys = MonthSummary.objects.all().order_by('-id')[:2]
-    the_day = summarys[0].month_date
-    last_month_day = the_day - timedelta(days=30)
-    last_2_month_day = the_day - timedelta(days=60)
+# def accounting_statistics(request):
+#     summarys = MonthSummary.objects.all().order_by('-id')[:2]
+#     the_day = summarys[0].month_date
+#     last_month_day = the_day - timedelta(days=30)
+#     last_2_month_day = the_day - timedelta(days=60)
 
-    return render(request, 'backboard/accounting_statistics.html', {'summarys':summarys, 'last_month_day':last_month_day, 'last_2_month_day':last_2_month_day})
+#     return render(request, 'backboard/accounting_statistics.html', {'summarys':summarys, 'last_month_day':last_month_day, 'last_2_month_day':last_2_month_day})
 
 def credit_topup(request):
     if request.method == 'POST':

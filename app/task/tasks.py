@@ -1,7 +1,7 @@
 from __future__ import absolute_import, unicode_literals
 
 from celery import shared_task
-from modelCore.models import User, UserCaseShip, Case, UserStoreMoney, MonthSummary, Owner
+from modelCore.models import User, UserCaseShip, Case, UserStoreMoney
 from django.contrib.gis.geos import Point
 from django.contrib.gis.db.models.functions import GeometryDistance
 from django.db.models import Q
@@ -109,51 +109,6 @@ def countDownUserCaseShip():
         else:
             case.case_state = "canceled"
             case.save()
-
-@shared_task
-def createMonthSummary():
-    # 找出所有上個月的 user_store_money
-    # 把 user_store_money 的 increase_money 相加
-    month_summary = MonthSummary()
-    month_summary.month_date = date.today()
-    
-    last_day_of_prev_month = date.today().replace(day=1) - timedelta(days=1)
-    start_day_of_prev_month = date.today().replace(day=1) - timedelta(days=last_day_of_prev_month.day)
-
-    userSoreMoneys = UserStoreMoney.objects.filter(date__gte = start_day_of_prev_month, date__lte = last_day_of_prev_month)
-    last_month_store_moneys = sum(userSoreMoneys.values_list('increase_money', flat=True))
-
-    # print(last_month_store_moneys)
-    month_summary.month_store_money = last_month_store_moneys
-    
-    # 找出所有上個月的 case
-    cases = Case.objects.filter(create_time__gte = start_day_of_prev_month, create_time__lte = last_day_of_prev_month, case_state = 'finished')
-    for case in cases:
-        dispatch_fee = case.dispatch_fee
-        print(dispatch_fee)
-        if case.owner != None and  case.user.owner != None and case.owner == case.user.owner:
-            if case.owner == Owner.objects.first():
-                month_summary.month_owner_a_money = month_summary.month_owner_a_money + dispatch_fee
-            else:
-                month_summary.month_owner_b_money = month_summary.month_owner_b_money + dispatch_fee
-        elif case.owner != None and case.user.owner == None:
-            if case.owner == Owner.objects.first():
-                month_summary.month_owner_a_money = month_summary.month_owner_a_money + dispatch_fee
-            else:
-                month_summary.month_owner_b_money = month_summary.month_owner_b_money + dispatch_fee
-        elif case.owner == None and case.user.owner != None:
-            if case.user.owner == Owner.objects.first():
-                month_summary.month_owner_a_money = month_summary.month_owner_a_money + dispatch_fee
-            else:
-                month_summary.month_owner_b_money = month_summary.month_owner_b_money + dispatch_fee
-        else:
-            print('here')
-            month_summary.month_owner_a_money = month_summary.month_owner_a_money + dispatch_fee / 2
-            month_summary.month_owner_b_money = month_summary.month_owner_b_money + dispatch_fee / 2
-
-    total_user_arrears = sum(User.objects.filter(left_money__lte=0).values_list('left_money', flat=True))
-    month_summary.month_driver_arrears = total_user_arrears
-    month_summary.save()
 
 @shared_task
 def add(x, y):

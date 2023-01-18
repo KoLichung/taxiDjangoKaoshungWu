@@ -12,9 +12,8 @@ urlpatterns = [
     path('dispatch_management', views.dispatch_management, name = 'dispatch_management'),
     path('passengers', views.passengers, name = 'passengers'), 
     path('drivers', views.drivers, name = 'drivers'),
-    path('owners', views.owners, name = 'owners'), 
     path('accounting_records', views.accounting_records, name = 'accounting_records'),
-    path('accounting_statistics', views.accounting_statistics, name = 'accounting_statistics'), 
+    # path('accounting_statistics', views.accounting_statistics, name = 'accounting_statistics'), 
     path('credit_topup', views.credit_topup, name = 'credit_topup'),
     path('', include('django.contrib.auth.urls'))
 ]

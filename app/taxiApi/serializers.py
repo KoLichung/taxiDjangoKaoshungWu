@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from modelCore.models import User, Case, Owner, Customer, UserCaseShip, UserStoreMoney, AppVersion
+from modelCore.models import Case, UserStoreMoney, AppVersion
 
 class UserStoreMoneySerializer(serializers.ModelSerializer):
     class Meta:

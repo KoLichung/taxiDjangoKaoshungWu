@@ -22,17 +22,3 @@ def sendTaskMessage(user):
     devices = FCMDevice.objects.filter(user=user)
     devices.send_message(message)
     print("send fcm")
-
-def sendFcmInquiry():
-    message = Message(
-        notification= Notification(title="新需求單來囉！", body="回 app 查看~"),
-    )
-    devices = FCMDevice.objects.all()
-    for device in devices:
-        print('here')
-        try:
-            if device.user.isOwner:
-                print('here 2')
-                device.send_message(message)
-        except:
-            print('error next')

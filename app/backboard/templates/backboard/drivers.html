@@ -54,7 +54,7 @@
                       >
                         <span class="text-500 fas fa-edit"></span>
                       </button>
-                      {{ driver.owner }}
+                  
                     </td>
                     <td class="text-nowrap">
                       {% if driver.is_passed %}
@@ -126,26 +126,7 @@
                                       <label for="isPassed"> 審核</label>
                                     </div>
                                   </div>
-                                  <div class="col-2">
-                                    <div class="mb-3">
-                                      <label for="selectOwner"> 業主</label>
-                                      <select class="" id="selectOwner"  name="selectOwner">
-                                        <option value="0"></option>
-                                        {% for owner in owners %}
-                                          <option value= {{owner.id}} 
-                                            {% if driver.owner == owner %}
-                                              selected
-                                            {% endif %}
-                                          > 
-                                            {{owner.name}}
-                                          </option>
-                                        {% endfor %}
-                                        {% comment %} <option value="0"></option>
-                                        <option value="1">A業主</option>
-                                        <option value="2">B業主</option> {% endcomment %}
-                                      </select>
-                                    </div>
-                                  </div>
+
                                   <div class="col">
                                     <h6 style="display: inline">派遣費用</h6>
                                     <input id="dispatch_fee_percent" type="text" placeholder="10" style="width: 40px" name="dispatch_fee_percent"

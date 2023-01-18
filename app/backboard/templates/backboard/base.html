@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>聯合派車系統後台</title>
+    <title>24H派車後台</title>
 
     <!-- font awesome -->
 
@@ -117,9 +117,9 @@
             </button>
 
             <a class="navbar-brand me-1 me-sm-3" href="{% url 'home' %}">
-              <div class="d-flex align-items-center" style="color: #ffc701">
+              <div class="d-flex align-items-center" style="color: #21130d">
                 <i class="fa-solid fa-taxi"></i>
-                聯合派車
+                24H派車
               </div>
             </a>
 
@@ -190,11 +190,6 @@
                         href="{% url 'drivers' %}"
                         >所有司機</a
                       >
-                      <a
-                        class="dropdown-item link-600 fw-medium"
-                        href="{% url 'owners' %}"
-                        >所有業主</a
-                      >
                     </div>
                   </div>
                 </li>
@@ -225,11 +220,11 @@
                         href="{% url 'accounting_records' %}"
                         >帳務紀錄</a
                       >
-                      <a
+                      {% comment %} <a
                         class="dropdown-item link-600 fw-medium"
                         href="{% url 'accounting_statistics' %}"
                         >帳務統計</a
-                      >
+                      > {% endcomment %}
                     </div>
                   </div>
                 </li>

@@ -14,20 +14,20 @@ def setup_periodic_tasks(sender, **kwargs):
     sender.add_periodic_task(5.0, case_ship_count_down.s('world'), expires=10)
 
     #run at 0800 of first day of month every taiwan time
-    sender.add_periodic_task(
-        crontab(hour=1, minute=0, day_of_month='1'),
-        cal_month_summary.s('calcualte month summary'),
-    )
+    # sender.add_periodic_task(
+    #     crontab(hour=1, minute=0, day_of_month='1'),
+    #     cal_month_summary.s('calcualte month summary'),
+    # )
 
 @app.task
 def case_ship_count_down(arg):
     from task.tasks import countDownUserCaseShip
     countDownUserCaseShip()
 
-@app.task
-def cal_month_summary(arg):
-    from task.tasks import createMonthSummary
-    createMonthSummary()
+# @app.task
+# def cal_month_summary(arg):
+#     from task.tasks import createMonthSummary
+#     createMonthSummary()
 
 @app.task
 def test_add(arg):

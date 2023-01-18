@@ -5,13 +5,6 @@ from django.urls import reverse
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.contrib.gis.db.models import PointField
 
-class Owner(models.Model):
-    name = models.CharField(max_length=128, default='')
-    driverNum = models.IntegerField(default=0, null=True, blank=True)
-
-    def __str__(self):
-        return self.name
-
 class UserManager(BaseUserManager):
 
     def create_user(self, phone, password=None, **extra_fields):
@@ -76,11 +69,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     left_money = models.IntegerField(default=0)
 
     is_passed = models.BooleanField(default=False)
-    owner =  models.ForeignKey(
-        Owner,
-        on_delete=models.RESTRICT,
-        null=True
-    )
+
     current_lat = models.DecimalField(max_digits=9, decimal_places=6, blank = True, null=True)
     current_lng = models.DecimalField(max_digits=9, decimal_places=6, blank = True, null=True)
     location = PointField(srid=4326, geography=True, blank=True, null=True)
@@ -118,11 +107,6 @@ class UserStoreMoney(models.Model):
 class Customer(models.Model):
     name = models.CharField(max_length=255)
     phone = models.CharField(max_length=10)
-    owner =  models.ForeignKey(
-        Owner,
-        on_delete=models.RESTRICT,
-        null=True
-    )
     line_id = models.CharField(max_length=255, default='', blank = True, null=True)
 
     def __str__(self):
@@ -147,14 +131,6 @@ class Case(models.Model):
     )
     customer_name = models.CharField(max_length=128, default='', blank = True, null=True)
     customer_phone = models.CharField(max_length=20, default='', blank = True, null=True)
-    
-    #customer owner
-    owner =  models.ForeignKey(
-        Owner,
-        on_delete=models.DO_NOTHING,
-        null=True,
-        blank = True
-    )
 
     user =  models.ForeignKey(
         User,
@@ -203,26 +179,12 @@ class CaseSummary(models.Model):
         null= True
     )
     driver_user_id = models.CharField(max_length=10, default='')
-    driver_owner = models.CharField(max_length=128, default='')
 
     customer_name = models.CharField(max_length=128, default='')
-    customer_owner = models.CharField(max_length=128, default='')
 
     increase_money = models.IntegerField(default=0)
     decrease_money = models.IntegerField(default=0)
     driver_left_money = models.IntegerField(default=0)
-
-class MonthSummary(models.Model):
-    month_date = models.DateField(null=True)
-    # month_increase_money = models.IntegerField(default=0)
-    # month_decrease_money = models.IntegerField(default=0)
-    # month_owners= models.CharField(max_length=255, default='') #’nameA, nameB’
-    # month_owners_decrease_money= models.CharField(max_length=255, default='') #’123, 456’
-    # month_driver_arrears = models.IntegerField(default=0)
-    month_store_money = models.IntegerField(default=0)
-    month_owner_a_money = models.IntegerField(default=0)
-    month_owner_b_money = models.IntegerField(default=0)
-    month_driver_arrears = models.IntegerField(default=0)
 
 class AppVersion(models.Model):
     iOS_current_version = models.CharField(max_length=10, default='', blank = True, null=True)

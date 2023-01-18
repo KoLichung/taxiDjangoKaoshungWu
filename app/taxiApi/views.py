@@ -5,7 +5,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from modelCore.models import User, Case, Owner, Customer, UserCaseShip, UserStoreMoney, AppVersion
+from modelCore.models import User, Case, Customer, UserCaseShip, UserStoreMoney, AppVersion
 from taxiApi import serializers
 from django.utils import timezone as datetime
 from django.contrib.gis.geos import Point
@@ -90,8 +90,6 @@ class CaseConfirmView(APIView):
             case.case_state = 'way_to_catch'
             case.confirm_time = datetime.now()
             case.user = self.request.user
-            if case.owner == None:
-                case.owner = self.request.user.owner
             case.userId = case.user.userId
             case.save()
             

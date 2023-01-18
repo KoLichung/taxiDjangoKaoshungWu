@@ -103,15 +103,6 @@
                   </td>
                   <td class="text-nowrap">
                     車資：{{ case.case_money }} （扣帳：{{ case.dispatch_fee }}）<br/>
-                    {% if case.owner and case.user.owner and case.owner == case.user.owner %}
-                      分潤：{{ case.owner.name }} {{ case.dispatch_fee }}<br/>
-                    {% elif case.owner and case.user.owner == None%}
-                      分潤：{{ case.owner.name }} {{ case.dispatch_fee }}<br/>
-                    {% elif case.owner == None and case.user.owner%}
-                      分潤：{{ case.user.owner.name }} {{ case.dispatch_fee }}<br/>
-                    {% elif case.owner and case.user.owner and case.owner != case.user.owner %}
-                      分潤：{{ case.owner.name }} {% widthratio case.dispatch_fee 2 1%}, {{ case.user.owner.name}} {% widthratio case.dispatch_fee 2 1%}<br />
-                    {% endif %}
                     {% comment %} 分潤：業主A 10 業主B 10<br /> {% endcomment %}
                     司機：{{ case.user }}<br />
                     台號：{{ case.userId}}
