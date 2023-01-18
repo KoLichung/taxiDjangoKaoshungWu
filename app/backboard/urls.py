@@ -6,7 +6,7 @@ from django.http import HttpResponse
 
 
 urlpatterns = [
-    # path('', views.index, name = 'index'), 
+    path('', views.home, name = 'index'), 
     path('home', views.home, name = 'home'),
     path('dispatch_inquire', views.dispatch_inquire, name = 'dispatch_inquire'), 
     path('dispatch_management', views.dispatch_management, name = 'dispatch_management'),
