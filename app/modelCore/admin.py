@@ -4,7 +4,7 @@ from .models import User, UserStoreMoney, Customer, Case, UserCaseShip, CaseSumm
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'is_online','is_passed','current_lat', 'current_lng')
+    list_display = ('id', 'name', 'phone','is_online','is_passed','current_lat', 'current_lng')
 
 @admin.register(UserStoreMoney)
 class UserStoreMoneyAdmin(admin.ModelAdmin):
