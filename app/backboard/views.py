@@ -15,6 +15,8 @@ def index(request):
     return render(request, 'backboard/index.html')
 
 def home(request):
+    if not request.user.is_authenticated or not request.user.is_staff:
+        return redirect('/backboard/login/')
     # config = dotenv_values(".env")
     # key = config['geoCodingKey']
     # print(config.items())
