@@ -221,5 +221,7 @@ AUTH_USER_MODEL = 'modelCore.User'
 
 LOGIN_REDIRECT_URL = '/backboard/home'
 
-CELERY_BROKER_URL = "redis://redis:6379"
-CELERY_RESULT_BACKEND = "redis://redis:6379"
+# CELERY_BROKER_URL = "redis://redis:6379"
+# CELERY_RESULT_BACKEND = "redis://redis:6379"
+
+CELERY_BROKER_URL = 'amqp://guest:guest@localhost'
