@@ -14,8 +14,10 @@ from datetime import datetime, timezone
 from django.contrib.gis.geos import Point
 from django.contrib.gis.db.models.functions import GeometryDistance
 from django.db.models import Q
-
+import logging
 # Create your views here.
+
+logger = logging.getLogger(__file__)
 
 def booking(request):
     return render(request, 'web/booking.html')
@@ -103,6 +105,7 @@ def ajax_call_and_wait(request):
         else:
             # 如果最近 120 秒內有取消單, 請稍後再試
             print("here to check")
+            logger.info("line call new case")
             if Case.objects.filter(customer=customer).filter(case_state="canceled").count() != 0:
                 latest_user_case = Case.objects.filter(customer=customer).filter(case_state="canceled").order_by('-id').first()
                 now = datetime.utcnow()
@@ -127,6 +130,8 @@ def ajax_call_and_wait(request):
             case.on_address = fromLoc
             onUrl = path+fromLoc+"&key="+"AIzaSyCrzmspoFyEFYlQyMqhEkt3x5kkY8U3C-Y"
             response = requests.get(onUrl)
+            logger.info(response.text)
+
             resp_json_payload = response.json()
             case.on_lat = resp_json_payload['results'][0]['geometry']['location']['lat']
             case.on_lng = resp_json_payload['results'][0]['geometry']['location']['lng']
@@ -134,6 +139,8 @@ def ajax_call_and_wait(request):
             case.off_address = toLoc
             onUrl = path+toLoc+"&key="+"AIzaSyCrzmspoFyEFYlQyMqhEkt3x5kkY8U3C-Y"
             response = requests.get(onUrl)
+            logger.info(response.text)
+
             resp_json_payload = response.json()
             case.off_lat = resp_json_payload['results'][0]['geometry']['location']['lat']
             case.off_lng = resp_json_payload['results'][0]['geometry']['location']['lng']
