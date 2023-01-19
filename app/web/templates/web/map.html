@@ -8,7 +8,7 @@
           <i class="fa-solid fa-location-crosshairs"></i><span id="onAddressedText"> {{case.on_address}}</span></br>
           <i class="fa-solid fa-location-dot"></i> {{case.off_address}}</br>
           <i class="fa-solid fa-car-side"></i> 前往中</br>
-          <p>車號：{{driver.vehicalLicence}}</br>{{ driver.car_color }} {{ driver.car_model }} {{ driver.number_sites }} 人 
+          車號：{{driver.vehicalLicence}}</br>{{ driver.car_color }} {{ driver.car_model }} {{ driver.number_sites }} 人 
             {% if driver.type == 'car' %}
               房車
             {% elif driver.type == 'suv' %}
@@ -28,7 +28,7 @@
               租賃車
             {% elif driver.category == 'x_card' %}
               X牌
-            {% endif %}</p>
+            {% endif %}</br>
           備註：{{driver.car_memo}}</br>
           <div class="mb-2 d-flex flex-row justify-content-between">
             {% comment %} <button class="btn btn-success rounded-pill" type="cancel" id="button_cancelCase"><i class="fa-solid fa-eraser"></i> 取消派車</button> {% endcomment %}
