@@ -1,5 +1,6 @@
 from lib2to3.pgen2 import driver
 from time import time
+from tkinter.messagebox import NO
 from django.shortcuts import render, redirect, reverse
 from django.views.generic import View
 from django.http import HttpResponse
@@ -129,6 +130,7 @@ def ajax_call_and_wait(request):
 
             case.on_address = fromLoc
             onUrl = path+fromLoc+"&key="+"AIzaSyCrzmspoFyEFYlQyMqhEkt3x5kkY8U3C-Y"
+            logger.info(onUrl)
             response = requests.get(onUrl)
             logger.info(response.text)
 
@@ -136,14 +138,16 @@ def ajax_call_and_wait(request):
             case.on_lat = resp_json_payload['results'][0]['geometry']['location']['lat']
             case.on_lng = resp_json_payload['results'][0]['geometry']['location']['lng']
 
-            case.off_address = toLoc
-            onUrl = path+toLoc+"&key="+"AIzaSyCrzmspoFyEFYlQyMqhEkt3x5kkY8U3C-Y"
-            response = requests.get(onUrl)
-            logger.info(response.text)
+            if toLoc != None and toLoc != '':
+                case.off_address = toLoc
+                onUrl = path+toLoc+"&key="+"AIzaSyCrzmspoFyEFYlQyMqhEkt3x5kkY8U3C-Y"
+                logger.info(response.text)
+                response = requests.get(onUrl)
+                logger.info(response.text)
 
-            resp_json_payload = response.json()
-            case.off_lat = resp_json_payload['results'][0]['geometry']['location']['lat']
-            case.off_lng = resp_json_payload['results'][0]['geometry']['location']['lng']
+                resp_json_payload = response.json()
+                case.off_lat = resp_json_payload['results'][0]['geometry']['location']['lat']
+                case.off_lng = resp_json_payload['results'][0]['geometry']['location']['lng']
 
             case.memo = memo
             case.create_time = datetime.now()
