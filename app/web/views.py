@@ -1,6 +1,5 @@
 from lib2to3.pgen2 import driver
 from time import time
-from tkinter.messagebox import NO
 from django.shortcuts import render, redirect, reverse
 from django.views.generic import View
 from django.http import HttpResponse
