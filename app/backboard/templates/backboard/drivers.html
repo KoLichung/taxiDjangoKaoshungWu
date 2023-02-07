@@ -29,30 +29,6 @@
             </button>
           </div>
         </form>
-        
-        <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">
-          重設臨時密碼
-        </button>  
-        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">重設臨時密碼</h5>
-                <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button> -->
-              </div>
-              <div class="modal-body">
-                確定重設密碼為 12345 ? 
-              </div>
-              <div class="modal-footer">
-                <button type="submit" name="reset_password" class="btn btn-warning">確定</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-                
-              </div>
-            </div>
-          </div>
-        </div>
 
         <div class="mt-5">
           <div class="table-responsive scrollbar">
@@ -143,30 +119,21 @@
                     <form method="post">{% csrf_token %}
                       <div class="mb-3">
                         <label class="col-form-label" for="isPartTime">管理</label>
-                        
-                        <div class="row justify-content-start align-items-start">
-                          <div class="col-2">
-                            <div class="mb-3">
-                              <input
-                                type="checkbox"
-                                id="isPassed"
-                                name="isPassed"
-                                value=true
-                                {% if driver.is_passed %}
-                                  checked
-                                {% endif %}
-                              />
-                              <label for="isPassed"> 審核</label>
-                            </div>
-                          </div>
-
-                          <div class="col">
-                            <h6 style="display: inline">派遣費用</h6>
-                            <input id="dispatch_fee_percent" type="text" placeholder="10" style="width: 40px" name="dispatch_fee_percent"
-                              value={{driver.dispatch_fee_percent_integer}}
-                            />
-                            %
-                          </div>
+                        <div>
+                          <input
+                            type="checkbox"
+                            id="isPassed"
+                            name="isPassed"
+                            value=true
+                            {% if driver.is_passed %}
+                              checked
+                            {% endif %}
+                          />
+                          <label for="isPassed">審核&emsp;</label>
+                          <input id="dispatch_fee_percent" type="text" placeholder="10" style="width: 40px" name="dispatch_fee_percent"
+                            value={{driver.dispatch_fee_percent_integer}}
+                          />
+                          <label for="dispatch_fee_percent">% 派遣費用</label>
                         </div>
                       </div>
 
@@ -386,23 +353,6 @@
           </div>
         {% endfor %}
 
-        {% comment %} <div class="pagination">
-          <span class="step-links">
-              {% if drivers.has_previous %}
-                  <a href="?page=1">&laquo; 第 1 頁 </a>
-                  <a href="?page={{ drivers.previous_page_number }}"> &nbsp;前頁&nbsp;  </a>
-              {% endif %}
-      
-              <span class="current">
-                  第 {{ drivers.number }} / {{ drivers.paginator.num_pages }} 頁
-              </span>
-      
-              {% if drivers.has_next %}
-                  <a href="?page={{ drivers.next_page_number }}"> &nbsp;下一頁&nbsp; </a>
-                  <a href="?page={{ drivers.paginator.num_pages }}">最後一頁 &raquo;</a>
-              {% endif %}
-          </span>
-        </div> {% endcomment %}
         <div class="text-center">
           {% for page_number in drivers.adjusted_elided_pages %}
               {% if page_number == drivers.paginator.ELLIPSIS %}
