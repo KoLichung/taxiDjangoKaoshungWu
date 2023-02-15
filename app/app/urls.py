@@ -23,7 +23,8 @@ urlpatterns = [
     path('api/', include('taxiApi.urls')),
     path('backboard/', include('backboard.urls')),
     path('web/', include('web.urls')),
-    path('fcm/', include('fcmNotify.urls'))
+    path('fcm/', include('fcmNotify.urls')),
+    path('linebot/', include('linebot.urls')),
 ]
 
 if settings.DEBUG:

@@ -17,6 +17,10 @@ from glob import glob
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+LINE_CHANNEL_ACCESS_TOKEN = 'S8znWBpl56ZlfjtyCWXkvOgMz5vDFFNzXLXr9xC/w1NujH6yDT29pToR1foq0IlaBfvkUZCLTtxDkobIgjbOejcwAzu4sP7QtyC6YBWGugQBFMStO6g8G8ibUEFAnLdZif67/PWc0zdq0dQHt7Q22gdB04t89/1O/w1cDnyilFU='
+ 
+LINE_CHANNEL_SECRET = '225956df0a414b9545f3d33202fb8ccf'
+
 # add gdal path
 # if len(glob('/usr/lib/libgdal.so.*')):
 #     GDAL_LIBRARY_PATH=glob('/usr/lib/libgdal.so.*')[0]
@@ -72,6 +76,7 @@ INSTALLED_APPS = [
     'fcmNotify',
     'fcm_django',
     'task',
+    'lineBot',
 ]
 
 #Get the absolute path of the settings.py file's directory
