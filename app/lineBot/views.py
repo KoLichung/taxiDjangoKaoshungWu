@@ -7,7 +7,9 @@ from django.conf import settings
 from linebot import LineBotApi, WebhookParser
 from linebot.exceptions import InvalidSignatureError, LineBotApiError
 from linebot.models import MessageEvent, TextSendMessage, ImageSendMessage
- 
+import logging
+
+logger = logging.getLogger(__file__)
 line_bot_api = LineBotApi(settings.LINE_CHANNEL_ACCESS_TOKEN)
 parser = WebhookParser(settings.LINE_CHANNEL_SECRET)
  
@@ -27,6 +29,11 @@ def callback(request):
             return HttpResponseBadRequest()
  
         for event in events:
+            userId = event.source.userId
+            logger.info(f'line auto reply {userId}')
+
+            profile = line_bot_api.get_profile(userId)
+
             if isinstance(event, MessageEvent):  # 如果有訊息事件
                 if event.message.text == "test":
                     message = ImageSendMessage(
@@ -34,7 +41,7 @@ def callback(request):
                         preview_image_url='https://i.imgur.com/vxQMxtm.png'
                     )
                 else:
-                    message = TextSendMessage(text='這裡無法聯繫客服！\n在 APP 內正確設定，就會傳條件選股的變動，或到價通知給您喔！')
+                    message = TextSendMessage(text=f'{profile.displayName} 這裡無法聯繫客服！\n在 APP 內正確設定，就會傳條件選股的變動，或到價通知給您喔！')
 
                 line_bot_api.reply_message(event.reply_token, message)
         return HttpResponse()
