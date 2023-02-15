@@ -59,7 +59,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     vehicalLicence = models.CharField(max_length=255, default='', null=True) #車牌
     # userId = models.CharField(max_length=10, default='', null=True ) #台號
-    idNumber = models.CharField(max_length=20, default='', null=True) #身分證
+    idNumber = models.CharField(max_length=20, default='', blank = True, null=True) #身分證
     gender = models.CharField(max_length=10, default='', blank = True, null=True)
 
     # type = models.CharField(max_length=20, default='', blank = True, null=True) #type(car, suv, sports_car, van)
