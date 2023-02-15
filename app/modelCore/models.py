@@ -15,14 +15,15 @@ class UserManager(BaseUserManager):
         user = self.model(
             phone = phone, 
             name=extra_fields.get('name'),
+            nick_name=extra_fields.get('nick_name'),
             line_id=extra_fields.get('line_id'),
             vehicalLicence=extra_fields.get('vehicalLicence'),
-            userId=extra_fields.get('userId'),
+            # userId=extra_fields.get('userId'),
             idNumber=extra_fields.get('idNumber'),
-            gender=extra_fields.get('gender'),
-            type=extra_fields.get('type'),
-            category=extra_fields.get('category'),
-            car_model=extra_fields.get('car_model'),
+            # gender=extra_fields.get('gender'),
+            # type=extra_fields.get('type'),
+            # category=extra_fields.get('category'),
+            # car_model=extra_fields.get('car_model'),
             car_color=extra_fields.get('car_color'),
             number_sites=extra_fields.get('number_sites'),
             car_memo=extra_fields.get('car_memo'),
@@ -42,10 +43,13 @@ class UserManager(BaseUserManager):
 
         return user
 
+
+
 class User(AbstractBaseUser, PermissionsMixin):
     """Custom user model that suppors using email instead of username"""
     phone = models.CharField(max_length=10, unique=True)
     name = models.CharField(max_length=255)
+    nick_name = models.CharField(max_length=255, default='')
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
@@ -54,12 +58,14 @@ class User(AbstractBaseUser, PermissionsMixin):
     line_id = models.CharField(max_length=255, default='', blank = True, null=True, unique=True)
 
     vehicalLicence = models.CharField(max_length=255, default='', null=True) #車牌
-    userId = models.CharField(max_length=10, default='', null=True ) #台號
+    # userId = models.CharField(max_length=10, default='', null=True ) #台號
     idNumber = models.CharField(max_length=20, default='', null=True) #身分證
     gender = models.CharField(max_length=10, default='', blank = True, null=True)
-    type = models.CharField(max_length=20, default='', blank = True, null=True) #type(car, suv, sports_car, van)
-    category =  models.CharField(max_length=20, default='', blank = True, null=True) #category(taxi, diversity, rental_car, x_card)
-    car_model = models.CharField(max_length=128, default='', blank = True, null=True)
+
+    # type = models.CharField(max_length=20, default='', blank = True, null=True) #type(car, suv, sports_car, van)
+    # category =  models.CharField(max_length=20, default='', blank = True, null=True) #category(taxi, diversity, rental_car, x_card)
+    # car_model = models.CharField(max_length=128, default='', blank = True, null=True)
+    
     car_color = models.CharField(max_length=20, default='', blank = True, null=True)
     number_sites = models.IntegerField(default=0, blank = True, null=True)
     
@@ -74,18 +80,33 @@ class User(AbstractBaseUser, PermissionsMixin):
     current_lng = models.DecimalField(max_digits=9, decimal_places=6, blank = True, null=True)
     location = PointField(srid=4326, geography=True, blank=True, null=True)
 
-    dispatch_fee_percent_integer = models.IntegerField(
-        default=10,
-        validators=[
-            MaxValueValidator(100),
-            MinValueValidator(0)
-        ]
-    )
+    # dispatch_fee_percent_integer = models.IntegerField(
+    #     default=10,
+    #     validators=[
+    #         MaxValueValidator(100),
+    #         MinValueValidator(0)
+    #     ]
+    # )
 
     USERNAME_FIELD = 'phone'
 
     def __str__(self):
         return self.name
+
+class CarTeam(models.Model):
+    name = models.CharField(max_length=255)
+    day_case_count = models.IntegerField(default=0)
+
+class UserCarTeamShip(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+    )
+    carTeam = models.ForeignKey(
+        CarTeam,
+        on_delete=models.CASCADE,
+    )
+    is_dispatch = models.BooleanField(default=True)
 
 class UserStoreMoney(models.Model):
     user =  models.ForeignKey(
@@ -113,6 +134,14 @@ class Customer(models.Model):
         return self.name
 
 class Case(models.Model):
+    carTeam = models.ForeignKey(
+        CarTeam,
+        on_delete=models.SET_NULL,
+        blank = True,
+        null=True,
+    )
+    case_number = models.CharField(max_length=255, default='', blank = True, null=True) #單號
+
     #(wait, way_to_catch, arrived, catched, on_road, finished, canceled)
     CASE_STATE_CHOICES = [
         ('wait', 'wait'),
@@ -139,7 +168,7 @@ class Case(models.Model):
         blank = True
     )
 
-    userId = models.CharField(max_length=10, default='', blank = True, null=True) #台號
+    # userId = models.CharField(max_length=10, default='', blank = True, null=True) #台號
 
     on_lat = models.DecimalField(max_digits=9, decimal_places=6, blank = True, null=True)
     on_lng = models.DecimalField(max_digits=9, decimal_places=6, blank = True, null=True)
