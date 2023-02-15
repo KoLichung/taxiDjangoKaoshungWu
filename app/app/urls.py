@@ -24,7 +24,7 @@ urlpatterns = [
     path('backboard/', include('backboard.urls')),
     path('web/', include('web.urls')),
     path('fcm/', include('fcmNotify.urls')),
-    path('linebot/', include('linebot.urls')),
+    path('linebot/', include('lineBot.urls')),
 ]
 
 if settings.DEBUG:
