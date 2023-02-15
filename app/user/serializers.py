@@ -8,7 +8,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = get_user_model()
-        fields = ('phone', 'password', 'line_id', 'name', 'vehicalLicence', 'userId', 'idNumber', 'gender', 'type', 'category', 'car_model', 'car_color', 'number_sites', 'is_online', 'left_money', 'is_passed', 'car_memo')
+        fields = ('phone', 'password', 'line_id', 'name', 'vehicalLicence', 'idNumber', 'gender', 'car_color', 'number_sites', 'is_online', 'left_money', 'is_passed', 'car_memo')
         extra_kwargs = {
             'password': {'write_only': True, 'min_length': 5},
             'line_id': {'write_only': True},
@@ -34,7 +34,7 @@ class UpdateUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = get_user_model()
-        fields = ('phone','name', 'vehicalLicence', 'userId', 'idNumber', 'gender', 'type', 'category', 'car_model', 'car_color', 'number_sites', 'is_online', 'left_money', 'is_passed', 'car_memo')
+        fields = ('phone','name', 'vehicalLicence', 'idNumber', 'gender', 'car_color', 'number_sites', 'is_online', 'left_money', 'is_passed', 'car_memo')
         read_only_fields = ('left_money', 'is_passed',)
 
 class AuthTokenSerializer(serializers.Serializer):
