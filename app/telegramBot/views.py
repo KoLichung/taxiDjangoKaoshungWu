@@ -1,17 +1,23 @@
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
-from telegram.ext import Updater, CommandHandler
+import logging
+from telegram import Update
+from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler
 
-def hello(bot, update):
-    update.message.reply_text(
-        'hello, {}'.format(update.message.from_user.first_name))
+logging.basicConfig(
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    level=logging.INFO
+)
+
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await context.bot.send_message(chat_id=update.effective_chat.id, text="I'm a bot, please talk to me!")
 
 @csrf_exempt
 def callback(request):
-    updater = Updater('5889906798:AAFR2O_uTBq_ZGPaDkqyfsHkWKK7EQ6bxj0')
-
-    updater.dispatcher.add_handler(CommandHandler('hello', hello))
-
-    updater.start_polling()
-    updater.idle()
+    application = ApplicationBuilder().token('5889906798:AAFR2O_uTBq_ZGPaDkqyfsHkWKK7EQ6bxj0').build()
+    
+    start_handler = CommandHandler('start', start)
+    application.add_handler(start_handler)
+    
+    application.run_polling()
