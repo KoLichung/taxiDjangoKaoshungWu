@@ -30,7 +30,7 @@ def callback(request):
  
         for event in events:
             logger.info(event)
-            userId = event.source['userId']
+            userId = event.source.user_id
             logger.info(f'line auto reply {userId}')
 
             profile = line_bot_api.get_profile(userId)
