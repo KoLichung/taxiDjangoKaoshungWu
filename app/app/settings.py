@@ -77,6 +77,7 @@ INSTALLED_APPS = [
     'fcm_django',
     'task',
     'lineBot',
+    'telegramBot',
 ]
 
 #Get the absolute path of the settings.py file's directory

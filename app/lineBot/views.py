@@ -43,7 +43,7 @@ def callback(request):
                     #     preview_image_url='https://i.imgur.com/vxQMxtm.png'
                     # )
                 else:
-                    message = TextSendMessage(text=f'{profile.display_name} 您好！\n 您沒有權限。或者輸入訊息無法辨別！')
+                    message = TextSendMessage(text=f'{profile.display_name} 您好！您沒有權限。\n或是輸入訊息無法辨別！')
 
                 line_bot_api.reply_message(event.reply_token, message)
         return HttpResponse()

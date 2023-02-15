@@ -25,6 +25,7 @@ urlpatterns = [
     path('web/', include('web.urls')),
     path('fcm/', include('fcmNotify.urls')),
     path('linebot/', include('lineBot.urls')),
+    path('telegram_bot/', include('telegramBot.urls')),
 ]
 
 if settings.DEBUG:
