@@ -3,6 +3,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 import requests
 import logging
+import json
 
 # 要有 callback, 要先透過連結設定 webhook：
 # https://api.telegram.org/bot5889906798:AAFR2O_uTBq_ZGPaDkqyfsHkWKK7EQ6bxj0/setWebhook?url=https://chinghsien.com/telegram_bot/callback
@@ -14,8 +15,9 @@ logger = logging.getLogger(__file__)
 def callback(request):
     if request.method == 'POST':
         logger.info(request.body)
-       
-        chat_id,txt = parse_message(request.body)
+        
+        message = json.loads(request.body)
+        chat_id,txt = parse_message(message)
         if txt == "hi":
             tel_send_message(chat_id,"Hello!!")
         else:
