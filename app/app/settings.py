@@ -76,7 +76,7 @@ INSTALLED_APPS = [
     'fcmNotify',
     'fcm_django',
     'task',
-    'lineBot',
+    # 'lineBot',
     'telegramBot',
 ]
 
