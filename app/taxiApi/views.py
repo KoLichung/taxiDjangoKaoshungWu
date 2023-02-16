@@ -5,7 +5,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from modelCore.models import User, Case, Customer, UserCaseShip, UserStoreMoney, AppVersion
+from modelCore.models import Case, UserCaseShip, UserStoreMoney, AppVersion, CarTeam
 from taxiApi import serializers
 from django.utils import timezone as datetime
 from django.contrib.gis.geos import Point
@@ -37,6 +37,15 @@ class UserCaseViewSet(viewsets.GenericViewSet,
 
     def get_queryset(self):
         return self.queryset.filter(user=self.request.user).order_by('-id')
+
+#http://localhost:8000/api/car_teams/
+class CarTeamViewSet(viewsets.GenericViewSet,
+                    mixins.ListModelMixin,):
+    queryset = CarTeam.objects.all()
+    serializer_class = serializers.CarTeamSerializer
+
+    def get_queryset(self):
+        return self.queryset
 
 #http://localhost:8000/api/get_cases/
 class GetCaseViewSet(viewsets.GenericViewSet,

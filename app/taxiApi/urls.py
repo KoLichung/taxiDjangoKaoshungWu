@@ -7,6 +7,7 @@ router = DefaultRouter()
 router.register('user_store_moneys', views.UserStoreMoneyViewSet)
 router.register('user_cases', views.UserCaseViewSet)
 router.register('get_cases', views.GetCaseViewSet)
+router.register('car_teams', views.CarTeamViewSet)
 
 app_name = 'taxiApi'
 
@@ -20,5 +21,4 @@ urlpatterns = [
     path('case_canceled', views.CaseCanceledView.as_view()),
     path('update_user_online_state', views.UpdateUserOnlineState.as_view()),
     path('get_current_version', views.AppVersionView.as_view()),
-
 ]

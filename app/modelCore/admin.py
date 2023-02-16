@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, UserStoreMoney, Customer, Case, UserCaseShip, CaseSummary, AppVersion
+from .models import User, UserStoreMoney, Customer, Case, UserCaseShip, CaseSummary, AppVersion, CarTeam
 
 
 @admin.register(User)
@@ -29,3 +29,7 @@ class CaseSummaryAdmin(admin.ModelAdmin):
 @admin.register(AppVersion)
 class AppVersionAdmin(admin.ModelAdmin):
     list_display = ('id','iOS_current_version', 'android_current_version')
+
+@admin.register(CarTeam)
+class CarTeamAdmin(admin.ModelAdmin):
+    list_display = ('id','name','day_case_count')
