@@ -12,9 +12,7 @@ logger = logging.getLogger(__file__)
 
 @csrf_exempt
 def callback(request):
-    # logger.info(request)
     if request.method == 'POST':
-        # msg = request.get_json()
         logger.info(request.body)
        
         chat_id,txt = parse_message(request.body)
