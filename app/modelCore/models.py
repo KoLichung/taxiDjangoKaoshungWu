@@ -135,12 +135,14 @@ class Customer(models.Model):
         return self.name
 
 class Case(models.Model):
+    #派單的車隊
     carTeam = models.ForeignKey(
         CarTeam,
         on_delete=models.SET_NULL,
         blank = True,
         null=True,
     )
+    #單號
     case_number = models.CharField(max_length=255, default='', blank = True, null=True) #單號
 
     #(wait, way_to_catch, arrived, catched, on_road, finished, canceled)
