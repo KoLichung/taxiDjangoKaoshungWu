@@ -1,26 +1,42 @@
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
-# Create your views here.
-import logging
-from telegram import Update
-from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler
-
-logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    level=logging.INFO
-)
-
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await context.bot.send_message(chat_id=update.effective_chat.id, text="I'm a bot, please talk to me!")
+from django.http import HttpResponse
+import requests
 
 # 要有 callback, 要先透過連結設定 webhook：
 # https://api.telegram.org/bot5889906798:AAFR2O_uTBq_ZGPaDkqyfsHkWKK7EQ6bxj0/setWebhook?url=https://chinghsien.com/telegram_bot/callback
 
-# @csrf_exempt
-# def callback(request):
-#     application = ApplicationBuilder().token('5889906798:AAFR2O_uTBq_ZGPaDkqyfsHkWKK7EQ6bxj0').build()
-    
-#     start_handler = CommandHandler('start', start)
-#     application.add_handler(start_handler)
-    
-#     application.run_polling()
+TOKEN = '5889906798:AAFR2O_uTBq_ZGPaDkqyfsHkWKK7EQ6bxj0'
+
+@csrf_exempt
+def callback(request):
+    if request.method == 'POST':
+        msg = request.get_json()
+       
+        chat_id,txt = parse_message(msg)
+        if txt == "hi":
+            tel_send_message(chat_id,"Hello!!")
+        else:
+            tel_send_message(chat_id,'from webhook')
+       
+        return HttpResponse('ok', status=200)
+    else:
+        return HttpResponse('post only', status=200)
+
+def parse_message(message):
+    print("message-->",message)
+    chat_id = message['message']['chat']['id']
+    txt = message['message']['text']
+    print("chat_id-->", chat_id)
+    print("txt-->", txt)
+    return chat_id,txt
+ 
+def tel_send_message(chat_id, text):
+    url = f'https://api.telegram.org/bot{TOKEN}/sendMessage'
+    payload = {
+                'chat_id': chat_id,
+                'text': text
+                }
+   
+    r = requests.post(url,json=payload)
+    return r
