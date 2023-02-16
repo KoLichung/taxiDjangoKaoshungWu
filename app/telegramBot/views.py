@@ -12,6 +12,7 @@ logger = logging.getLogger(__file__)
 
 @csrf_exempt
 def callback(request):
+    logger.info(request)
     if request.method == 'POST':
         msg = request.get_json()
        
