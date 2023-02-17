@@ -61,6 +61,7 @@ class GetCaseViewSet(viewsets.GenericViewSet,
         queryset = self.queryset.filter(id__in=caseIds)
         for i in range(len(queryset)):
             queryset[i].ship_state = UserCaseShip.objects.filter(user=self.request.user, case=queryset[i]).first().state
+            queryset[i].user_left_money = self.request.user.left_money
         return queryset
 
 #http://localhost:8000/api/update_lat_lng?lat=23.23&lng=124.24

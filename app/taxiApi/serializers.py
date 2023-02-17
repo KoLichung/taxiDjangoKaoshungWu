@@ -9,6 +9,7 @@ class UserStoreMoneySerializer(serializers.ModelSerializer):
 
 class CaseSerializer(serializers.ModelSerializer):
     ship_state = serializers.CharField(read_only=True, default='')
+    user_left_money = serializers.IntegerField(default=0)
 
     class Meta:
         model = Case
