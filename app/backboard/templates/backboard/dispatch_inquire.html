@@ -9,25 +9,30 @@
         </div>
 
         <form method="get">
+
           <div class="mb-3 row">
-            <label class="col-sm-2 col-form-label" for="inputPhone">消費者電話：</label>
-            <div class="col-sm-10">
-              <input class="form-control" id="inputPhone" placeholder="電話" name="qPhone"/>
+            <label class="col-sm-2 col-form-label" for="datePicker">日期區間：</label>
+            <div class="col-sm-10">            
+              <input class="form-control datetimepicker" id="datePicker" type="date" name="qDate" placeholder="y/m/d 到 y/m/d" data-options='{"mode":"range","dateFormat":"y/m/d","disableMobile":true}' />
             </div>
           </div>
-  
+
           <div class="mb-3 row">
-            <label class="col-sm-2 col-form-label" for="inputDriver">司機台號：</label>
-            <div class="col-sm-10">
-              <input class="form-control" id="inputDriver" placeholder="名稱" name="qUser"/>
-            </div>
+            <label for="organizerSingle">派單車隊：</label>
+            <select class="form-select js-choice" id="organizerSingle" size="1" name="organizerSingle" data-options='{"removeItemButton":true,"placeholder":true}'>
+              <option value="">選擇派單車隊</option>
+              <option value="carTeamA">車隊A</option>
+              <option value="carTeamB">車隊B</option>
+            </select>
           </div>
-  
+
           <div class="mb-3 row">
-            <label class="col-sm-2 col-form-label" for="datePicker">日期：</label>
-            <div class="col-sm-10">
-              <input class="form-control" id="datePicker" type="date" name="qDate"/>
-            </div>
+            <label for="organizerSingle">司機車隊：</label>
+            <select class="form-select js-choice" id="organizerSingle" size="1" name="organizerSingle" data-options='{"removeItemButton":true,"placeholder":true}'>
+              <option value="">選擇司機車隊</option>
+              <option value="carTeamA">車隊A</option>
+              <option value="carTeamB">車隊B</option>
+            </select>
           </div>
   
           <div class="mb-1 mx-5">
@@ -40,6 +45,7 @@
           </div>
         </form>
         
+        <div class="my-3">統計扣帳金額：</div>
 
         <div class="mt-5">
           <div class="table-responsive scrollbar">
@@ -52,6 +58,7 @@
                   <th scope="col">小計</th>
                 </tr>
               </thead>
+
               <tbody>
                 {% for case in cases %}
                 <tr class="align-middle">
@@ -110,6 +117,7 @@
                 </tr>
                 {% endfor %}
               </tbody>
+              
             </table>
           </div>
         </div>
