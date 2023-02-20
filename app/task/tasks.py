@@ -7,6 +7,10 @@ from django.contrib.gis.db.models.functions import GeometryDistance
 from django.db.models import Q
 
 from datetime import date, datetime, timedelta
+import requests
+import logging
+
+logger = logging.getLogger(__file__)
 
 @shared_task
 def countDownUserCaseShip():
@@ -110,6 +114,17 @@ def countDownUserCaseShip():
             case.case_state = "canceled"
             case.save()
 
+# https://maps.googleapis.com/maps/api/directions/json?origin=Toronto&destination=Montreal&key=AIzaSyCdP86OffSMXL82nbHA0l6K0W2xrdZ5xLk
+def getTimePredict(locationA, locationB):
+    key='AIzaSyCdP86OffSMXL82nbHA0l6K0W2xrdZ5xLk'
+    url = f'https://maps.googleapis.com/maps/api/directions/json?origin={locationA}&destination={locationB}&key={key}'
+    response = requests.get(url)
+    logger.info(response.body)
+    resp_json_payload = response.json()
+    time_predict = resp_json_payload
+    # return secs
+    return resp_json_payload['routes'][0]['legs'][0]['duration']['value']
+    
 @shared_task
 def add(x, y):
     print("x+y=")
