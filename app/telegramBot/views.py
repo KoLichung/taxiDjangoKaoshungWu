@@ -81,7 +81,7 @@ def callback(request):
 
                 case.save()
 
-                tel_send_message(chat_id,f'{case.case_number}\n派單成功，正在尋找駕駛\n上車：{case.on_address}\n下車：{case.off_address}\n時間：{case.time_memo}\n備註：{case.momo}')
+                tel_send_message(chat_id,f'{case.case_number}\n派單成功，正在尋找駕駛\n上車：{case.on_address}\n下車：{case.off_address}\n時間：{case.time_memo}\n備註：{case.memo}')
 
             elif texts[0] == '預約單':
                 tel_send_message(chat_id,'這是預約單!')
