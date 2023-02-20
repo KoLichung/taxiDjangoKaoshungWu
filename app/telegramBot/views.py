@@ -34,6 +34,9 @@ def callback(request):
                 case = Case()
                 case.case_state = 'wait'
 
+                case.on_address = on_address
+                case.off_address = off_address
+
                 now = datetime.now()
                 now_string = now.strftime('%Y%m%d')
                 case.create_time = now
