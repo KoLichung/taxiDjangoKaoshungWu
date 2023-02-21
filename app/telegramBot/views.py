@@ -101,8 +101,14 @@ def callback(request):
 def parse_message(message):
     print("message-->",message)
     logger.info(f'message-->{message}')
-    chat_id = message['message']['chat']['id']
-    txt = message['message']['text']
+    try:
+        chat_id = message['message']['chat']['id']
+        txt = message['message']['text']
+    except Exception as e:
+        logger.error(e)
+        chat_id = message['edited_message']['chat']['id']
+        txt = message['edited_message']['text']
+
 
     # print("chat_id-->", chat_id)
     # print("txt-->", txt)
