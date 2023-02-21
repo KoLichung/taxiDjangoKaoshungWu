@@ -28,19 +28,28 @@ def countDownUserCaseShip():
             case.save()
 
             ref_location = Point(float(case.on_lng), float(case.on_lat), srid=4326)
-            user = User.objects.filter(is_online=True, is_passed=True).order_by(GeometryDistance("location", ref_location)).first()
             
-            timePredict = getTimePredict(user.current_lat, user.current_lng, case.on_lat, case.on_lng)
+            if User.objects.filter(is_online=True, is_passed=True).count() != 0:
+                user = User.objects.filter(is_online=True, is_passed=True).order_by(GeometryDistance("location", ref_location)).first()
+                
+                timePredict = getTimePredict(user.current_lat, user.current_lng, case.on_lat, case.on_lng)
 
-            if timePredict < 900:
-                userCaseShip.user = user
-                userCaseShip.save()
+                if timePredict < 900:
+                    userCaseShip.user = user
+                    userCaseShip.save()
+                else:
+                    case.case_state = 'canceled'
+                    case.save()
+                    userCaseShip.delete()
+
+                    tel_send_message(case.telegram_id, f'{case.case_number}\n抱歉目前附近無符合駕駛!\n-----------------\n上車:{case.on_address}')
             else:
                 case.case_state = 'canceled'
                 case.save()
                 userCaseShip.delete()
 
                 tel_send_message(case.telegram_id, f'{case.case_number}\n抱歉目前附近無符合駕駛!\n-----------------\n上車:{case.on_address}')
+                
         else:
             userCaseShip = UserCaseShip.objects.filter(case=case).first()
 
@@ -61,19 +70,27 @@ def countDownUserCaseShip():
                     exclude_ids_array = userCaseShip.exclude_ids_text.split(',')
 
                     # 尋找下一位
-                    user = User.objects.filter(is_online=True, is_passed=True).filter(~Q(id__in=exclude_ids_array)).order_by(GeometryDistance("location", ref_location)).first()
-                    timePredict = getTimePredict(user.current_lat, user.current_lng, case.on_lat, case.on_lng)
+                    if User.objects.filter(is_online=True, is_passed=True).filter(~Q(id__in=exclude_ids_array)).count() != 0:
+                        user = User.objects.filter(is_online=True, is_passed=True).filter(~Q(id__in=exclude_ids_array)).order_by(GeometryDistance("location", ref_location)).first()
 
-                    if timePredict < 900:
-                        userCaseShip.user = user
-                        userCaseShip.countdown_second = 15
-                        userCaseShip.save()
+                        timePredict = getTimePredict(user.current_lat, user.current_lng, case.on_lat, case.on_lng)
+
+                        if timePredict < 900:
+                            userCaseShip.user = user
+                            userCaseShip.countdown_second = 15
+                            userCaseShip.save()
+                        else:
+                            case.case_state = 'canceled'
+                            case.save()
+                            userCaseShip.delete()
+
+                            tel_send_message(case.telegram_id, f'{case.case_number}\n抱歉目前附近無符合駕駛!\n-----------------\n上車:{case.on_address}')
                     else:
                         case.case_state = 'canceled'
                         case.save()
                         userCaseShip.delete()
-
                         tel_send_message(case.telegram_id, f'{case.case_number}\n抱歉目前附近無符合駕駛!\n-----------------\n上車:{case.on_address}')
+                    
 
 
 # https://maps.googleapis.com/maps/api/directions/json?origin=Toronto&destination=Montreal&key=AIzaSyCdP86OffSMXL82nbHA0l6K0W2xrdZ5xLk
