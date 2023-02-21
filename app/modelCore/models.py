@@ -43,8 +43,6 @@ class UserManager(BaseUserManager):
 
         return user
 
-
-
 class User(AbstractBaseUser, PermissionsMixin):
     """Custom user model that suppors using email instead of username"""
     phone = models.CharField(max_length=10, unique=True)
