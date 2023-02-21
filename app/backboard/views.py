@@ -103,16 +103,16 @@ def dispatch_management(request):
     # userCaseShips.append(UserCarTeamShip(user=User(id='1',phone='11111', nick_name='小明'),carTeam=CarTeam(name='所屬車隊1, 所屬車隊2')))
     # userCaseShips.append(UserCarTeamShip(user=User(id='2',phone='22222', nick_name='小王'),carTeam=CarTeam(name='所屬車隊3, 所屬車隊4')))
 
-    paginator = Paginator(drivers, 10)
-    if request.GET.get('page') != None:
-        page_number = request.GET.get('page') 
-    else:
-        page_number = 1
-    page_obj = paginator.get_page(page_number)
+    # paginator = Paginator(drivers, 10)
+    # if request.GET.get('page') != None:
+    #     page_number = request.GET.get('page') 
+    # else:
+    #     page_number = 1
+    # page_obj = paginator.get_page(page_number)
 
-    page_obj.adjusted_elided_pages = paginator.get_elided_page_range(page_number)
+    # page_obj.adjusted_elided_pages = paginator.get_elided_page_range(page_number)
 
-    return render(request, 'backboard/dispatch_management.html', {'drivers': page_obj, 'numOfDrivers':numOfDrivers, 'cases':cases, 'userCaseShips':userCaseShips, })
+    return render(request, 'backboard/dispatch_management.html', {'drivers': drivers, 'numOfDrivers':numOfDrivers, 'cases':cases, 'userCaseShips':userCaseShips, })
 
 def dispatch_inquire(request):
 
