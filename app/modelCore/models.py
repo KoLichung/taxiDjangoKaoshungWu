@@ -225,7 +225,7 @@ class UserCaseShip(models.Model):
         Case,
         on_delete=models.RESTRICT
     )
-    state = models.CharField(max_length=20, default='state1') #state1, state2, state3
+    exclude_ids_text = models.TextField(default='')
     countdown_second = models.IntegerField(default=15)
 
 class CaseSummary(models.Model):
