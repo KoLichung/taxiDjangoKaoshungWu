@@ -24,6 +24,7 @@ def countDownUserCaseShip():
             # 用 user == None 來檢查, 目前有 tasker 正在派單
             userCaseShip = UserCaseShip()
             userCaseShip.case = case
+            userCaseShip.save()
             case.save()
 
             ref_location = Point(float(case.on_lng), float(case.on_lat), srid=4326)
