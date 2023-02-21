@@ -68,9 +68,17 @@
                     {% endif %}
                   </td>
                   <td class="driverStatus">
-                    車隊：</br> 
+                    車隊：
+                      {% for car_team_ship in driver.user_car_teams.all %}
+                        {% if forloop.last %}
+                          {{car_team_ship.carTeam.name}}
+                        {% else %}
+                          {{car_team_ship.carTeam.name}},
+                        {% endif %}
+                      {% endfor %}
+                    </br> 
                     暱稱：{{userCaseShip.user.nick_name}}</br>
-                    派單：{{userCaseShip.case.carTeam.name}}❤️{{userCaseShip.case.case_number}}❤️</br>
+                    派單：{{userCaseShip.case.case_number}}</br>
                     上車：{{userCaseShip.case.on_address}}</br>
                     下車：{{userCaseShip.case.off_address}}
                   </td>
