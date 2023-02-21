@@ -81,7 +81,7 @@ def getTimePredict(on_lat, on_long, off_lat, off_long):
     key='AIzaSyCdP86OffSMXL82nbHA0l6K0W2xrdZ5xLk'
     url = f'https://maps.googleapis.com/maps/api/directions/json?origin={on_lat},{on_long}&destination={off_lat},{off_long}&key={key}'
     response = requests.get(url)
-    logger.info(response.body)
+    logger.info(response)
     resp_json_payload = response.json()
     time_predict = resp_json_payload['routes'][0]['legs'][0]['duration']['value']
     # return secs
