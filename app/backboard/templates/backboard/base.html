@@ -1,6 +1,8 @@
-<!DOCTYPE html>
 {% load static %}
-<html lang="zh-Hant">
+<!DOCTYPE html>
+
+<html lang="zh-Hant" dir="ltr">
+
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -17,10 +19,11 @@
     <!--    Stylesheets-->
     <!-- ===============================================-->
 
-    <link
+    {% comment %} <link
       rel="stylesheet"
       href="{% static 'backboard/assets/css/user.css' %}"
-    />
+    /> {% endcomment %}
+    <link rel="stylesheet" href="{% static 'backboard/' %}assets/css/user.css">
     <link
       href="{% static 'backboard/vendors/choices/choices.min.css' %}"
       rel="stylesheet"
@@ -46,21 +49,9 @@
     />
 
     <link
-      href="{% static 'backboard/assets/css/theme-rtl.min.css' %}"
-      rel="stylesheet"
-      id="style-rtl"
-    />
-
-    <link
       href="{% static 'backboard/assets/css/theme.min.css' %}"
       rel="stylesheet"
       id="style-default"
-    />
-
-    <link
-      href="{% static 'backboard/assets/css/user-rtl.min.css' %}"
-      rel="stylesheet"
-      id="user-style-rtl"
     />
 
     <link

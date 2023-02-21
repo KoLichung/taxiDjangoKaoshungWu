@@ -3,7 +3,7 @@ from datetime import datetime, date, time, timedelta
 from multiprocessing import context
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from modelCore.models import User, Customer, Case, UserStoreMoney
+from modelCore.models import User, Customer, Case, UserStoreMoney, UserCaseShip, UserCarTeamShip, CarTeam
 from django.db.models import Q
 from django.core.paginator import Paginator
 import requests
@@ -84,8 +84,24 @@ def home(request):
     return render(request, 'backboard/home.html')
 
 def dispatch_management(request):
-    drivers = User.objects.filter(~Q(id=1)).filter(is_online=True).order_by('-id')
-    numOfDrivers = drivers.count()
+    # drivers = User.objects.filter(~Q(id=1)).filter(is_online=True).order_by('-id')
+    drivers = []
+    drivers.append(User(id='',phone='11111', name='小明'))
+    drivers.append(User(phone='22222', name='小王'))
+
+    # numOfDrivers = drivers.count()
+    numOfDrivers = 34
+
+    cases=[]
+    cases.append(Case(user= User(id='1',phone='11111', name='小明'), on_address='火車站', case_state='wait' ))
+    
+    userCaseShips=[]
+    userCaseShips.append(UserCaseShip(user= User(id='1',phone='11111', nick_name='小明'), case=(Case(case_number='999',carTeam=CarTeam(name='派單a車隊'),on_address='火車站', off_address='捷運站',case_state='wait'))))
+    userCaseShips.append(UserCaseShip(user= User(id='2',phone='22222', nick_name='小王'), case=(Case(case_number='888',carTeam=CarTeam(name='派單b車隊'),on_address='公園', off_address='愛河', case_state='way_to_catch'))))
+
+    # userCarTeamShips=[]
+    # userCaseShips.append(UserCarTeamShip(user=User(id='1',phone='11111', nick_name='小明'),carTeam=CarTeam(name='所屬車隊1, 所屬車隊2')))
+    # userCaseShips.append(UserCarTeamShip(user=User(id='2',phone='22222', nick_name='小王'),carTeam=CarTeam(name='所屬車隊3, 所屬車隊4')))
 
     paginator = Paginator(drivers, 10)
     if request.GET.get('page') != None:
@@ -96,7 +112,7 @@ def dispatch_management(request):
 
     page_obj.adjusted_elided_pages = paginator.get_elided_page_range(page_number)
 
-    return render(request, 'backboard/dispatch_management.html', {'drivers': page_obj, 'numOfDrivers':numOfDrivers})
+    return render(request, 'backboard/dispatch_management.html', {'drivers': page_obj, 'numOfDrivers':numOfDrivers, 'cases':cases, 'userCaseShips':userCaseShips, })
 
 def dispatch_inquire(request):
 
