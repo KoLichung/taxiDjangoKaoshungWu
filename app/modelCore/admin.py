@@ -20,7 +20,7 @@ class CaseAdmin(admin.ModelAdmin):
 
 @admin.register(UserCaseShip)
 class UserCaseShipAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'case', 'state', 'countdown_second')
+    list_display = ('id', 'user', 'case', 'countdown_second', 'exclude_ids_text')
 
 @admin.register(CaseSummary)
 class CaseSummaryAdmin(admin.ModelAdmin):
