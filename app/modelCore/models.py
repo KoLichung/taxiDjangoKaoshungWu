@@ -98,6 +98,19 @@ class CarTeam(models.Model):
     name = models.CharField(max_length=255)
     day_case_count = models.IntegerField(default=0)
 
+    @property
+    def get_car_team_number_string(self):
+        if self.day_case_count < 10:
+            return f'0000{self.day_case_count}'
+        elif self.day_case_count < 100:
+            return f'000{self.day_case_count}'
+        elif self.day_case_count < 1000:
+            return f'00{self.day_case_count}'
+        elif self.day_case_count < 10000:
+            return f'0{self.day_case_count}'
+        else:
+            return f'{self.day_case_count}'
+
 class UserCarTeamShip(models.Model):
     user = models.ForeignKey(
         User,
@@ -159,8 +172,11 @@ class Case(models.Model):
     
     customer =  models.ForeignKey(
         Customer,
-        on_delete=models.RESTRICT
+        on_delete=models.RESTRICT,
+        blank = True,
+        null=True,
     )
+
     customer_name = models.CharField(max_length=128, default='', blank = True, null=True)
     customer_phone = models.CharField(max_length=20, default='', blank = True, null=True)
 
@@ -186,6 +202,8 @@ class Case(models.Model):
     off_address = models.CharField(max_length=255, default='', blank = True, null=True)
     
     case_money = models.IntegerField(default=0, blank = True, null=True)
+
+    time_memo = models.CharField(max_length=255, default='', blank = True, null=True)
     memo = models.TextField(default='', blank = True, null=True)
 
     create_time = models.DateTimeField(auto_now=False, blank = True, null=True)
@@ -199,14 +217,16 @@ class Case(models.Model):
 class UserCaseShip(models.Model):
     user =  models.ForeignKey(
         User,
-        on_delete=models.RESTRICT
+        on_delete=models.RESTRICT,
+        blank = True, 
+        null=True
     )
     case =  models.ForeignKey(
         Case,
         on_delete=models.RESTRICT
     )
-    state = models.CharField(max_length=20, default='state1') #state1, state2, state3
-    countdown_second = models.IntegerField(default=20)
+    exclude_ids_text = models.TextField(default='')
+    countdown_second = models.IntegerField(default=15)
 
 class CaseSummary(models.Model):
     case = models.ForeignKey(
