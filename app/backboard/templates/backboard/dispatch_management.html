@@ -1,42 +1,35 @@
 {% extends 'backboard/base.html' %} {% block content %}
 {% load static %}
 <div class="main card-body bg-light">
+  
   <div class="row mx-auto">
-    
     <div class="col-8 mx-auto">
       <div class="my-3 text-center">
         <h4>派車管理</h4>
         <div class="row">
-          
           <div class= "col-6 col-md-3 mt-2">
             線上總數
-            <div id="onlineTotalDrivers" class="statusBox mx-auto">{{ numOfDrivers }}</div>
+            <div id="onlineTotalDrivers" class="statusBox mx-auto">{{online_drivers.count}}</div>
           </div>
           <div class= "col-6 col-md-3 mt-2">
             執行任務
-            <div id="onlineOnTask" class="statusBox mx-auto">4</div>
+            <div id="onlineOnTask" class="statusBox mx-auto">{{on_task_drivers.count}}</div>
           </div>
           <div class= "col-6 col-md-3 mt-2">
             接單前往
-            <div id="onlinePickingGuest" class="statusBox mx-auto">3</div>
+            <div id="onlinePickingGuest" class="statusBox mx-auto">{{on_the_way_drivers.count}}</div>
           </div>
           <div class= "col-6 col-md-3 mt-2">
             閒置等待
-            <div id="onlineWaiting" class="statusBox mx-auto">20</div>
+            <div id="onlineWaiting" class="statusBox mx-auto">{{pending_drivers.count}}</div>
           </div>
-          
+        </div>
       </div>
-      </div>
-
-      
-
     </div>
-   
   </div>
 
   {% comment %} google map {% endcomment %}
   <div>
-    
     {% comment %} <div>
       <iframe
         width="600"
@@ -62,33 +55,85 @@
           </thead>
           <tbody class="align-middle">
             
-            {% for userCaseShip in userCaseShips %}
-              
-            <tr>
-              <td class="mx-0 px-0">
-                {% comment %} 這邊還要再改 {% endcomment %}
-                {% if userCaseShip.case.case_state == 'wait' %}
-                <div id="onlineWaiting" class="statusDot"></div>
-                {% elif case.case_state == 'way_to_catch'%}
-                <div id="onlinePickingGuest" class="statusDot"></div>
+            {% for driver in on_task_drivers %}
+              {% for userCaseShip in driver.user_cases.all %}
+                <tr>
+                  <td class="mx-0 px-0">
+                    {% comment %} 這邊還要再改 {% endcomment %}
+                    {% if userCaseShip.case.case_state == 'wait' %}
+                    <div id="onlineWaiting" class="statusDot"></div>
+                    {% elif case.case_state == 'way_to_catch'%}
+                    <div id="onlinePickingGuest" class="statusDot"></div>
 
-                {% endif %}
-              </td>
-              <td class="driverStatus">
-                車隊：</br> 
-                暱稱：{{userCaseShip.user.nick_name}}</br>
-                派單：{{userCaseShip.case.carTeam.name}}❤️{{userCaseShip.case.case_number}}❤️</br>
-                上車：{{userCaseShip.case.on_address}}</br>
-                下車：{{userCaseShip.case.off_address}}
-              </td>
-              <td class="mx-0 px-0">
-                <button class="btn" type="button">
-                  <span class="text-primary fas fa-phone-alt fs-1"></span>
-                </button>
-              </td>
-            </tr>
-              
+                    {% endif %}
+                  </td>
+                  <td class="driverStatus">
+                    車隊：</br> 
+                    暱稱：{{userCaseShip.user.nick_name}}</br>
+                    派單：{{userCaseShip.case.carTeam.name}}❤️{{userCaseShip.case.case_number}}❤️</br>
+                    上車：{{userCaseShip.case.on_address}}</br>
+                    下車：{{userCaseShip.case.off_address}}
+                  </td>
+                  <td class="mx-0 px-0">
+                    <button class="btn" type="button">
+                      <span class="text-primary fas fa-phone-alt fs-1"></span>
+                    </button>
+                  </td>
+                </tr>
+              {% endfor %}
             {% endfor %}
+
+            {% for driver in on_the_way_drivers %}
+              {% for userCaseShip in driver.user_cases.all %}
+                <tr>
+                  <td class="mx-0 px-0">
+                    {% comment %} 這邊還要再改 {% endcomment %}
+                    {% if userCaseShip.case.case_state == 'wait' %}
+                    <div id="onlineWaiting" class="statusDot"></div>
+                    {% elif case.case_state == 'way_to_catch'%}
+                    <div id="onlinePickingGuest" class="statusDot"></div>
+
+                    {% endif %}
+                  </td>
+                  <td class="driverStatus">
+                    車隊：</br> 
+                    暱稱：{{userCaseShip.user.nick_name}}</br>
+                    派單：{{userCaseShip.case.carTeam.name}}❤️{{userCaseShip.case.case_number}}❤️</br>
+                    上車：{{userCaseShip.case.on_address}}</br>
+                    下車：{{userCaseShip.case.off_address}}
+                  </td>
+                  <td class="mx-0 px-0">
+                    <button class="btn" type="button">
+                      <span class="text-primary fas fa-phone-alt fs-1"></span>
+                    </button>
+                  </td>
+                </tr>
+              {% endfor %}
+            {% endfor %}
+            
+            {% for driver in pending_drivers %}
+                <tr>
+                  <td class="mx-0 px-0">
+                    {% comment %} 這邊還要再改 {% endcomment %}
+                    {% if userCaseShip.case.case_state == 'wait' %}
+                    <div id="onlineWaiting" class="statusDot"></div>
+                    {% elif case.case_state == 'way_to_catch'%}
+                    <div id="onlinePickingGuest" class="statusDot"></div>
+
+                    {% endif %}
+                  </td>
+                  <td class="driverStatus">
+                    車隊：</br> 
+                    暱稱：{{userCaseShip.user.nick_name}}</br>
+                  </td>
+                  <td class="mx-0 px-0">
+                    <button class="btn" type="button">
+                      <span class="text-primary fas fa-phone-alt fs-1"></span>
+                    </button>
+                  </td>
+                </tr>
+            {% endfor %}
+
           </tbody>
         </table>
       </div>

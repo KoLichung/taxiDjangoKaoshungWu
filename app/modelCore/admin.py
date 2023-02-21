@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, UserStoreMoney, Customer, Case, UserCaseShip, CaseSummary, AppVersion, CarTeam
+from .models import User, UserStoreMoney, Customer, Case, UserCaseShip, CaseSummary, AppVersion, CarTeam, UserCarTeamShip
 
 
 @admin.register(User)
@@ -33,3 +33,8 @@ class AppVersionAdmin(admin.ModelAdmin):
 @admin.register(CarTeam)
 class CarTeamAdmin(admin.ModelAdmin):
     list_display = ('id','name','day_case_count')
+
+@admin.register(UserCarTeamShip)
+class UserCarTeamShipAdmin(admin.ModelAdmin):
+    list_display = ('id','user','carTeam','is_dispatch')
+

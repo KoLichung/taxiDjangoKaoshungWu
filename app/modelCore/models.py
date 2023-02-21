@@ -111,14 +111,19 @@ class CarTeam(models.Model):
         else:
             return f'{self.day_case_count}'
 
+    def __str__(self):
+        return self.name
+
 class UserCarTeamShip(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
+        related_name='user_car_teams'
     )
     carTeam = models.ForeignKey(
         CarTeam,
         on_delete=models.CASCADE,
+        related_name='car_team_users'
     )
     is_dispatch = models.BooleanField(default=True)
 
@@ -219,13 +224,15 @@ class UserCaseShip(models.Model):
         User,
         on_delete=models.RESTRICT,
         blank = True, 
-        null=True
+        null=True,
+        related_name='user_cases'
     )
     case =  models.ForeignKey(
         Case,
-        on_delete=models.RESTRICT
+        on_delete=models.RESTRICT,
+        related_name='case_users'
     )
-    exclude_ids_text = models.TextField(default='')
+    exclude_ids_text = models.TextField(default='',blank = True, null=True)
     countdown_second = models.IntegerField(default=15)
 
 class CaseSummary(models.Model):

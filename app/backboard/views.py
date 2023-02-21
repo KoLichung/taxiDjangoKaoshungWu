@@ -84,24 +84,10 @@ def home(request):
     return render(request, 'backboard/home.html')
 
 def dispatch_management(request):
-    # drivers = User.objects.filter(~Q(id=1)).filter(is_online=True).order_by('-id')
-    drivers = []
-    drivers.append(User(id='',phone='11111', name='小明'))
-    drivers.append(User(phone='22222', name='小王'))
-
-    # numOfDrivers = drivers.count()
-    numOfDrivers = 34
-
-    cases=[]
-    cases.append(Case(user= User(id='1',phone='11111', name='小明'), on_address='火車站', case_state='wait' ))
-    
-    userCaseShips=[]
-    userCaseShips.append(UserCaseShip(user= User(id='1',phone='11111', nick_name='小明'), case=(Case(case_number='999',carTeam=CarTeam(name='派單a車隊'),on_address='火車站', off_address='捷運站',case_state='wait'))))
-    userCaseShips.append(UserCaseShip(user= User(id='2',phone='22222', nick_name='小王'), case=(Case(case_number='888',carTeam=CarTeam(name='派單b車隊'),on_address='公園', off_address='愛河', case_state='way_to_catch'))))
-
-    # userCarTeamShips=[]
-    # userCaseShips.append(UserCarTeamShip(user=User(id='1',phone='11111', nick_name='小明'),carTeam=CarTeam(name='所屬車隊1, 所屬車隊2')))
-    # userCaseShips.append(UserCarTeamShip(user=User(id='2',phone='22222', nick_name='小王'),carTeam=CarTeam(name='所屬車隊3, 所屬車隊4')))
+    online_drivers = User.objects.all().exclude(id=1)
+    on_task_drivers = User.objects.all().exclude(id=1)
+    on_the_way_drivers = User.objects.all().exclude(id=1)
+    pending_drivers = User.objects.filter(id=100)
 
     # paginator = Paginator(drivers, 10)
     # if request.GET.get('page') != None:
@@ -112,7 +98,9 @@ def dispatch_management(request):
 
     # page_obj.adjusted_elided_pages = paginator.get_elided_page_range(page_number)
 
-    return render(request, 'backboard/dispatch_management.html', {'drivers': drivers, 'numOfDrivers':numOfDrivers, 'cases':cases, 'userCaseShips':userCaseShips, })
+    # return render(request, 'backboard/dispatch_management.html', {'drivers': drivers, 'cases':cases, 'userCaseShips':userCaseShips})
+
+    return render(request, 'backboard/dispatch_management.html', {'online_drivers': online_drivers, 'on_task_drivers':on_task_drivers, 'on_the_way_drivers':on_the_way_drivers, 'pending_drivers':pending_drivers})
 
 def dispatch_inquire(request):
 
