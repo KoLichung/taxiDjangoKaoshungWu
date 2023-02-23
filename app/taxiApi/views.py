@@ -60,7 +60,6 @@ class GetCaseViewSet(viewsets.GenericViewSet,
         caseIds = UserCaseShip.objects.filter(user=self.request.user).values_list('case', flat=True)
         queryset = self.queryset.filter(id__in=caseIds)
         for i in range(len(queryset)):
-            queryset[i].ship_state = UserCaseShip.objects.filter(user=self.request.user, case=queryset[i]).first().state
             queryset[i].user_left_money = self.request.user.left_money
         return queryset
 

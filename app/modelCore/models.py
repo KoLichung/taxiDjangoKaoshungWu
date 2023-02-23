@@ -43,8 +43,6 @@ class UserManager(BaseUserManager):
 
         return user
 
-
-
 class User(AbstractBaseUser, PermissionsMixin):
     """Custom user model that suppors using email instead of username"""
     phone = models.CharField(max_length=10, unique=True)
@@ -130,7 +128,7 @@ class UserCarTeamShip(models.Model):
 class UserStoreMoney(models.Model):
     user =  models.ForeignKey(
         User,
-        on_delete=models.RESTRICT
+        on_delete=models.CASCADE
     )
     # 增加或減少金額
     increase_money = models.IntegerField(default=0)
@@ -177,7 +175,7 @@ class Case(models.Model):
     
     customer =  models.ForeignKey(
         Customer,
-        on_delete=models.RESTRICT,
+        on_delete=models.SET_NULL,
         blank = True,
         null=True,
     )
@@ -191,7 +189,7 @@ class Case(models.Model):
     # user is the driver
     user =  models.ForeignKey(
         User,
-        on_delete=models.RESTRICT,
+        on_delete=models.SET_NULL,
         null=True,
         blank = True
     )
