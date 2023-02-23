@@ -58,6 +58,8 @@
 
       console.log(locations);
 
+      markerArray = [];
+      
       function initMap() {
         //show map in city center
         const cityCenter = {lat: 22.62623801218485, lng: 120.30307386637843};
@@ -75,24 +77,37 @@
         var marker_URL_pending ="{% static 'backboard/assets/img/driverStatus/pending.png' %}";
         var marker_URL_onTheWay ="{% static 'backboard/assets/img/driverStatus/onTheWay.png' %}";
         var marker_URL_onTask ="{% static 'backboard/assets/img/driverStatus/onTask.png' %}";
-      
-        function placeMarker( locations ) {
-          const marker = new google.maps.Marker({
-            position : new google.maps.LatLng( locations.lat, locations.lng ),
+        
+        // ITERATE ALL LOCATIONS. Pass every location to placeMarker
+        locations.forEach( (location, index) => {
+          marker = new google.maps.Marker({
+            position : new google.maps.LatLng( location.lat, location.lng ),
             map:map,
             opacity: 0.9,
             icon: marker_URL_onTheWay,
           });
-          google.maps.event.addListener(marker, 'click', function(){
-              infowindow.close(); // Close previously opened infowindow
-              infowindow.setContent(`<div style="padding="2px"">${locations.car_team}</br>名稱：${locations.nick_name}</br>車牌：${locations.vehicalLicence}</br>電話：${locations.phone}</div>`);
-              infowindow.open({anchor:marker, map,});
-          });
-        }
+          
+          markerArray.push(marker);
+        });
         
-        // ITERATE ALL LOCATIONS. Pass every location to placeMarker
-        locations.forEach( placeMarker );
+        markerArray.forEach((marker,index) => {
+          google.maps.event.addListener(marker, 'click', function(){
+            infowindow.close(); // Close previously opened infowindow
+            infowindow.setContent(`<div style="padding="2px"">${locations[index].car_team}</br>名稱：${locations[index].nick_name}</br>車牌：${locations[index].vehicalLicence}</br>電話：${locations[index].phone}</div>`);
+            infowindow.open({anchor:marker, map,});
+          });
+        });
 
+      }
+
+      setInterval(myTimer, 8000);
+      function myTimer() {
+        console.log("timer success");
+        var lat = markerArray[0].getPosition().lat()-0.01;
+        var lng = markerArray[0].getPosition().lng();
+
+        var newLatLng = new google.maps.LatLng(lat, lng);
+        markerArray[0].setPosition(newLatLng);
       }
 
     </script>
