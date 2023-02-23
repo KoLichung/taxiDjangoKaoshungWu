@@ -15,5 +15,6 @@ urlpatterns = [
     path('accounting_records', views.accounting_records, name = 'accounting_records'),
     # path('accounting_statistics', views.accounting_statistics, name = 'accounting_statistics'), 
     path('credit_topup', views.credit_topup, name = 'credit_topup'),
-    path('', include('django.contrib.auth.urls'))
+    path('', include('django.contrib.auth.urls')),
+    path('ajax_get_drivers/', views.ajax_get_drivers, name='ajax_get_drivers')
 ]

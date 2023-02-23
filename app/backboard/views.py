@@ -10,6 +10,7 @@ import requests
 from dotenv import dotenv_values
 from django.contrib.gis.geos import Point
 from django.contrib.gis.db.models.functions import GeometryDistance
+import json
 
 def index(request):
     return render(request, 'backboard/index.html')
@@ -82,25 +83,6 @@ def home(request):
         return render(request, 'backboard/home.html', {'message': "新增成功"})
 
     return render(request, 'backboard/home.html')
-
-def dispatch_management(request):
-    online_drivers = User.objects.all().exclude(id=1)
-    on_task_drivers = User.objects.all().exclude(id=1)
-    on_the_way_drivers = User.objects.all().exclude(id=1)
-    pending_drivers = User.objects.filter(id=100)
-
-    # paginator = Paginator(drivers, 10)
-    # if request.GET.get('page') != None:
-    #     page_number = request.GET.get('page') 
-    # else:
-    #     page_number = 1
-    # page_obj = paginator.get_page(page_number)
-
-    # page_obj.adjusted_elided_pages = paginator.get_elided_page_range(page_number)
-
-    # return render(request, 'backboard/dispatch_management.html', {'drivers': drivers, 'cases':cases, 'userCaseShips':userCaseShips})
-
-    return render(request, 'backboard/dispatch_management.html', {'online_drivers': online_drivers, 'on_task_drivers':on_task_drivers, 'on_the_way_drivers':on_the_way_drivers, 'pending_drivers':pending_drivers})
 
 def dispatch_inquire(request):
 
@@ -275,3 +257,27 @@ def credit_topup(request):
         except:
             return render(request, 'backboard/credit_topup.html', {'message': "找不到這個台號！"})
     return render(request, 'backboard/credit_topup.html')
+
+def dispatch_management(request):
+    online_drivers = User.objects.all().exclude(id=1)
+    on_task_drivers = User.objects.all().exclude(id=1)
+    on_the_way_drivers = User.objects.all().exclude(id=1)
+    pending_drivers = User.objects.filter(id=100)
+
+    # paginator = Paginator(drivers, 10)
+    # if request.GET.get('page') != None:
+    #     page_number = request.GET.get('page') 
+    # else:
+    #     page_number = 1
+    # page_obj = paginator.get_page(page_number)
+
+    # page_obj.adjusted_elided_pages = paginator.get_elided_page_range(page_number)
+
+    # return render(request, 'backboard/dispatch_management.html', {'drivers': drivers, 'cases':cases, 'userCaseShips':userCaseShips})
+
+    return render(request, 'backboard/dispatch_management.html', {'online_drivers': online_drivers, 'on_task_drivers':on_task_drivers, 'on_the_way_drivers':on_the_way_drivers, 'pending_drivers':pending_drivers})
+
+def ajax_get_drivers(request):
+    print('ajax get drivers in views')
+    obj = {"message": 'ok'}
+    return HttpResponse(json.dumps(obj))

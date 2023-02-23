@@ -108,6 +108,22 @@
 
         var newLatLng = new google.maps.LatLng(lat, lng);
         markerArray[0].setPosition(newLatLng);
+
+        $.ajax({
+          //傳 LINE ID 回後台
+          url: "{% url 'ajax_get_drivers' %}",
+          data: id_data,
+          type: "GET",
+
+          success: function (response) {
+            console.log("ajax success");
+          },
+
+          error: function () {
+            console.log("error");
+          },
+        });
+
       }
 
     </script>
@@ -126,7 +142,7 @@
               <th colspan="3" scope="col" class="text-center"><h5>司機列表</h5></th>           
             </tr>
           </thead>
-          <tbody class="align-middle">
+          <tbody class="align-middle" id='drivers-tbody'>
             
             {% for driver in on_task_drivers %}
               {% for userCaseShip in driver.user_cases.all %}
