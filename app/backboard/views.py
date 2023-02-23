@@ -89,6 +89,9 @@ def dispatch_management(request):
     on_the_way_drivers = User.objects.all().exclude(id=1)
     pending_drivers = User.objects.filter(id=100)
 
+    positions=[User(current_lat="22.61029", current_lng="120.30041"),User(current_lat="22.58665", current_lng="120.32917")]
+    
+
     # paginator = Paginator(drivers, 10)
     # if request.GET.get('page') != None:
     #     page_number = request.GET.get('page') 
@@ -100,7 +103,7 @@ def dispatch_management(request):
 
     # return render(request, 'backboard/dispatch_management.html', {'drivers': drivers, 'cases':cases, 'userCaseShips':userCaseShips})
 
-    return render(request, 'backboard/dispatch_management.html', {'online_drivers': online_drivers, 'on_task_drivers':on_task_drivers, 'on_the_way_drivers':on_the_way_drivers, 'pending_drivers':pending_drivers})
+    return render(request, 'backboard/dispatch_management.html', {'positions':positions, 'online_drivers': online_drivers, 'on_task_drivers':on_task_drivers, 'on_the_way_drivers':on_the_way_drivers, 'pending_drivers':pending_drivers})
 
 def dispatch_inquire(request):
 

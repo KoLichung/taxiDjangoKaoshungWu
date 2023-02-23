@@ -19,11 +19,10 @@
     <!--    Stylesheets-->
     <!-- ===============================================-->
 
-    {% comment %} <link
+    <link
       rel="stylesheet"
       href="{% static 'backboard/assets/css/user.css' %}"
-    /> {% endcomment %}
-    <link rel="stylesheet" href="{% static 'backboard/' %}assets/css/user.css">
+    />
     <link
       href="{% static 'backboard/vendors/choices/choices.min.css' %}"
       rel="stylesheet"
@@ -59,7 +58,8 @@
       rel="stylesheet"
       id="user-style-default"
     />
-    <script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    {% comment %} <script>
       var isRTL = JSON.parse(localStorage.getItem("isRTL"));
       if (isRTL) {
         var linkDefault = document.getElementById("style-default");
@@ -73,7 +73,7 @@
         linkRTL.setAttribute("disabled", true);
         userLinkRTL.setAttribute("disabled", true);
       }
-    </script>
+    </script> {% endcomment %}
   </head>
   
   {% if user.is_authenticated %}

@@ -6,7 +6,6 @@
 
 
 
-
 .statusBox{
   color: white;
   font-weight: 900;
@@ -23,7 +22,7 @@
   background-color: #ffd557;
 }
 
-#onlinePickingGuest{
+#onlineOnTheWay{
   background-color: #ff56a2;
 }
 
@@ -39,4 +38,9 @@
 
 .driverStatus{
   font-size: 10pt;
+}
+
+#map {
+  height: 500px;
+  width:100%;
 }
