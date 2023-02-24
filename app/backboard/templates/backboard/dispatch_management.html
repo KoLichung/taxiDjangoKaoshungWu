@@ -117,10 +117,11 @@
 
             // 取得要插入資料的元素
             var info = document.getElementById("drivers-tbody");
+            info.innerHTML = ''
             for (var num in online_drivers){
               info.innerHTML +=`
-            <p>${online_drivers[num].nick_name}</p>
-            `
+                <p>${online_drivers[num].nick_name}</p>
+              `
             }
             
           
@@ -137,6 +138,7 @@
         });
       }
 
+      fetchData();
       setInterval(fetchData, 3000);
       //setInterval(myTimer, 8000);
       function myTimer() {
@@ -147,8 +149,6 @@
         var newLatLng = new google.maps.LatLng(lat, lng);
         markerArray[0].setPosition(newLatLng);
       }
-
-
 
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCdP86OffSMXL82nbHA0l6K0W2xrdZ5xLk&callback=initMap"></script> 

@@ -290,7 +290,6 @@ def ajax_get_drivers(request):
    
         onlineDrivers = []
 
-
         for online_driver in online_drivers :
             onlineDrivers.append({
                 "nick_name":online_driver.nick_name,
