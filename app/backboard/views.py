@@ -2,7 +2,7 @@ from calendar import month
 from datetime import datetime, date, time, timedelta
 from multiprocessing import context
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from modelCore.models import User, Customer, Case, UserStoreMoney, UserCaseShip, UserCarTeamShip, CarTeam
 from django.db.models import Q
 from django.core.paginator import Paginator
@@ -277,7 +277,33 @@ def dispatch_management(request):
 
     return render(request, 'backboard/dispatch_management.html', {'online_drivers': online_drivers, 'on_task_drivers':on_task_drivers, 'on_the_way_drivers':on_the_way_drivers, 'pending_drivers':pending_drivers})
 
+
 def ajax_get_drivers(request):
-    print('ajax get drivers in views')
-    obj = {"message": 'ok'}
-    return HttpResponse(json.dumps(obj))
+    online_drivers = User.objects.all().exclude(id=1)
+    on_task_drivers = User.objects.all().exclude(id=1)
+    on_the_way_drivers = User.objects.all().exclude(id=1)
+    pending_drivers = User.objects.filter(id=100)
+
+    if request.method == "GET":
+        print('ajax get drivers in views')
+        obj = {"message": 'ok'} #server 傳回資料給 page
+   
+        onlineDrivers = []
+
+
+        for online_driver in online_drivers :
+            onlineDrivers.append({
+                "nick_name":online_driver.nick_name,
+                "phone":online_driver.phone,
+                "current_lat":online_driver.current_lat,
+                "current_lng":online_driver.current_lng
+            }) 
+        
+
+        #return HttpResponse(json.dumps(obj,online_drivers))
+        return JsonResponse({'obj':obj,'onlineDrivers':onlineDrivers})
+
+
+    else :
+        print('ajax get drivers error')
+        return HttpResponse(status=400)

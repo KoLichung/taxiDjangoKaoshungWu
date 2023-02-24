@@ -34,7 +34,9 @@
       <div id="map" class="mx-auto"></div>
     </div>
 
-    <script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script type="text/javascript">
       //online_drivers 的 locations & infos
       const locations = [
       {% for driver in online_drivers %}
@@ -100,7 +102,43 @@
 
       }
 
-      setInterval(myTimer, 8000);
+      function fetchData(){
+        $.ajax({
+          url: "{% url 'ajax_get_drivers' %}",
+          //data: id_data,
+          type: "GET",
+
+          success: function (response) {
+            console.log("ajax success");
+            const obj = response.obj;
+            online_drivers = response.onlineDrivers;
+            console.log(obj);
+            console.log(online_drivers);
+
+            // 取得要插入資料的元素
+            var info = document.getElementById("drivers-tbody");
+            for (var num in online_drivers){
+              info.innerHTML +=`
+            <p>${online_drivers[num].nick_name}</p>
+            `
+            }
+            
+          
+
+           
+           
+            
+          },
+
+          error: function (response) {
+            console.log("error");
+            console.log(response)
+          },
+        });
+      }
+
+      setInterval(fetchData, 3000);
+      //setInterval(myTimer, 8000);
       function myTimer() {
         console.log("timer success");
         var lat = markerArray[0].getPosition().lat()-0.01;
@@ -108,27 +146,14 @@
 
         var newLatLng = new google.maps.LatLng(lat, lng);
         markerArray[0].setPosition(newLatLng);
-
-        $.ajax({
-          //傳 LINE ID 回後台
-          url: "{% url 'ajax_get_drivers' %}",
-          data: id_data,
-          type: "GET",
-
-          success: function (response) {
-            console.log("ajax success");
-          },
-
-          error: function () {
-            console.log("error");
-          },
-        });
-
       }
+
+
 
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCdP86OffSMXL82nbHA0l6K0W2xrdZ5xLk&callback=initMap"></script> 
     <script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script>
+  
   </div>
   
 
