@@ -286,22 +286,26 @@ def ajax_get_drivers(request):
 
     if request.method == "GET":
         print('ajax get drivers in views')
-        obj = {"message": 'ok'} #server 傳回資料給 page
    
         onlineDrivers = []
 
-        for online_driver in online_drivers :
+        for online_driver in on_task_drivers :
             onlineDrivers.append({
+                "state": 'on_task',
                 "nick_name":online_driver.nick_name,
                 "phone":online_driver.phone,
                 "current_lat":online_driver.current_lat,
                 "current_lng":online_driver.current_lng
-            }) 
+            })
         
-
         #return HttpResponse(json.dumps(obj,online_drivers))
-        return JsonResponse({'obj':obj,'onlineDrivers':onlineDrivers})
-
+        return JsonResponse({
+                'online_count':online_drivers.count(), 
+                'on_task_count':on_task_drivers.count(),
+                'on_the_way_count':on_the_way_drivers.count(),
+                'pending_count':pending_drivers.count(),
+                'onlineDrivers':onlineDrivers
+            })
 
     else :
         print('ajax get drivers error')
