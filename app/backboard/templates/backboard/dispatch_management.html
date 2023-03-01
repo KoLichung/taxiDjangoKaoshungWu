@@ -9,19 +9,19 @@
         <div class="row">
           <div class= "col-6 col-md-3 mt-2">
             線上總數
-            <div id="onlineTotalDrivers" class="statusBox mx-auto">{{online_drivers.count}}</div>
+            <div id="onlineTotalDrivers" class="statusBox mx-auto"></div>
           </div>
           <div class= "col-6 col-md-3 mt-2">
             執行任務
-            <div id="onlineOnTask" class="statusBox mx-auto">{{on_task_drivers.count}}</div>
+            <div id="onlineOnTask" class="statusBox mx-auto"></div>
           </div>
           <div class= "col-6 col-md-3 mt-2">
             接單前往
-            <div id="onlineOnTheWay" class="statusBox mx-auto">{{on_the_way_drivers.count}}</div>
+            <div id="onlineOnTheWay" class="statusBox mx-auto"></div>
           </div>
           <div class= "col-6 col-md-3 mt-2">
             閒置等待
-            <div id="onlineWaiting" class="statusBox mx-auto">{{pending_drivers.count}}</div>
+            <div id="onlineWaiting" class="statusBox mx-auto"></div>
           </div>
         </div>
       </div>
@@ -33,8 +33,6 @@
     <div class= "col-12 col-md-8 mt-2 mx-auto">
       <div id="map" class="mx-auto"></div>
     </div>
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script type="text/javascript">
       //online_drivers 的 locations & infos
@@ -57,13 +55,14 @@
         {% endfor %}
       {% endfor %}
       ];
-
       console.log(locations);
 
+      driversLocations=[];
       markerArray = [];
       
       function initMap() {
         //show map in city center
+        const infowindow = new google.maps.InfoWindow();
         const cityCenter = {lat: 22.62623801218485, lng: 120.30307386637843};
         const map = new google.maps.Map(document.getElementById('map'), {
           zoom: 13,
@@ -73,81 +72,101 @@
           fullscreenControl: false,
         });
 
-        const infowindow = new google.maps.InfoWindow();
-
         //markers
         var marker_URL_pending ="{% static 'backboard/assets/img/driverStatus/pending.png' %}";
         var marker_URL_onTheWay ="{% static 'backboard/assets/img/driverStatus/onTheWay.png' %}";
         var marker_URL_onTask ="{% static 'backboard/assets/img/driverStatus/onTask.png' %}";
-        
-        // ITERATE ALL LOCATIONS. Pass every location to placeMarker
-        locations.forEach( (location, index) => {
-          marker = new google.maps.Marker({
-            position : new google.maps.LatLng( location.lat, location.lng ),
-            map:map,
-            opacity: 0.9,
-            icon: marker_URL_onTheWay,
+
+        function fetchData(){
+          $.ajax({
+            url: "{% url 'ajax_get_drivers' %}",
+            type: "GET",
+  
+            success: function (response) {
+              //console.log("ajax success");
+              const obj = response.obj;
+              online_drivers = response.onlineDrivers;
+              driversLocations = online_drivers;
+              //console.log(obj);
+              //console.log(online_drivers);
+
+              console.log(driversLocations);
+  
+              //上方司機人數
+              document.getElementById("onlineTotalDrivers").innerHTML = response.online_count;
+              document.getElementById("onlineOnTask").innerHTML = response.on_task_count;
+              document.getElementById("onlineOnTheWay").innerHTML = response.on_the_way_count;
+              document.getElementById("onlineWaiting").innerHTML = response.pending_count;
+  
+              //地圖
+              driversLocations.forEach( (location, index) => {
+                marker = new google.maps.Marker({
+                  position : new google.maps.LatLng( location.current_lat, location.current_lng ),
+                  map: map,
+                  opacity: 0.9,
+                  icon: marker_URL_onTheWay,
+                  title: location[index],
+                });
+                markerArray.push(marker);
+              });
+              
+              
+              markerArray.forEach((marker,index) => {
+                google.maps.event.addListener(marker, 'click', function(){
+                  infowindow.close(); // Close previously opened infowindow
+                  //infowindow.setContent(`<div style="padding="2px"">${marker.getTitle()}</br>${driversLocations[index].belonged_car_team[0]}</br>名稱：${driversLocations[index].nick_name}</br>車牌：${driversLocations[index].vehicalLicence}</br>電話：${driversLocations[index].phone}</div>`);
+                  infowindow.setContent(`<div style="padding="2px"">${marker.getTitle().belonged_car_team}</br>名稱：${marker.getTitle().nick_name}</br>車牌：${marker.getTitle().vehicalLicence}</br>電話：${marker.getTitle().phone}</div>`);
+                  infowindow.open({anchor:marker, map,});
+                });
+              });
+              
+              //司機列表
+              var info = document.getElementById("drivers-tbody");
+              info.innerHTML = ''
+              for (var num in online_drivers){
+                info.innerHTML +=`
+                  <tr id="driver_on_task">
+                    <td class="mx-0 px-0">
+                      <div id="onlineOnTask" class="statusDot"></div>
+                    </td>
+                    <td class="driverStatus">
+                      車隊：${online_drivers[num].belonged_car_team}</br> 
+                      暱稱：${online_drivers[num].nick_name}</br>
+                      派單：${online_drivers[num].cases[0].assigned_by}</br>
+                      上車：${online_drivers[num].cases[0].on_address}</br>
+                      下車：${online_drivers[num].cases[0].off_address}
+                    </td>
+                    <td class="mx-0 px-0">
+                      <button class="btn" type="button">
+                        <span class="text-primary fas fa-phone-alt fs-1"></span>
+                      </button>
+                    </td>
+                  </tr>
+                `
+              }
+              
+              
+            },
+  
+            error: function (response) {
+              console.log("error");
+              console.log(response)
+            },
+
           });
-          
-          markerArray.push(marker);
-        });
-        
-        markerArray.forEach((marker,index) => {
-          google.maps.event.addListener(marker, 'click', function(){
-            infowindow.close(); // Close previously opened infowindow
-            infowindow.setContent(`<div style="padding="2px"">${locations[index].car_team}</br>名稱：${locations[index].nick_name}</br>車牌：${locations[index].vehicalLicence}</br>電話：${locations[index].phone}</div>`);
-            infowindow.open({anchor:marker, map,});
-          });
-        });
+        }
+        fetchData();
+        setInterval(fetchData, 3000);
+        //setInterval(myTimer, 8000);
+        function myTimer() {
+          console.log("timer success");
+          var lat = markerArray[0].getPosition().lat()-0.01;
+          var lng = markerArray[0].getPosition().lng();
+  
+          var newLatLng = new google.maps.LatLng(lat, lng);
+          markerArray[0].setPosition(newLatLng);
+        }
 
-      }
-
-      function fetchData(){
-        $.ajax({
-          url: "{% url 'ajax_get_drivers' %}",
-          //data: id_data,
-          type: "GET",
-
-          success: function (response) {
-            console.log("ajax success");
-            const obj = response.obj;
-            online_drivers = response.onlineDrivers;
-            console.log(obj);
-            console.log(online_drivers);
-
-            // 取得要插入資料的元素
-            var info = document.getElementById("drivers-tbody");
-            info.innerHTML = ''
-            for (var num in online_drivers){
-              info.innerHTML +=`
-                <p>${online_drivers[num].nick_name}</p>
-              `
-            }
-            
-          
-
-           
-           
-            
-          },
-
-          error: function (response) {
-            console.log("error");
-            console.log(response)
-          },
-        });
-      }
-
-      fetchData();
-      setInterval(fetchData, 3000);
-      //setInterval(myTimer, 8000);
-      function myTimer() {
-        console.log("timer success");
-        var lat = markerArray[0].getPosition().lat()-0.01;
-        var lng = markerArray[0].getPosition().lng();
-
-        var newLatLng = new google.maps.LatLng(lat, lng);
-        markerArray[0].setPosition(newLatLng);
       }
 
     </script>

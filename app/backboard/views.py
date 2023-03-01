@@ -259,10 +259,10 @@ def credit_topup(request):
     return render(request, 'backboard/credit_topup.html')
 
 def dispatch_management(request):
-    online_drivers = User.objects.all().exclude(id=1)
-    on_task_drivers = User.objects.all().exclude(id=1)
-    on_the_way_drivers = User.objects.all().exclude(id=1)
-    pending_drivers = User.objects.filter(id=100)
+    # online_drivers = User.objects.all().exclude(id=1)
+    # on_task_drivers = User.objects.all().exclude(id=1)
+    # on_the_way_drivers = User.objects.all().exclude(id=1)
+    # pending_drivers = User.objects.filter(id=100)
 
     # paginator = Paginator(drivers, 10)
     # if request.GET.get('page') != None:
@@ -273,10 +273,8 @@ def dispatch_management(request):
 
     # page_obj.adjusted_elided_pages = paginator.get_elided_page_range(page_number)
 
-    # return render(request, 'backboard/dispatch_management.html', {'drivers': drivers, 'cases':cases, 'userCaseShips':userCaseShips})
-
-    return render(request, 'backboard/dispatch_management.html', {'online_drivers': online_drivers, 'on_task_drivers':on_task_drivers, 'on_the_way_drivers':on_the_way_drivers, 'pending_drivers':pending_drivers})
-
+    #return render(request, 'backboard/dispatch_management.html', {'online_drivers': online_drivers, 'on_task_drivers':on_task_drivers, 'on_the_way_drivers':on_the_way_drivers, 'pending_drivers':pending_drivers})
+    return render(request, 'backboard/dispatch_management.html')
 
 def ajax_get_drivers(request):
     online_drivers = User.objects.all().exclude(id=1)
@@ -284,21 +282,42 @@ def ajax_get_drivers(request):
     on_the_way_drivers = User.objects.all().exclude(id=1)
     pending_drivers = User.objects.filter(id=100)
 
+    # User 列出所有線上的司機
+    # UserCaseShip 是有任務在身的司機，不包含閒置的司機
+    # 把 UserCaseShip 放進 User 裡
+
     if request.method == "GET":
         print('ajax get drivers in views')
    
         onlineDrivers = []
 
         for online_driver in on_task_drivers :
-            onlineDrivers.append({
-                "state": 'on_task',
+            data = { 
+                "belonged_car_team": [], #所屬車隊
                 "nick_name":online_driver.nick_name,
                 "phone":online_driver.phone,
+                "vehicalLicence":online_driver.vehicalLicence,
                 "current_lat":online_driver.current_lat,
-                "current_lng":online_driver.current_lng
-            })
-        
-        #return HttpResponse(json.dumps(obj,online_drivers))
+                "current_lng":online_driver.current_lng,
+                "state": 'on_task',
+                "cases":[]
+            }
+            driverCarTeams = online_driver.user_car_teams.all() #user_car_teams 來自 UserCarTeamShip 的 user 的 related_name
+            for driverCarTeam in driverCarTeams :
+                data['belonged_car_team'].append(driverCarTeam.carTeam.name) #來自 UserCarTeamShip 的 CarTeam Object
+
+            driverCases = online_driver.user_cases.all()
+            for driverCase in driverCases :
+                case_data = {
+                    'assigned_by':driverCase.case.carTeam.name, #派單車隊
+                    'on_address': driverCase.case.on_address,
+                    'off_address': driverCase.case.off_address,
+                }
+                data['cases'].append(case_data)
+
+                 
+            onlineDrivers.append(data)
+            
         return JsonResponse({
                 'online_count':online_drivers.count(), 
                 'on_task_count':on_task_drivers.count(),
