@@ -292,7 +292,8 @@ def ajax_get_drivers(request):
         onlineDrivers = []
 
         for online_driver in on_task_drivers :
-            data = { 
+            data = {
+                "id": online_driver.id,
                 "belonged_car_team": [], #所屬車隊
                 "nick_name":online_driver.nick_name,
                 "phone":online_driver.phone,

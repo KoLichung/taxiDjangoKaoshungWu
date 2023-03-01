@@ -86,11 +86,11 @@
               //console.log("ajax success");
               const obj = response.obj;
               online_drivers = response.onlineDrivers;
-              driversLocations = online_drivers;
+    
               //console.log(obj);
               //console.log(online_drivers);
 
-              console.log(driversLocations);
+              console.log(online_drivers);
   
               //上方司機人數
               document.getElementById("onlineTotalDrivers").innerHTML = response.online_count;
@@ -99,13 +99,13 @@
               document.getElementById("onlineWaiting").innerHTML = response.pending_count;
   
               //地圖
-              driversLocations.forEach( (location, index) => {
+              online_drivers.forEach( (driver, index) => {
                 marker = new google.maps.Marker({
-                  position : new google.maps.LatLng( location.current_lat, location.current_lng ),
+                  position : new google.maps.LatLng( driver.current_lat, driver.current_lng ),
                   map: map,
                   opacity: 0.9,
                   icon: marker_URL_onTheWay,
-                  title: location[index],
+                  title: driver.id.toString(),
                 });
                 markerArray.push(marker);
               });
@@ -113,9 +113,10 @@
               
               markerArray.forEach((marker,index) => {
                 google.maps.event.addListener(marker, 'click', function(){
+                  console.log(online_drivers);
                   infowindow.close(); // Close previously opened infowindow
-                  //infowindow.setContent(`<div style="padding="2px"">${marker.getTitle()}</br>${driversLocations[index].belonged_car_team[0]}</br>名稱：${driversLocations[index].nick_name}</br>車牌：${driversLocations[index].vehicalLicence}</br>電話：${driversLocations[index].phone}</div>`);
-                  infowindow.setContent(`<div style="padding="2px"">${marker.getTitle().belonged_car_team}</br>名稱：${marker.getTitle().nick_name}</br>車牌：${marker.getTitle().vehicalLicence}</br>電話：${marker.getTitle().phone}</div>`);
+                  infowindow.setContent(`<div style="padding="2px"">司機 id: ${marker.getTitle()}</br>${online_drivers[index].belonged_car_team[0]}</br>名稱：${online_drivers[index].nick_name}</br>車牌：${online_drivers[index].vehicalLicence}</br>電話：${online_drivers[index].phone}</div>`);
+                  // infowindow.setContent(`<div style="padding="2px"">${marker.getTitle().belonged_car_team}</br>名稱：${marker.getTitle().nick_name}</br>車牌：${marker.getTitle().vehicalLicence}</br>電話：${marker.getTitle().phone}</div>`);
                   infowindow.open({anchor:marker, map,});
                 });
               });
@@ -156,16 +157,17 @@
           });
         }
         fetchData();
-        setInterval(fetchData, 3000);
+        //setInterval(fetchData, 3000);
+
         //setInterval(myTimer, 8000);
-        function myTimer() {
-          console.log("timer success");
-          var lat = markerArray[0].getPosition().lat()-0.01;
-          var lng = markerArray[0].getPosition().lng();
+        //function myTimer() {
+        //  console.log("timer success");
+        //  var lat = markerArray[0].getPosition().lat()-0.01;
+        //  var lng = markerArray[0].getPosition().lng();
   
-          var newLatLng = new google.maps.LatLng(lat, lng);
-          markerArray[0].setPosition(newLatLng);
-        }
+        //  var newLatLng = new google.maps.LatLng(lat, lng);
+        //  markerArray[0].setPosition(newLatLng);
+        //}
 
       }
 
