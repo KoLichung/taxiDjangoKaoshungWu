@@ -18,30 +18,30 @@
 
         <form method="post">{% csrf_token %}
           <div class="mb-3 row">
-            <label class="col-sm-2 col-form-label" for="inputPassword">台號</label>
+            <label class="col-sm-2 col-form-label" for="vehicalLicence">車號</label>
             <div class="col-sm-10">
               <input
                 class="form-control"
-                placeholder="台號"
-                name='userId'
+                placeholder="車號"
+                name='vehicalLicence'
               />
             </div>
           </div>
   
           <div class="mb-3 row">
-            <label class="col-sm-2 col-form-label" for="inputPassword">支出類型</label>
+            <label class="col-sm-2 col-form-label">支出類型</label>
             <div class="col-sm-10 mt-2">
-              <label class="form-label mb-0" for="increaseMoney">
+              <label class="form-label mb-0" for="increase">
                 <input class="form-check-input" type="radio" name="moneyType" value="increase" checked="">  入帳
               </label>
-              <label class="form-label mb-0" for="decreaseMoney">
+              <label class="form-label mb-0" for="decrease">
                 <input class="form-check-input" type="radio" name="moneyType" value="decrease">  出帳
               </label>
             </div>
           </div>
   
           <div class="mb-3 row">
-            <label class="col-sm-2 col-form-label" for="inputPassword">金額</label>
+            <label class="col-sm-2 col-form-label" for="money">金額</label>
             <div class="col-sm-10">
               <input class="form-control"
                 placeholder="0"

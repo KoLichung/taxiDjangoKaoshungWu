@@ -2,37 +2,44 @@
 <div class="main">
   <div class="card-body bg-light">
     <div class="row">
-      <div class="col-sm"></div>
-      <div class="col-sm">
+      <div class="col"></div>
+      <div class="col-lg-6 col-sm-8 mx-3">
         <div class="my-3 text-center">
           <h4>派車查詢</h4>
-        </div>
+        </div> 
 
         <form method="get">
 
           <div class="mb-3 row">
             <label class="col-sm-2 col-form-label" for="datePicker">日期區間：</label>
             <div class="col-sm-10">            
-              <input class="form-control datetimepicker" id="datePicker" type="date" name="qDate" placeholder="y/m/d 到 y/m/d" data-options='{"mode":"range","dateFormat":"y/m/d","disableMobile":true}' />
+              <input class="form-control datetimepicker" id="datePicker" type="date" name="qDate" placeholder="年-月-日 ～ 年-月-日" data-options='{"mode":"range","dateFormat":"Y-m-d","disableMobile":true}' />
+            </div>
+          </div>
+          
+
+          <div class="mb-3 row">
+            <label class="col-sm-2 col-form-label" for="assigned_car_team">派單車隊：</label>
+            <div class="col-sm-10"> 
+              <select class="form-select js-choice" id="assigned_car_team" size="1" name="assigned_car_team" data-options='{"removeItemButton":true,"placeholder":true}'>
+                <option value="">選擇派單車隊</option>
+                {% for carTeam in carTeams %}
+                  <option value="{{carTeam.name}}">{{carTeam.name}}</option>
+                {% endfor %}
+              </select>
             </div>
           </div>
 
           <div class="mb-3 row">
-            <label for="organizerSingle">派單車隊：</label>
-            <select class="form-select js-choice" id="organizerSingle" size="1" name="organizerSingle" data-options='{"removeItemButton":true,"placeholder":true}'>
-              <option value="">選擇派單車隊</option>
-              <option value="carTeamA">車隊A</option>
-              <option value="carTeamB">車隊B</option>
-            </select>
-          </div>
-
-          <div class="mb-3 row">
-            <label for="organizerSingle">司機車隊：</label>
-            <select class="form-select js-choice" id="organizerSingle" size="1" name="organizerSingle" data-options='{"removeItemButton":true,"placeholder":true}'>
-              <option value="">選擇司機車隊</option>
-              <option value="carTeamA">車隊A</option>
-              <option value="carTeamB">車隊B</option>
-            </select>
+            <label class="col-sm-2 col-form-label" for="belonged_car_team">司機車隊：</label>
+            <div class="col-sm-10"> 
+              <select class="form-select js-choice" id="belonged_car_team" size="1" name="belonged_car_team" data-options='{"removeItemButton":true,"placeholder":true}'>
+                <option value="">選擇司機車隊</option>
+                {% for carTeam in carTeams %}
+                  <option value="{{carTeam.name}}">{{carTeam.name}}</option>
+                {% endfor %}
+              </select>
+            </div>
           </div>
   
           <div class="mb-1 mx-5">
@@ -45,9 +52,11 @@
           </div>
         </form>
         
-        <div class="my-3">統計扣帳金額：</div>
+       
+        <div class="my-3">統計扣帳金額：{{ total_dispatch_fee }}</div>
+        
 
-        <div class="mt-5">
+        <div class="my-5">
           <div class="table-responsive scrollbar">
             <table class="table table-hover table-striped overflow-hidden">
               <thead>
@@ -109,10 +118,11 @@
                     任務取消：{{ case.memo }}
                   </td>
                   <td class="text-nowrap">
-                    車資：{{ case.case_money }} （扣帳：{{ case.dispatch_fee }}）<br/>
+                    車資：{{ case.case_money }} <br/>
+                    扣帳：{{ case.dispatch_fee }} <br/>
                     {% comment %} 分潤：業主A 10 業主B 10<br /> {% endcomment %}
                     司機：{{ case.user }}<br />
-                    台號：{{ case.userId}}
+                    車號：{{ case.user.vehicalLicence}}
                   </td>
                 </tr>
                 {% endfor %}
@@ -122,7 +132,7 @@
           </div>
         </div>
 
-        <div class="text-center">
+        {% comment %} <div class="text-center">
           {% for page_number in cases.adjusted_elided_pages %} 
             {% if page_number == cases.paginator.ELLIPSIS %} 
               {{page_number}} 
@@ -130,10 +140,10 @@
               <a href="?page={{page_number}}" class="{% if page_number == cases.number %}current{% endif %}">&nbsp;&nbsp;{{page_number}}&nbsp;&nbsp;</a>
             {% endif %} 
           {% endfor %}
-        </div>
-      </div>
+        </div> {% endcomment %}
 
-      <div class="col-sm"></div>
+      </div>
+      <div class="col"></div>
     </div>
   </div>
 </div>
