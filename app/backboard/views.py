@@ -4,13 +4,14 @@ from multiprocessing import context
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from modelCore.models import User, Customer, Case, UserStoreMoney, UserCaseShip, UserCarTeamShip, CarTeam
-from django.db.models import Q
+from django.db.models import Q, Sum
 from django.core.paginator import Paginator
 import requests
 from dotenv import dotenv_values
 from django.contrib.gis.geos import Point
 from django.contrib.gis.db.models.functions import GeometryDistance
 import json
+import datetime
 
 def index(request):
     return render(request, 'backboard/index.html')
@@ -93,7 +94,15 @@ def dispatch_inquire(request):
             case.case_state = "canceled"
             case.save()
 
-    cases = Case.objects.all().order_by('-id')
+    
+    today = datetime.datetime.now()
+    thirty_days_before = today - timedelta(days=30)
+
+    # cases = Case.objects.all().order_by('-id')
+    cases = Case.objects.filter(create_time__gte=thirty_days_before, create_time__lte=today).order_by('-id')
+    carTeams = CarTeam.objects.all()
+    total_dispatch_fee = Case.objects.filter(create_time__gte=thirty_days_before, create_time__lte=today).aggregate(Sum('dispatch_fee'))
+   
 
     # print(cases.count())
     if (request.GET.get("qPhone") != None and request.GET.get("qPhone") != ""):
@@ -105,7 +114,11 @@ def dispatch_inquire(request):
         print(cases.count())
     
     if (request.GET.get("qDate") != None and request.GET.get("qDate") != ""):
-        cases = cases.filter(create_time__contains=request.GET.get("qDate"))
+        q_start_date = request.GET.get("qDate")[:10]
+        q_end_date = request.GET.get("qDate")[-10:]
+        # cases = cases.filter(create_time__contains=request.GET.get("qDate"))
+        cases = cases.filter(create_time__gte = q_start_date, create_time__lte = q_end_date).order_by('-id')
+
         print(cases.count())
     
     # print(request.GET.get("qDate"))
@@ -120,16 +133,17 @@ def dispatch_inquire(request):
     # else:
     #     cases = Case.objects.order_by('-id')
     
-    paginator = Paginator(cases, 10)
-    if request.GET.get('page') != None:
-        page_number = request.GET.get('page') 
-    else:
-        page_number = 1
-    page_obj = paginator.get_page(page_number)
+    # paginator = Paginator(cases, 10)
+    # if request.GET.get('page') != None:
+    #     page_number = request.GET.get('page') 
+    # else:
+    #     page_number = 1
+    # page_obj = paginator.get_page(page_number)
 
-    page_obj.adjusted_elided_pages = paginator.get_elided_page_range(page_number)
+    # page_obj.adjusted_elided_pages = paginator.get_elided_page_range(page_number)
     
-    return render(request, 'backboard/dispatch_inquire.html',{'cases':page_obj})
+    # return render(request, 'backboard/dispatch_inquire.html',{'cases':page_obj})
+    return render(request, 'backboard/dispatch_inquire.html', {'cases':cases, 'carTeams':carTeams, 'total_dispatch_fee':total_dispatch_fee})
 
 def passengers(request):
     
@@ -228,13 +242,19 @@ def accounting_records(request):
 #     return render(request, 'backboard/accounting_statistics.html', {'summarys':summarys, 'last_month_day':last_month_day, 'last_2_month_day':last_2_month_day})
 
 def credit_topup(request):
+    if not request.user.is_authenticated or not request.user.is_staff:
+        return redirect('/backboard/')
+    
     if request.method == 'POST':
-        userId = request.POST.get("userId")
+        vehicalLicence = request.POST.get("vehicalLicence")
         moneyType = request.POST.get("moneyType")
         money = int(request.POST.get("money"))
+        print(vehicalLicence)
         print(moneyType)
+        print(money)
+        
         try:
-            user = User.objects.filter(userId=userId).first()
+            user = User.objects.filter(vehicalLicence=vehicalLicence).first()
             # today_min = datetime.combine(date.today(), time.min)
             # today_max = datetime.combine(date.today(), time.max)
             # if( UserStoreMoney.objects.filter(user=user, date__range=(today_min, today_max)).count()==0 ):
@@ -255,7 +275,7 @@ def credit_topup(request):
             user.save()
             return render(request, 'backboard/credit_topup.html', {'message': "新增成功"})
         except:
-            return render(request, 'backboard/credit_topup.html', {'message': "找不到這個台號！"})
+            return render(request, 'backboard/credit_topup.html', {'message': "找不到這個車號！"})
     return render(request, 'backboard/credit_topup.html')
 
 def dispatch_management(request):
