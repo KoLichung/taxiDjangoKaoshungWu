@@ -19,6 +19,8 @@ urlpatterns = [
     path('case_catched', views.CaseCatchedView.as_view()),
     path('case_finished', views.CaseFinishedView.as_view()),
     path('case_canceled', views.CaseCanceledView.as_view()),
+    path('case_refuse', views.CaseRefuseView.as_view()),
+    path('case_notify_customer', views.CaseNotifyCustomerView.as_view()),
     path('update_user_online_state', views.UpdateUserOnlineState.as_view()),
     path('get_current_version', views.AppVersionView.as_view()),
 ]

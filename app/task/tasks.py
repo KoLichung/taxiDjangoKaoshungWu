@@ -21,7 +21,7 @@ def countDownUserCaseShip():
     for case in cases:
         if UserCaseShip.objects.filter(case=case).count() == 0:
             # 先 new 一個 user_case_ship 且 user == None
-            # 用 user == None 來檢查, 目前有 tasker 正在派單
+            # 用 user == None 來檢查(並表示) 目前有 tasker 正在派單
             userCaseShip = UserCaseShip()
             userCaseShip.case = case
             userCaseShip.save()
@@ -36,6 +36,7 @@ def countDownUserCaseShip():
 
                 if timePredict < 900:
                     userCaseShip.user = user
+                    userCaseShip.expect_second = timePredict
                     userCaseShip.save()
                 else:
                     case.case_state = 'canceled'
@@ -58,12 +59,19 @@ def countDownUserCaseShip():
                     userCaseShip.countdown_second = userCaseShip.countdown_second - 1
                     userCaseShip.save()
                 else:
-                    # countdown_second == 0, 
+                    # 司機未接單
+                    # countdown_second == 0,         
                     # 把此 user 加入排除名單
-                    if len(userCaseShip.exclude_ids_text) == 0:
-                        userCaseShip.exclude_ids_text = str(userCaseShip.user.id)
-                    else:
-                        userCaseShip.exclude_ids_text = userCaseShip.exclude_ids_text + f',{userCaseShip.user.id}'
+                    # 如果司機已加入排除名單, 則此為司機拒絕接單
+                    if str(userCaseShip.user.id) not in userCaseShip.exclude_ids_text:
+                        car_teams_string = user.car_teams_string()
+                        tel_send_message(case.telegram_id, f'{case.case_number}-{car_teams_string}\n{user.nick_name} 駕駛人未接單\n-----------------------\n上車:{case.on_address}')
+
+                        if len(userCaseShip.exclude_ids_text) == 0:
+                            userCaseShip.exclude_ids_text = str(userCaseShip.user.id)
+                        else:
+                            userCaseShip.exclude_ids_text = userCaseShip.exclude_ids_text + f',{userCaseShip.user.id}'
+
                     userCaseShip.user = None
                     userCaseShip.save()
 
@@ -78,6 +86,7 @@ def countDownUserCaseShip():
                         if timePredict < 900:
                             userCaseShip.user = user
                             userCaseShip.countdown_second = 15
+                            userCaseShip.expect_second = timePredict
                             userCaseShip.save()
                         else:
                             case.case_state = 'canceled'

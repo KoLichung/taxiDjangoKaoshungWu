@@ -91,6 +91,17 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.name
+    
+    def car_teams_string(self):
+        car_teams_string = ''
+        if UserCarTeamShip.objects.filter(user=self).count() > 0:
+            ships = UserCarTeamShip.objects.filter(user=self)
+            for ship in ships:
+                car_teams_string = car_teams_string + ship.carTeam.name
+            return car_teams_string
+        else:
+            return '無車隊'
+
 
 class CarTeam(models.Model):
     name = models.CharField(max_length=255)
@@ -232,6 +243,7 @@ class UserCaseShip(models.Model):
     )
     exclude_ids_text = models.TextField(default='',blank = True, null=True)
     countdown_second = models.IntegerField(default=15)
+    expect_second = models.IntegerField(default=0)
 
 class CaseSummary(models.Model):
     case = models.ForeignKey(

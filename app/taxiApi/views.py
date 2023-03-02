@@ -9,6 +9,12 @@ from modelCore.models import Case, UserCaseShip, UserStoreMoney, AppVersion, Car
 from taxiApi import serializers
 from django.utils import timezone as datetime
 from django.contrib.gis.geos import Point
+import requests
+import logging
+import json
+
+TOKEN = '5889906798:AAFR2O_uTBq_ZGPaDkqyfsHkWKK7EQ6bxj0'
+logger = logging.getLogger(__file__)
 
 #http://localhost:8000/api/user_store_moneys/
 class UserStoreMoneyViewSet(viewsets.GenericViewSet,
@@ -59,8 +65,12 @@ class GetCaseViewSet(viewsets.GenericViewSet,
     def get_queryset(self):
         caseIds = UserCaseShip.objects.filter(user=self.request.user).values_list('case', flat=True)
         queryset = self.queryset.filter(id__in=caseIds)
+        
         for i in range(len(queryset)):
             queryset[i].user_left_money = self.request.user.left_money
+            user_case_ship = UserCaseShip.objects.filter(user=self.request.user, case = queryset[i])
+            queryset[i].countdown_second = user_case_ship.countdown_second
+
         return queryset
 
 #http://localhost:8000/api/update_lat_lng?lat=23.23&lng=124.24
@@ -96,12 +106,21 @@ class CaseConfirmView(APIView):
         if(case.user != None):
             raise APIException("this case already belong to someone")
         else:
+            user = self.request.user
+
             case.case_state = 'way_to_catch'
             case.confirm_time = datetime.now()
-            case.user = self.request.user
-            case.userId = case.user.userId
+            case.user = user
+            case.userId = user.userId
             case.save()
             
+            
+            car_teams_string = user.car_teams_string()
+
+            userCaseShip = UserCaseShip.objects.filter(case=case).first()
+            expect_minutes = int(userCaseShip.expect_second / 60)
+            tel_send_message(case.telegram_id, f'{case.case_number}-{car_teams_string}\n車輛預估 {expect_minutes}~{expect_minutes+2} 分鐘到達\n駕駛:{user.nick_name}\n車色:{user.car_color}\n車號:{user.vehicalLicence}\n--------------------------\n備註:\n車上禁食、菸、檳榔\n{user.car_memo}\n--------------------------\n上車:{case.on_address}')
+
             #delete ships
             UserCaseShip.objects.filter(case=case).delete()
 
@@ -124,6 +143,9 @@ class CaseArrivedView(APIView):
                 case.case_state = 'arrived'
                 case.arrived_time = datetime.now()
                 case.save()
+
+                car_teams_string = case.user.car_teams_string()
+                tel_send_message(case.telegram_id, f'{case.case_number}-{car_teams_string}\n司機到達地點\n--------------------------\n上車:{case.on_address}')
 
                 #delete ships
                 UserCaseShip.objects.filter(case=case).delete()
@@ -148,6 +170,9 @@ class CaseCatchedView(APIView):
                 case.catched_time = datetime.now()
                 case.save()
                 
+                car_teams_string = case.user.car_teams_string()
+                tel_send_message(case.telegram_id, f'{case.case_number}-{car_teams_string}\n乘客已上車\n--------------------------\n上車:{case.on_address}')
+
                 #delete ships
                 UserCaseShip.objects.filter(case=case).delete()
 
@@ -241,9 +266,59 @@ class UpdateUserOnlineState(APIView):
             print("not sure")
             return Response({'message': "no left money"})
 
-
 class AppVersionView(APIView):
 
     def get(self, request, format=None):
         appVersion = AppVersion.objects.all().order_by('-id').first()
         return Response({'ios': appVersion.iOS_current_version, 'android': appVersion.android_current_version})
+
+# 司機拒絕接單回傳
+class CaseRefuseView(APIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def put(self, request, format=None):
+        case_id = self.request.query_params.get('case_id')
+        case = Case.objects.get(id=case_id)
+        user = self.request.user
+
+        car_teams_string = user.car_teams_string()
+        tel_send_message(case.telegram_id, f'{case.case_number}-{car_teams_string}\n{user.nick_name} 駕駛人放棄接單\n-----------------------\n上車:{case.on_address}')
+
+        userCaseShip = UserCaseShip.objects.filter(case=case).first()
+        userCaseShip.countdown_second = 0
+
+        if len(userCaseShip.exclude_ids_text) == 0:
+            userCaseShip.exclude_ids_text = str(userCaseShip.user.id)
+        else:
+            userCaseShip.exclude_ids_text = userCaseShip.exclude_ids_text + f',{userCaseShip.user.id}'
+
+        userCaseShip.save()
+
+class CaseNotifyCustomerView(APIView):
+    
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def put(self, request, format=None):
+        case_id = self.request.query_params.get('case_id')
+        
+        try:
+            case = Case.objects.get(id=case_id)
+            if(case.user != self.request.user):
+                raise APIException("this case already belong to someone")
+            else:   
+                car_teams_string = case.user.car_teams_string()
+                tel_send_message(case.telegram_id, f'{case.case_number}-{car_teams_string}\n駕駛通知已抵達上車點\n請乘客盡快上車\n--------------------------\n上車:{case.on_address}')
+                return Response({'message': "ok"})
+        except:
+            raise APIException("no this case")
+
+def tel_send_message(chat_id, text):
+    url = f'https://api.telegram.org/bot{TOKEN}/sendMessage'
+    payload = {
+                'chat_id': chat_id,
+                'text': text
+                }
+    r = requests.post(url,json=payload)
+    logger.info(r)
