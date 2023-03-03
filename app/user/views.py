@@ -6,6 +6,7 @@ from rest_framework.exceptions import APIException
 from rest_framework.response import Response
 
 from user.serializers import UserSerializer, AuthTokenSerializer, UpdateUserSerializer
+from modelCore.models import CarTeam, UserCarTeamShip
 
 class CreateUserView(generics.CreateAPIView):
     """Create a new user in the system"""
@@ -13,6 +14,14 @@ class CreateUserView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         user = serializer.save(user=self.request.user)
+
+        car_team_id = self.request.data.get('car_team')
+        car_team = CarTeam.objects.get(id=car_team_id)
+        user_car_team_ship = UserCarTeamShip()
+        user_car_team_ship.carTeam = car_team
+        user_car_team_ship.user = user
+        user_car_team_ship.save()
+
         return user
 
 #http://localhost:8000/api/user/token/  要用 post, 並帶參數

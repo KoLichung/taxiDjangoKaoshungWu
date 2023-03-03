@@ -134,6 +134,7 @@ class UserCarTeamShip(models.Model):
         on_delete=models.CASCADE,
         related_name='car_team_users'
     )
+    # 是否派單, 如果不派單, 該車隊發出的單就不會派給他?!
     is_dispatch = models.BooleanField(default=True)
 
 class UserStoreMoney(models.Model):

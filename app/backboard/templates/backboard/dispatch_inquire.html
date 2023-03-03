@@ -13,7 +13,7 @@
           <div class="mb-3 row">
             <label class="col-sm-2 col-form-label" for="datePicker">日期區間：</label>
             <div class="col-sm-10">            
-              <input class="form-control datetimepicker" id="datePicker" type="date" name="qDate" placeholder="年-月-日 ～ 年-月-日" data-options='{"mode":"range","dateFormat":"Y-m-d","disableMobile":true}' />
+              <input class="form-control datetimepicker" id="datePicker" type="date" name="qDate" placeholder="年-月-日 ～ 年-月-日" data-options='{"mode":"range","dateFormat":"Y-m-d","disableMobile":true}'/>
             </div>
           </div>
           
@@ -24,7 +24,11 @@
               <select class="form-select js-choice" id="assigned_car_team" size="1" name="assigned_car_team" data-options='{"removeItemButton":true,"placeholder":true}'>
                 <option value="">選擇派單車隊</option>
                 {% for carTeam in carTeams %}
-                  <option value="{{carTeam.name}}">{{carTeam.name}}</option>
+                  {% if assigned_car_team == carTeam.name %}
+                    <option value="{{carTeam.name}}" selected>{{carTeam.name}}</option>
+                  {% else %}
+                    <option value="{{carTeam.name}}">{{carTeam.name}}</option>
+                  {% endif %}
                 {% endfor %}
               </select>
             </div>

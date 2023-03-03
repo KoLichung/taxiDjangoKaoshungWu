@@ -94,36 +94,30 @@ def dispatch_inquire(request):
             case.case_state = "canceled"
             case.save()
 
-    
-    today = datetime.datetime.now()
-    thirty_days_before = today - timedelta(days=30)
-
-    # cases = Case.objects.all().order_by('-id')
-    cases = Case.objects.filter(create_time__gte=thirty_days_before, create_time__lte=today).order_by('-id')
     carTeams = CarTeam.objects.all()
-    total_dispatch_fee = Case.objects.filter(create_time__gte=thirty_days_before, create_time__lte=today).aggregate(Sum('dispatch_fee'))
-   
 
-    # print(cases.count())
-    if (request.GET.get("qPhone") != None and request.GET.get("qPhone") != ""):
-        cases = cases.filter(customer_phone__contains=request.GET.get("qPhone"))
-        print(cases.count())
-        
-    if (request.GET.get("qUser") != None and request.GET.get("qUser") != ""):
-        cases = cases.filter(userId__contains=request.GET.get("qUser"))
-        print(cases.count())
-    
     if (request.GET.get("qDate") != None and request.GET.get("qDate") != ""):
         q_start_date = request.GET.get("qDate")[:10]
         q_end_date = request.GET.get("qDate")[-10:]
         # cases = cases.filter(create_time__contains=request.GET.get("qDate"))
-        cases = cases.filter(create_time__gte = q_start_date, create_time__lte = q_end_date).order_by('-id')
+        cases = Case.objects.filter(create_time__gte = q_start_date, create_time__lte = q_end_date).order_by('-id')
+
+        qDate_string = request.GET.get("qDate")
 
         print(cases.count())
-    
-    # print(request.GET.get("qDate"))
-    # cases.order_by('-id')
+    else:  
+        today = datetime.datetime.now()
+        thirty_days_before = today - timedelta(days=30)
 
+        # cases = Case.objects.all().order_by('-id')
+        cases = Case.objects.filter(create_time__gte=thirty_days_before, create_time__lte=today).order_by('-id')
+        
+        today_string = today.strftime('%Y-%m-%d')
+        thirty_days_before_string = thirty_days_before.strftime('%Y-%m-%d')
+        qDate_string = f'{thirty_days_before_string}+~+{today_string}'
+        print(qDate_string)
+
+    total_dispatch_fee = cases.aggregate(Sum('dispatch_fee'))
 
     # if request.GET.get("qKeyword") != None and request.GET.get("qKeyword") != "" and request.GET.get("qUserId") != None and request.GET.get("qUserId") != "" and request.GET.get("qDate") != None and request.GET.get("qDate") != "" :
     #     print(request.GET.get("qKeyword")) #會印出查詢的內容
@@ -143,7 +137,15 @@ def dispatch_inquire(request):
     # page_obj.adjusted_elided_pages = paginator.get_elided_page_range(page_number)
     
     # return render(request, 'backboard/dispatch_inquire.html',{'cases':page_obj})
-    return render(request, 'backboard/dispatch_inquire.html', {'cases':cases, 'carTeams':carTeams, 'total_dispatch_fee':total_dispatch_fee})
+
+    return render(request, 'backboard/dispatch_inquire.html', {
+            'qDate':'2023-03-23+~+2023-03-30',
+            'assigned_car_team':'A車隊',
+            'belonged_car_team':'A車隊',
+            'cases':cases, 
+            'carTeams':carTeams, 
+            'total_dispatch_fee':200, 
+        })
 
 def passengers(request):
     
