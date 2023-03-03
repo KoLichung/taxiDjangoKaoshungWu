@@ -297,10 +297,18 @@ def dispatch_management(request):
     return render(request, 'backboard/dispatch_management.html')
 
 def ajax_get_drivers(request):
-    online_drivers = User.objects.all().exclude(id=1)
-    on_task_drivers = User.objects.all().exclude(id=1)
-    on_the_way_drivers = User.objects.all().exclude(id=1)
-    pending_drivers = User.objects.filter(id=100)
+    online_drivers = User.objects.filter(is_online=True).exclude(id=1)
+
+    on_task_case_condition = Q(case_state='arrived') | Q(case_state='catched') | Q(case_state='on_road')
+    on_task_user_ids = Case.objects.filter(on_task_case_condition).values_list('user', flat=True)
+    on_task_drivers = User.objects.filter(id__in=on_task_user_ids).exclude(id=1)
+    
+
+    on_the_way_user_ids = Case.objects.filter(case_state='way_to_catch').values_list('user', flat=True)
+    on_the_way_drivers = User.objects.filter(id__in=on_the_way_user_ids).exclude(id=1)
+
+
+    pending_drivers = online_drivers.exclude(id__in=on_task_user_ids).exclude(id__in=on_the_way_user_ids)
 
     # User 列出所有線上的司機
     # UserCaseShip 是有任務在身的司機，不包含閒置的司機
@@ -321,24 +329,37 @@ def ajax_get_drivers(request):
                 "current_lat":online_driver.current_lat,
                 "current_lng":online_driver.current_lng,
                 "state": 'on_task',
-                "cases":[]
             }
+
             driverCarTeams = online_driver.user_car_teams.all() #user_car_teams 來自 UserCarTeamShip 的 user 的 related_name
             for driverCarTeam in driverCarTeams :
                 data['belonged_car_team'].append(driverCarTeam.carTeam.name) #來自 UserCarTeamShip 的 CarTeam Object
 
-            driverCases = online_driver.user_cases.all()
-            for driverCase in driverCases :
+            try:
+                driver_case = Case.objects.filter(user=online_driver).filter(~Q(case_state='canceled')).filter(~Q(case_state='finished')).order_by('-id').first()
                 case_data = {
-                    'assigned_by':driverCase.case.carTeam.name, #派單車隊
-                    'on_address': driverCase.case.on_address,
-                    'off_address': driverCase.case.off_address,
+                    'assigned_by':driver_case.carTeam.name, #派單車隊
+                    'on_address': driver_case.on_address,
+                    'off_address': driver_case.off_address,
                 }
-                data['cases'].append(case_data)
+                data['case'] = case_data
+                
 
-                 
+            except Exception as e:
+                print(e)
+                print('no case for this driver')
+
+                case_data = {
+                    'assigned_by': '',
+                    'on_address': '',
+                    'off_address': '',
+                }
+                data['case'] = case_data
+
             onlineDrivers.append(data)
-            
+
+        print(onlineDrivers)
+
         return JsonResponse({
                 'online_count':online_drivers.count(), 
                 'on_task_count':on_task_drivers.count(),
