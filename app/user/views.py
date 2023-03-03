@@ -6,7 +6,7 @@ from rest_framework.exceptions import APIException
 from rest_framework.response import Response
 
 from user.serializers import UserSerializer, AuthTokenSerializer, UpdateUserSerializer
-from modelCore.models import CarTeam, UserCarTeamShip
+from modelCore.models import CarTeam, UserCarTeamShip, User
 
 class CreateUserView(generics.CreateAPIView):
     """Create a new user in the system"""
@@ -61,3 +61,19 @@ class GetUserLeftMoney(APIView):
         user = self.request.user
         left_money = user.left_money
         return Response({'left_money': left_money})
+    
+class DeleteUser(generics.DestroyAPIView):
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = UserSerializer
+    queryset = User.objects.all()
+    # lookup_field = 'pk'
+    def delete(self, request, pk, format=None):
+        
+        auth_user = self.request.user
+        user = User.objects.get(id=pk)
+        if user == auth_user:
+            user.delete()
+            return Response('delete user')
+        else:
+            return Response('not auth')

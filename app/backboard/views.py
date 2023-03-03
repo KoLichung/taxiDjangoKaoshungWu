@@ -1,5 +1,4 @@
 from calendar import month
-from datetime import datetime, date, time, timedelta
 from multiprocessing import context
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
@@ -10,8 +9,9 @@ import requests
 from dotenv import dotenv_values
 from django.contrib.gis.geos import Point
 from django.contrib.gis.db.models.functions import GeometryDistance
+
 import json
-import datetime
+from datetime import datetime, date, time, timedelta
 
 def index(request):
     return render(request, 'backboard/index.html')
@@ -105,8 +105,8 @@ def dispatch_inquire(request):
         qDate_string = request.GET.get("qDate")
 
         print(cases.count())
-    else:  
-        today = datetime.datetime.now()
+    else: 
+        today = datetime.now()
         thirty_days_before = today - timedelta(days=30)
 
         # cases = Case.objects.all().order_by('-id')
@@ -276,8 +276,10 @@ def credit_topup(request):
             user.left_money = userStoreMoney.sum_money
             user.save()
             return render(request, 'backboard/credit_topup.html', {'message': "新增成功"})
+        
         except:
             return render(request, 'backboard/credit_topup.html', {'message': "找不到這個車號！"})
+        
     return render(request, 'backboard/credit_topup.html')
 
 def dispatch_management(request):
