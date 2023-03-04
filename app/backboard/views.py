@@ -86,6 +86,8 @@ def home(request):
     return render(request, 'backboard/home.html')
 
 def dispatch_inquire(request):
+    if not request.user.is_authenticated or not request.user.is_staff:
+        return redirect('/backboard/')
 
     if request.method == 'POST':
         caseId = request.POST.get("cancel_case_id", 0)
@@ -95,28 +97,54 @@ def dispatch_inquire(request):
             case.save()
 
     carTeams = CarTeam.objects.all()
+    q_assigned_car_team = ''
+    q_belonged_car_team = ''
+    q_start_date_string=''
+    q_end_date_string = ''
+
+
+    # 在 html 選擇 selected 後，要把值傳回 views 
+    # 再把 views 的值傳回給 html
+    # selected -> views -> value
 
     if (request.GET.get("qDate") != None and request.GET.get("qDate") != ""):
         q_start_date = request.GET.get("qDate")[:10]
         q_end_date = request.GET.get("qDate")[-10:]
-        # cases = cases.filter(create_time__contains=request.GET.get("qDate"))
         cases = Case.objects.filter(create_time__gte = q_start_date, create_time__lte = q_end_date).order_by('-id')
+        
+        q_end_date_string = q_end_date
+        q_start_date_string = q_start_date
 
-        qDate_string = request.GET.get("qDate")
+        #qDate_string = request.GET.get("qDate")
+        qDate_string = q_start_date + ' ~ ' + q_end_date
+        
 
         print(cases.count())
     else: 
-        today = datetime.now()
-        thirty_days_before = today - timedelta(days=30)
-
-        # cases = Case.objects.all().order_by('-id')
-        cases = Case.objects.filter(create_time__gte=thirty_days_before, create_time__lte=today).order_by('-id')
+        #today = datetime.now()
+        #thirty_days_before = today - timedelta(days=30)
+        q_end_date= datetime.now()
+        q_start_date = q_end_date - timedelta(days=30)
         
-        today_string = today.strftime('%Y-%m-%d')
-        thirty_days_before_string = thirty_days_before.strftime('%Y-%m-%d')
-        qDate_string = f'{thirty_days_before_string}+~+{today_string}'
+        cases = Case.objects.filter(create_time__gte=q_start_date, create_time__lte=q_end_date).order_by('-id')
+        
+        q_end_date_string = q_end_date.strftime('%Y-%m-%d')
+        q_start_date_string = q_start_date.strftime('%Y-%m-%d')
+
+        qDate_string = f'{q_start_date_string} ~ {q_end_date_string}'
         print(qDate_string)
 
+    if (request.GET.get("assigned_car_team") != None and request.GET.get("assigned_car_team") != ""):
+        q_assigned_car_team = request.GET.get("assigned_car_team")
+        cases = cases.filter(carTeam__name = q_assigned_car_team)
+        #print(cases)
+    
+    if (request.GET.get("belonged_car_team") != None and request.GET.get("belonged_car_team") != ""):
+        q_belonged_car_team = request.GET.get("belonged_car_team")
+        cases = cases.filter(carTeam__name = q_belonged_car_team)
+        #print(cases)
+
+    
     total_dispatch_fee = cases.aggregate(Sum('dispatch_fee'))
 
     # if request.GET.get("qKeyword") != None and request.GET.get("qKeyword") != "" and request.GET.get("qUserId") != None and request.GET.get("qUserId") != "" and request.GET.get("qDate") != None and request.GET.get("qDate") != "" :
@@ -139,12 +167,15 @@ def dispatch_inquire(request):
     # return render(request, 'backboard/dispatch_inquire.html',{'cases':page_obj})
 
     return render(request, 'backboard/dispatch_inquire.html', {
-            'qDate':'2023-03-23+~+2023-03-30',
-            'assigned_car_team':'A車隊',
-            'belonged_car_team':'A車隊',
+            # 'qDate':'2023-03-23+~+2023-03-30',
+            'qDate':qDate_string,
+            'start_date':q_start_date_string,
+            'end_Date':q_end_date_string,
+            'assigned_car_team':q_assigned_car_team,
+            'belonged_car_team':q_belonged_car_team,
             'cases':cases, 
             'carTeams':carTeams, 
-            'total_dispatch_fee':200, 
+            'total_dispatch_fee':total_dispatch_fee, 
         })
 
 def passengers(request):

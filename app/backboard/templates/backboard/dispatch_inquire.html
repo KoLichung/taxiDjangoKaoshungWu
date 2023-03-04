@@ -3,7 +3,7 @@
   <div class="card-body bg-light">
     <div class="row">
       <div class="col"></div>
-      <div class="col-lg-6 col-sm-8 mx-3">
+      <div class="col-lg-6 col-sm-8">
         <div class="my-3 text-center">
           <h4>派車查詢</h4>
         </div> 
@@ -12,21 +12,26 @@
 
           <div class="mb-3 row">
             <label class="col-sm-2 col-form-label" for="datePicker">日期區間：</label>
-            <div class="col-sm-10">            
-              <input class="form-control datetimepicker" id="datePicker" type="date" name="qDate" placeholder="年-月-日 ～ 年-月-日" data-options='{"mode":"range","dateFormat":"Y-m-d","disableMobile":true}'/>
+            <div class="col-sm-10">
+              <input class="form-control datetimepicker" 
+                    id="datePicker" 
+                    type="text" 
+                    name="qDate" 
+                    placeholder="年-月-日 ～ 年-月-日" 
+                    data-options='{"mode":"range","dateFormat":"Y-m-d","disableMobile":true}' 
+                    value="{{ qDate_string }}"/>
             </div>
           </div>
           
-
           <div class="mb-3 row">
             <label class="col-sm-2 col-form-label" for="assigned_car_team">派單車隊：</label>
             <div class="col-sm-10"> 
-              <select class="form-select js-choice" id="assigned_car_team" size="1" name="assigned_car_team" data-options='{"removeItemButton":true,"placeholder":true}'>
+              <select class="form-select js-choice" id="assigned_car_team" size="1" name="assigned_car_team" data-options='{"removeItemButton":true,"placeholder":true}' >
                 <option value="">選擇派單車隊</option>
                 {% for carTeam in carTeams %}
                   {% if assigned_car_team == carTeam.name %}
                     <option value="{{carTeam.name}}" selected>{{carTeam.name}}</option>
-                  {% else %}
+                 {% else %}
                     <option value="{{carTeam.name}}">{{carTeam.name}}</option>
                   {% endif %}
                 {% endfor %}
@@ -40,7 +45,11 @@
               <select class="form-select js-choice" id="belonged_car_team" size="1" name="belonged_car_team" data-options='{"removeItemButton":true,"placeholder":true}'>
                 <option value="">選擇司機車隊</option>
                 {% for carTeam in carTeams %}
-                  <option value="{{carTeam.name}}">{{carTeam.name}}</option>
+                  {% if belonged_car_team == carTeam.name %}
+                    <option value="{{carTeam.name}}" selected>{{carTeam.name}}</option>
+                  {% else %}
+                    <option value="{{carTeam.name}}">{{carTeam.name}}</option>
+                  {% endif %}
                 {% endfor %}
               </select>
             </div>
@@ -57,7 +66,7 @@
         </form>
         
        
-        <div class="my-3">統計扣帳金額：{{ total_dispatch_fee }}</div>
+        <div class="my-3">統計扣帳金額：{{ total_dispatch_fee.dispatch_fee__sum }}</div>
         
 
         <div class="my-5">
