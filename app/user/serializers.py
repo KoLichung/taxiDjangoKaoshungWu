@@ -34,7 +34,7 @@ class UpdateUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = get_user_model()
-        fields = ('phone','name', 'nick_name', 'vehicalLicence', 'idNumber', 'gender', 'car_color', 'number_sites', 'is_online', 'left_money', 'is_passed', 'car_memo')
+        fields = ('id','phone','name', 'nick_name', 'vehicalLicence', 'idNumber', 'gender', 'car_color', 'number_sites', 'is_online', 'left_money', 'is_passed', 'car_memo')
         read_only_fields = ('left_money', 'is_passed',)
 
 class AuthTokenSerializer(serializers.Serializer):
