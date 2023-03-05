@@ -353,11 +353,13 @@ def ajax_get_drivers(request):
         print('ajax get drivers in views')
    
         onlineDrivers = []
+        onlineDrivers_ids = []
 
-        for online_driver in on_task_drivers :
+        # add on task driver
+        for online_driver in on_task_drivers:
             data = {
                 "id": online_driver.id,
-                "belonged_car_team": [], #所屬車隊
+                "belonged_car_team": online_driver.car_teams_string(), #所屬車隊
                 "nick_name":online_driver.nick_name,
                 "phone":online_driver.phone,
                 "vehicalLicence":online_driver.vehicalLicence,
@@ -365,10 +367,6 @@ def ajax_get_drivers(request):
                 "current_lng":online_driver.current_lng,
                 "state": 'on_task',
             }
-
-            driverCarTeams = online_driver.user_car_teams.all() #user_car_teams 來自 UserCarTeamShip 的 user 的 related_name
-            for driverCarTeam in driverCarTeams :
-                data['belonged_car_team'].append(driverCarTeam.carTeam.name) #來自 UserCarTeamShip 的 CarTeam Object
 
             try:
                 driver_case = Case.objects.filter(user=online_driver).filter(~Q(case_state='canceled')).filter(~Q(case_state='finished')).order_by('-id').first()
@@ -392,6 +390,61 @@ def ajax_get_drivers(request):
                 data['case'] = case_data
 
             onlineDrivers.append(data)
+            onlineDrivers_ids.append(online_driver.id)
+
+        # add on the way driver
+        for online_driver in on_the_way_drivers:
+            data = {
+                "id": online_driver.id,
+                "belonged_car_team": online_driver.car_teams_string(), #所屬車隊
+                "nick_name":online_driver.nick_name,
+                "phone":online_driver.phone,
+                "vehicalLicence":online_driver.vehicalLicence,
+                "current_lat":online_driver.current_lat,
+                "current_lng":online_driver.current_lng,
+                "state": 'on_the_way',
+            }
+
+            try:
+                driver_case = Case.objects.filter(user=online_driver).filter(~Q(case_state='canceled')).filter(~Q(case_state='finished')).order_by('-id').first()
+                case_data = {
+                    'assigned_by':driver_case.carTeam.name, #派單車隊
+                    'on_address': driver_case.on_address,
+                    'off_address': driver_case.off_address,
+                }
+                data['case'] = case_data
+                
+
+            except Exception as e:
+                print(e)
+                print('no case for this driver')
+
+                case_data = {
+                    'assigned_by': '',
+                    'on_address': '',
+                    'off_address': '',
+                }
+                data['case'] = case_data
+
+            onlineDrivers.append(data)
+            onlineDrivers_ids.append(online_driver.id)
+
+        # add pending driver
+        for online_driver in pending_drivers:
+            data = {
+                "id": online_driver.id,
+                "belonged_car_team": online_driver.car_teams_string(), #所屬車隊
+                "nick_name":online_driver.nick_name,
+                "phone":online_driver.phone,
+                "vehicalLicence":online_driver.vehicalLicence,
+                "current_lat":online_driver.current_lat,
+                "current_lng":online_driver.current_lng,
+                "state": 'pending',
+            }
+
+            onlineDrivers.append(data)
+            onlineDrivers_ids.append(online_driver.id)
+
 
         print(onlineDrivers)
 
@@ -400,7 +453,9 @@ def ajax_get_drivers(request):
                 'on_task_count':on_task_drivers.count(),
                 'on_the_way_count':on_the_way_drivers.count(),
                 'pending_count':pending_drivers.count(),
-                'onlineDrivers':onlineDrivers
+                'onlineDrivers':onlineDrivers,
+                'onlineDrivers_ids':onlineDrivers_ids,
+                'onlineDrivers_list':onlineDrivers,
             })
 
     else :

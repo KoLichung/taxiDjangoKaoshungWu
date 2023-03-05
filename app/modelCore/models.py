@@ -97,7 +97,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         if UserCarTeamShip.objects.filter(user=self).count() > 0:
             ships = UserCarTeamShip.objects.filter(user=self)
             for ship in ships:
-                car_teams_string = car_teams_string + ship.carTeam.name
+                if car_teams_string == '':
+                    car_teams_string = ship.carTeam.name
+                else:
+                    car_teams_string = car_teams_string+','+ ship.carTeam.name
             return car_teams_string
         else:
             return '無車隊'

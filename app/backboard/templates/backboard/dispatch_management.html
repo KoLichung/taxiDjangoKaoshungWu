@@ -35,29 +35,6 @@
     </div>
 
     <script type="text/javascript">
-      //online_drivers 的 locations & infos
-      const locations = [
-      {% for driver in online_drivers %}
-        {% for userCaseShip in driver.user_cases.all %}  
-          {
-            "lat":{{driver.current_lat}},
-            "lng":{{driver.current_lng}},
-            "car_team":[
-              {% for car_team_ship in driver.user_car_teams.all %}
-                "{{ car_team_ship.carTeam.name }}"
-                {% if not forloop.last %},{% endif %}  
-              {% endfor %},
-            ],
-            "nick_name":"{{driver.nick_name}}",
-            "phone":"{{driver.phone}}",
-            "vehicalLicence":"{{driver.vehicalLicence}}"
-          },
-        {% endfor %}
-      {% endfor %}
-      ];
-      console.log(locations);
-
-      driversLocations=[];
       markerArray = [];
       
       function initMap() {
@@ -84,11 +61,10 @@
   
             success: function (response) {
               console.log("ajax success");
-              const obj = response.obj;
+              online_drivers_list = response.onlineDrivers_list;
+
               online_drivers = response.onlineDrivers;
-    
-              console.log(obj);
-              console.log(online_drivers);
+              online_drivers_ids = response.onlineDrivers_ids;
 
               console.log(online_drivers);
   
@@ -97,26 +73,78 @@
               document.getElementById("onlineOnTask").innerHTML = response.on_task_count;
               document.getElementById("onlineOnTheWay").innerHTML = response.on_the_way_count;
               document.getElementById("onlineWaiting").innerHTML = response.pending_count;
-  
-              //地圖
+
+              // markerArray loop 
+              // 1.還在的 driver, maker update 資料料
+              // 2.不在的 driver, remove maker
+              markerArray.forEach((marker,index) => {             
+                marker_id = parseInt(marker.getTitle().split(',')[0]);
+                index_of_maker_in_online_drivers = online_drivers_ids.indexOf(marker_id);
+                
+                if( index_of_maker_in_online_drivers != -1){
+                  // update marker
+                  driver = online_drivers[index_of_maker_in_online_drivers];
+                  var newLatLng = new google.maps.LatLng(driver.current_lat, driver.current_lng);
+                  marker.setPosition(newLatLng);
+                  if(driver.state == 'on_task'){
+                    marker.setIcon(marker_URL_onTask);
+                  }else if(driver.state == 'on_the_way'){
+                    marker.setIcon(marker_URL_onTheWay);
+                  }else if(driver.state == 'pending'){
+                    marker.setIcon(marker_URL_pending);
+                  }
+                  online_drivers.splice(index_of_maker_in_online_drivers,1);
+                  online_drivers_ids.splice(index_of_maker_in_online_drivers,1);
+                }else{
+                  // remove marker
+                  marker.setMap(null);
+                  markerArray.splice(index,1);
+                }
+              });
+
+              // 剩下的 drivers, 在地圖上新增 maker~
               online_drivers.forEach( (driver, index) => {
-                marker = new google.maps.Marker({
-                  position : new google.maps.LatLng( driver.current_lat, driver.current_lng ),
-                  map: map,
-                  opacity: 0.9,
-                  icon: marker_URL_onTheWay,
-                  title: driver.id.toString(),
-                });
+                marker_title_string = driver.id.toString()+','+driver.belonged_car_team+','+driver.nick_name+','+driver.vehicalLicence+','+driver.phone
+                if(driver.state == 'on_task'){
+                  marker = new google.maps.Marker({
+                    position : new google.maps.LatLng( driver.current_lat, driver.current_lng ),
+                    map: map,
+                    opacity: 0.9,
+                    icon: marker_URL_onTask,
+                    title: marker_title_string,
+                  });
+                }else if(driver.state == 'on_the_way'){
+                  marker = new google.maps.Marker({
+                    position : new google.maps.LatLng( driver.current_lat, driver.current_lng ),
+                    map: map,
+                    opacity: 0.9,
+                    icon: marker_URL_onTheWay,
+                    title: marker_title_string,
+                  });
+                }else if(driver.state == 'pending'){
+                  marker = new google.maps.Marker({
+                    position : new google.maps.LatLng( driver.current_lat, driver.current_lng ),
+                    map: map,
+                    opacity: 0.9,
+                    icon: marker_URL_pending,
+                    title: marker_title_string,
+                  });
+                }
                 markerArray.push(marker);
               });
-              
-              
-              markerArray.forEach((marker,index) => {
+
+              markerArray.forEach((marker,index) => {    
                 google.maps.event.addListener(marker, 'click', function(){
-                  console.log(online_drivers);
+                  //ex. 1,A車隊,阿憲,3303,0912333444
+                  words = marker.getTitle().split(',')
                   infowindow.close(); // Close previously opened infowindow
-                  infowindow.setContent(`<div style="padding="2px"">司機 id: ${marker.getTitle()}</br>${online_drivers[index].belonged_car_team[0]}</br>名稱：${online_drivers[index].nick_name}</br>車牌：${online_drivers[index].vehicalLicence}</br>電話：${online_drivers[index].phone}</div>`);
-                  // infowindow.setContent(`<div style="padding="2px"">${marker.getTitle().belonged_car_team}</br>名稱：${marker.getTitle().nick_name}</br>車牌：${marker.getTitle().vehicalLicence}</br>電話：${marker.getTitle().phone}</div>`);
+                  infowindow.setContent(
+                    `<div style="padding="2px"">司機 id: ${words[0]}</br>
+                      ${words[1]}</br>
+                      名稱：${words[2]}</br>
+                      車牌：${words[3]}</br>
+                      電話：${words[4]}</div>`
+                    );
                   infowindow.open({anchor:marker, map,});
                 });
               });
@@ -124,28 +152,66 @@
               //司機列表
               var info = document.getElementById("drivers-tbody");
               info.innerHTML = ''
-              for (var num in online_drivers){
-                info.innerHTML +=`
-                  <tr id="driver_on_task">
-                    <td class="mx-0 px-0">
-                      <div id="onlineOnTask" class="statusDot"></div>
-                    </td>
-                    <td class="driverStatus">
-                      車隊：${online_drivers[num].belonged_car_team}</br> 
-                      暱稱：${online_drivers[num].nick_name}</br>
-                      派單：${online_drivers[num].case.assigned_by}</br>
-                      上車：${online_drivers[num].case.on_address}</br>
-                      下車：${online_drivers[num].case.off_address}
-                    </td>
-                    <td class="mx-0 px-0">
-                      <button class="btn" type="button">
-                        <span class="text-primary fas fa-phone-alt fs-1"></span>
-                      </button>
-                    </td>
-                  </tr>
-                `
+              for (var num in online_drivers_list){
+                if (online_drivers_list[num].state == 'on_task'){
+                  info.innerHTML +=`
+                    <tr id="driver_on_task">
+                      <td class="mx-0 px-0">
+                        <div id="onlineOnTask" class="statusDot"></div>
+                      </td>
+                      <td class="driverStatus">
+                        車隊：${online_drivers_list[num].belonged_car_team}</br> 
+                        暱稱：${online_drivers_list[num].nick_name}</br>
+                        派單：${online_drivers_list[num].case.assigned_by}</br>
+                        上車：${online_drivers_list[num].case.on_address}</br>
+                        下車：${online_drivers_list[num].case.off_address}
+                      </td>
+                      <td class="mx-0 px-0">
+                        <button class="btn" type="button">
+                          <span class="text-primary fas fa-phone-alt fs-1"></span>
+                        </button>
+                      </td>
+                    </tr>
+                  `
+                }else if (online_drivers_list[num].state == 'on_the_way'){
+                  info.innerHTML +=`
+                    <tr id="driver_on_task">
+                      <td class="mx-0 px-0">
+                        <div id="onlineOnTheWay" class="statusDot"></div>
+                      </td>
+                      <td class="driverStatus">
+                        車隊：${online_drivers_list[num].belonged_car_team}</br> 
+                        暱稱：${online_drivers_list[num].nick_name}</br>
+                        派單：${online_drivers_list[num].case.assigned_by}</br>
+                        上車：${online_drivers_list[num].case.on_address}</br>
+                        下車：${online_drivers_list[num].case.off_address}
+                      </td>
+                      <td class="mx-0 px-0">
+                        <button class="btn" type="button">
+                          <span class="text-primary fas fa-phone-alt fs-1"></span>
+                        </button>
+                      </td>
+                    </tr>
+                  `
+                }else if(online_drivers_list[num].state == 'pending'){
+                  info.innerHTML +=`
+                    <tr id="driver_on_task">
+                      <td class="mx-0 px-0">
+                        <div id="onlineWaiting" class="statusDot"></div>
+                      </td>
+                      <td class="driverStatus">
+                        車隊：${online_drivers_list[num].belonged_car_team}</br> 
+                        暱稱：${online_drivers_list[num].nick_name}</br>
+                      </td>
+                      <td class="mx-0 px-0">
+                        <button class="btn" type="button">
+                          <span class="text-primary fas fa-phone-alt fs-1"></span>
+                        </button>
+                      </td>
+                    </tr>
+                  `
+                }
               }
-              
               
             },
   
@@ -157,7 +223,7 @@
           });
         }
         fetchData();
-        //setInterval(fetchData, 3000);
+        setInterval(fetchData, 3000);
 
         //setInterval(myTimer, 8000);
         //function myTimer() {
