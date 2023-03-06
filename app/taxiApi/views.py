@@ -301,20 +301,24 @@ class CaseRefuseView(APIView):
         case = Case.objects.get(id=case_id)
         user = self.request.user
 
-        car_teams_string = user.car_teams_string()
+        try:
+            car_teams_string = user.car_teams_string()
 
-        if case.telegram_id != None and case.telegram_id != '':
-            tel_send_message(case.telegram_id, f'{case.case_number}-{car_teams_string}\n{user.nick_name} 駕駛人放棄接單\n-----------------------\n上車:{case.on_address}')
+            if case.telegram_id != None and case.telegram_id != '':
+                tel_send_message(case.telegram_id, f'{case.case_number}-{car_teams_string}\n{user.nick_name} 駕駛人放棄接單\n-----------------------\n上車:{case.on_address}')
 
-        userCaseShip = UserCaseShip.objects.filter(case=case).first()
-        userCaseShip.countdown_second = 0
+            userCaseShip = UserCaseShip.objects.filter(case=case).first()
+            userCaseShip.countdown_second = 0
 
-        if len(userCaseShip.exclude_ids_text) == 0:
-            userCaseShip.exclude_ids_text = str(userCaseShip.user.id)
-        else:
-            userCaseShip.exclude_ids_text = userCaseShip.exclude_ids_text + f',{userCaseShip.user.id}'
+            if len(userCaseShip.exclude_ids_text) == 0:
+                userCaseShip.exclude_ids_text = str(userCaseShip.user.id)
+            else:
+                userCaseShip.exclude_ids_text = userCaseShip.exclude_ids_text + f',{userCaseShip.user.id}'
 
-        userCaseShip.save()
+            userCaseShip.save()
+            return Response({'message': "ok"})
+        except:
+            raise APIException("no this case")
 
 class CaseNotifyCustomerView(APIView):
     
