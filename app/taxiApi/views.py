@@ -219,7 +219,8 @@ class CaseFinishedView(APIView):
                     return Response({'message': "ok"})
             else:
                 raise APIException("no case money")
-        except:
+        except Exception as e:
+            logger.error(e)
             raise APIException("no this case")
 
 class CaseCanceledView(APIView):
