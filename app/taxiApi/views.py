@@ -72,7 +72,7 @@ class GetCaseViewSet(viewsets.GenericViewSet,
             queryset[i].countdown_second = user_case_ship.countdown_second
             queryset[i].expect_second = user_case_ship.expect_second
 
-        return queryset
+        return Response({'cases':queryset, 'left_money':self.request.user.left_money}) 
 
 #http://localhost:8000/api/update_lat_lng?lat=23.23&lng=124.24
 class UpdateLatLngView(APIView):
@@ -223,7 +223,7 @@ class CaseFinishedView(APIView):
 
                     after_left_money = user.left_money
                     user.save()
-                    
+
                     return Response({
                         'message':'ok', 
                         'before_left_money':before_left_money,
