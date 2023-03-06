@@ -112,9 +112,7 @@ class CaseConfirmView(APIView):
             case.case_state = 'way_to_catch'
             case.confirm_time = datetime.now()
             case.user = user
-            case.userId = user.userId
             case.save()
-            
             
             car_teams_string = user.car_teams_string()
 
