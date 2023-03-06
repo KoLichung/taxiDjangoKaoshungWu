@@ -215,9 +215,21 @@ class CaseFinishedView(APIView):
                     UserCaseShip.objects.filter(case=case).delete()
 
                     user = self.request.user 
+
+                    before_left_money = user.left_money
+                    final_dispatch_fee = case.dispatch_fee
+
                     user.left_money = user.left_money - case.dispatch_fee
+
+                    after_left_money = user.left_money
                     user.save()
-                    return Response({'message': "ok"})
+                    
+                    return Response({
+                        'message':'ok', 
+                        'before_left_money':before_left_money,
+                        'dispatch_fee':final_dispatch_fee,
+                        'after_left_money':after_left_money,
+                    })
             else:
                 raise APIException("no case money")
         except Exception as e:
