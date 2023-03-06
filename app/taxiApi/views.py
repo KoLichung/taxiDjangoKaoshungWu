@@ -302,7 +302,9 @@ class CaseRefuseView(APIView):
         user = self.request.user
 
         car_teams_string = user.car_teams_string()
-        tel_send_message(case.telegram_id, f'{case.case_number}-{car_teams_string}\n{user.nick_name} 駕駛人放棄接單\n-----------------------\n上車:{case.on_address}')
+
+        if case.telegram_id != None and case.telegram_id != '':
+            tel_send_message(case.telegram_id, f'{case.case_number}-{car_teams_string}\n{user.nick_name} 駕駛人放棄接單\n-----------------------\n上車:{case.on_address}')
 
         userCaseShip = UserCaseShip.objects.filter(case=case).first()
         userCaseShip.countdown_second = 0
@@ -328,7 +330,8 @@ class CaseNotifyCustomerView(APIView):
                 raise APIException("this case already belong to someone")
             else:   
                 car_teams_string = case.user.car_teams_string()
-                tel_send_message(case.telegram_id, f'{case.case_number}-{car_teams_string}\n駕駛通知已抵達上車點\n請乘客盡快上車\n--------------------------\n上車:{case.on_address}')
+                if case.telegram_id != None and case.telegram_id != '':
+                    tel_send_message(case.telegram_id, f'{case.case_number}-{car_teams_string}\n駕駛通知已抵達上車點\n請乘客盡快上車\n--------------------------\n上車:{case.on_address}')
                 return Response({'message': "ok"})
         except:
             raise APIException("no this case")
