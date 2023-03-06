@@ -70,6 +70,7 @@ class GetCaseViewSet(viewsets.GenericViewSet,
             queryset[i].user_left_money = self.request.user.left_money
             user_case_ship = UserCaseShip.objects.filter(user=self.request.user, case = queryset[i]).first()
             queryset[i].countdown_second = user_case_ship.countdown_second
+            queryset[i].expect_second = user_case_ship.expect_second
 
         return queryset
 
