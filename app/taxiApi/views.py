@@ -203,11 +203,12 @@ class CaseFinishedView(APIView):
                     case.off_address = off_address
                     case.case_money = case_money
 
-                    dispatch_fee = case_money * case.user.dispatch_fee_percent_integer / 100
-                    
+                    # 派遣金是 10%
+                    dispatch_fee = case_money * 10 / 100
+                    # 除以 10 取 整數部分, 並 x 10
+                    # ex. 25//10 = 2, 2*10=20, dispatch_fee = 20 
                     case.dispatch_fee = int(dispatch_fee) // 10 * 10
 
-                    # case.dispatch_fee = int(case_money * case.user.dispatch_fee_percent_integer / 100)
                     case.save()
 
                     #delete ships
