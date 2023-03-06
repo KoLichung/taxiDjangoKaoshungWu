@@ -58,7 +58,7 @@ def countDownUserCaseShip():
 
             if userCaseShip.user != None:
                 if userCaseShip.countdown_second != 0:
-                    userCaseShip.countdown_second = userCaseShip.countdown_second - 1
+                    userCaseShip.countdown_second = userCaseShip.countdown_second - 2
                     userCaseShip.save()
                 else:
                     # 司機未接單
@@ -89,7 +89,7 @@ def countDownUserCaseShip():
 
                         if timePredict < 900:
                             userCaseShip.user = user
-                            userCaseShip.countdown_second = 15
+                            userCaseShip.countdown_second = 16
                             userCaseShip.expect_second = timePredict
                             userCaseShip.save()
                         else:

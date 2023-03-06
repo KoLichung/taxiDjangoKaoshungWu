@@ -246,7 +246,7 @@ class UserCaseShip(models.Model):
         related_name='case_users'
     )
     exclude_ids_text = models.TextField(default='',blank = True, null=True)
-    countdown_second = models.IntegerField(default=15)
+    countdown_second = models.IntegerField(default=16)
     expect_second = models.IntegerField(default=0)
 
 class CaseSummary(models.Model):
