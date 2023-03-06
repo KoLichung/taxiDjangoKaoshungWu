@@ -43,13 +43,15 @@ def countDownUserCaseShip():
                     case.save()
                     userCaseShip.delete()
 
-                    tel_send_message(case.telegram_id, f'{case.case_number}\n抱歉目前附近無符合駕駛!\n-----------------\n上車:{case.on_address}')
+                    if case.telegram_id != None and case.telegram_id != '':
+                        tel_send_message(case.telegram_id, f'{case.case_number}\n抱歉目前附近無符合駕駛!\n-----------------\n上車:{case.on_address}')
             else:
                 case.case_state = 'canceled'
                 case.save()
                 userCaseShip.delete()
 
-                tel_send_message(case.telegram_id, f'{case.case_number}\n抱歉目前附近無符合駕駛!\n-----------------\n上車:{case.on_address}')
+                if case.telegram_id != None and case.telegram_id != '':
+                    tel_send_message(case.telegram_id, f'{case.case_number}\n抱歉目前附近無符合駕駛!\n-----------------\n上車:{case.on_address}')
                 
         else:
             userCaseShip = UserCaseShip.objects.filter(case=case).first()
@@ -64,8 +66,10 @@ def countDownUserCaseShip():
                     # 把此 user 加入排除名單
                     # 如果司機已加入排除名單, 則此為司機拒絕接單
                     if str(userCaseShip.user.id) not in userCaseShip.exclude_ids_text:
+                        user = userCaseShip.user
                         car_teams_string = user.car_teams_string()
-                        tel_send_message(case.telegram_id, f'{case.case_number}-{car_teams_string}\n{user.nick_name} 駕駛人未接單\n-----------------------\n上車:{case.on_address}')
+                        if case.telegram_id != None and case.telegram_id != '':
+                            tel_send_message(case.telegram_id, f'{case.case_number}-{car_teams_string}\n{user.nick_name} 駕駛人未接單\n-----------------------\n上車:{case.on_address}')
 
                         if len(userCaseShip.exclude_ids_text) == 0:
                             userCaseShip.exclude_ids_text = str(userCaseShip.user.id)
@@ -93,12 +97,15 @@ def countDownUserCaseShip():
                             case.save()
                             userCaseShip.delete()
 
-                            tel_send_message(case.telegram_id, f'{case.case_number}\n抱歉目前附近無符合駕駛!\n-----------------\n上車:{case.on_address}')
+                            if case.telegram_id != None and case.telegram_id != '':
+                                tel_send_message(case.telegram_id, f'{case.case_number}\n抱歉目前附近無符合駕駛!\n-----------------\n上車:{case.on_address}')
                     else:
                         case.case_state = 'canceled'
                         case.save()
                         userCaseShip.delete()
-                        tel_send_message(case.telegram_id, f'{case.case_number}\n抱歉目前附近無符合駕駛!\n-----------------\n上車:{case.on_address}')
+
+                        if case.telegram_id != None and case.telegram_id != '':
+                            tel_send_message(case.telegram_id, f'{case.case_number}\n抱歉目前附近無符合駕駛!\n-----------------\n上車:{case.on_address}')
                     
 
 
