@@ -40,9 +40,15 @@ def callback(request):
                 now = datetime.now()
                 now_string = now.strftime('%Y%m%d')
                 case.create_time = now
-                case.carTeam = CarTeam.objects.all().first()
 
-                car_team_number_string = case.carTeam.get_car_team_number_string
+                # !! 這裡要先做派單人員 跟 Server 的綁定
+                carTeam = CarTeam.objects.all().first()
+                carTeam.day_case_count = carTeam.day_case_count + 1
+                carTeam.save()
+
+                case.carTeam = carTeam
+                car_team_number_string = carTeam.get_car_team_number_string
+                
                 case.case_number = f'{case.carTeam.name} ❤️{now_string}.{car_team_number_string}❤️'
                 
                 path = 'https://maps.googleapis.com/maps/api/geocode/json?address='

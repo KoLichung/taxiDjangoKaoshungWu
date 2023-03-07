@@ -167,7 +167,7 @@
                         下車：${online_drivers_list[num].case.off_address}
                       </td>
                       <td class="mx-0 px-0">
-                        <button class="btn" type="button">
+                        <button class="btn" type="button" onclick="makePhoneCall(${online_drivers_list[num].phone})">
                           <span class="text-primary fas fa-phone-alt fs-1"></span>
                         </button>
                       </td>
@@ -177,7 +177,7 @@
                   info.innerHTML +=`
                     <tr id="driver_on_task">
                       <td class="mx-0 px-0">
-                        <div id="onlineOnTheWay" class="statusDot"></div>
+                        <div id="onlineOnTheWay" class="statusDot" ></div>
                       </td>
                       <td class="driverStatus">
                         車隊：${online_drivers_list[num].belonged_car_team}</br> 
@@ -187,7 +187,7 @@
                         下車：${online_drivers_list[num].case.off_address}
                       </td>
                       <td class="mx-0 px-0">
-                        <button class="btn" type="button">
+                        <button class="btn" type="button" onclick="makePhoneCall(${online_drivers_list[num].phone})">
                           <span class="text-primary fas fa-phone-alt fs-1"></span>
                         </button>
                       </td>
@@ -204,7 +204,7 @@
                         暱稱：${online_drivers_list[num].nick_name}</br>
                       </td>
                       <td class="mx-0 px-0">
-                        <button class="btn" type="button">
+                        <button class="btn" type="button" onclick="makePhoneCall(${online_drivers_list[num].phone})">
                           <span class="text-primary fas fa-phone-alt fs-1"></span>
                         </button>
                       </td>
@@ -224,6 +224,8 @@
         }
         fetchData();
         setInterval(fetchData, 3000);
+        
+        
 
         //setInterval(myTimer, 8000);
         //function myTimer() {
@@ -235,6 +237,11 @@
         //  markerArray[0].setPosition(newLatLng);
         //}
 
+      }
+
+      function makePhoneCall(phone) {
+        var phone = "0"+{{ case.user.phone }}
+        window.open('tel:'+phone);    
       }
 
     </script>
@@ -255,83 +262,6 @@
             </tr>
           </thead>
           <tbody class="align-middle" id='drivers-tbody'>
-            
-            {% for driver in on_task_drivers %}
-              {% for userCaseShip in driver.user_cases.all %}
-                <tr id="driver_on_task">
-                  <td class="mx-0 px-0">
-                    <div id="onlineOnTask" class="statusDot"></div>
-                  </td>
-                  <td class="driverStatus">
-                    車隊：
-                      {% for car_team_ship in driver.user_car_teams.all %}
-                        {% if forloop.last %}
-                          {{car_team_ship.carTeam.name}}
-                        {% else %}
-                          {{car_team_ship.carTeam.name}},
-                        {% endif %}
-                      {% endfor %}
-                    </br> 
-                    暱稱：{{userCaseShip.user.nick_name}}</br>
-                    派單：{{userCaseShip.case.case_number}}</br>
-                    上車：{{userCaseShip.case.on_address}}</br>
-                    下車：{{userCaseShip.case.off_address}}
-                  </td>
-                  <td class="mx-0 px-0">
-                    <button class="btn" type="button">
-                      <span class="text-primary fas fa-phone-alt fs-1"></span>
-                    </button>
-                  </td>
-                </tr>
-              {% endfor %}
-            {% endfor %}
-
-            {% for driver in on_the_way_drivers %}
-              {% for userCaseShip in driver.user_cases.all %}
-                <tr>
-                  <td class="mx-0 px-0">
-                    <div id="onlineOnTheWay" class="statusDot"></div>
-                  </td>
-                  <td class="driverStatus">
-                    車隊：
-                      {% for car_team_ship in driver.user_car_teams.all %}
-                        {% if forloop.last %}
-                          {{car_team_ship.carTeam.name}}
-                        {% else %}
-                          {{car_team_ship.carTeam.name}},
-                        {% endif %}
-                      {% endfor %}
-                    </br> 
-                    暱稱：{{userCaseShip.user.nick_name}}</br>
-                    派單：{{userCaseShip.case.carTeam.name}}❤️{{userCaseShip.case.case_number}}❤️</br>
-                    上車：{{userCaseShip.case.on_address}}</br>
-                    下車：{{userCaseShip.case.off_address}}
-                  </td>
-                  <td class="mx-0 px-0">
-                    <button class="btn" type="button">
-                      <span class="text-primary fas fa-phone-alt fs-1"></span>
-                    </button>
-                  </td>
-                </tr>
-              {% endfor %}
-            {% endfor %}
-            
-            {% for driver in pending_drivers %}
-                <tr>
-                  <td class="mx-0 px-0">
-                    <div id="onlineWaiting" class="statusDot"></div>
-                  </td>
-                  <td class="driverStatus">
-                    車隊：</br> 
-                    暱稱：{{userCaseShip.user.nick_name}}</br>
-                  </td>
-                  <td class="mx-0 px-0">
-                    <button class="btn" type="button">
-                      <span class="text-primary fas fa-phone-alt fs-1"></span>
-                    </button>
-                  </td>
-                </tr>
-            {% endfor %}
 
           </tbody>
         </table>
