@@ -35,124 +35,127 @@ def callback(request):
             if User.objects.filter(telegram_id=chat_id).count() != 0:
                 user = User.objects.filter(telegram_id=chat_id).first()
                 if user.is_telegram_bot_enable:
-                    if texts[0] == '派單':
-                        on_address = texts[1].replace('上車','').replace(':','').replace('：','')
-                        off_address = texts[2].replace('下車','').replace(':','').replace('：','')
-                        
-                        case = Case()
-                        case.case_state = 'wait'
-
-                        case.on_address = on_address
-                        case.off_address = off_address
-
-                        now = datetime.now()
-                        now_string = now.strftime('%Y%m%d')
-                        case.create_time = now
-
-                        # !! 這裡要先做派單人員 跟 Server 的綁定
-                        carTeam = CarTeam.objects.all().first()
-                        carTeam.day_case_count = carTeam.day_case_count + 1
-                        carTeam.save()
-
-                        case.carTeam = carTeam
-                        car_team_number_string = carTeam.get_car_team_number_string
-
-                        case.case_number = f'{case.carTeam.name} ❤️{now_string}.{car_team_number_string}❤️'
-                        
-                        path = 'https://maps.googleapis.com/maps/api/geocode/json?address='
-                        
-                        try:
-                            onUrl = path+on_address+"&key="+"AIzaSyCrzmspoFyEFYlQyMqhEkt3x5kkY8U3C-Y"
-                            logger.info(onUrl)
-                            response = requests.get(onUrl)
-                            logger.info(response.text)
-
-                            resp_json_payload = response.json()
-                            case.on_lat = resp_json_payload['results'][0]['geometry']['location']['lat']
-                            case.on_lng = resp_json_payload['results'][0]['geometry']['location']['lng']
-                        except Exception as e:
-                            print(f'on location error {e}')
-                            logger.error(f'on location error {e}')
-                            tel_send_message(chat_id,'無法辨識上車地點')
-                            raise APIException("error")
-
-                        try:
-                            offUrl = path+off_address+"&key="+"AIzaSyCrzmspoFyEFYlQyMqhEkt3x5kkY8U3C-Y"
-                            logger.info(response.text)
-                            response = requests.get(offUrl)
-                            logger.info(response.text)
-
-                            resp_json_payload = response.json()
-                            case.off_lat = resp_json_payload['results'][0]['geometry']['location']['lat']
-                            case.off_lng = resp_json_payload['results'][0]['geometry']['location']['lng']
-                        except Exception as e:
-                            print(f'off location error {e}')
-                            logger.error(f'off location error {e}')
-
-                        try:
-                            case.time_memo = texts[3].replace('時間','').replace(':','').replace('：','')
-                            case.memo = texts[4].replace('備註','').replace(':','').replace('：','')
-                        except Exception as e:
-                            print(f'case memo error {e}')
-                            logger.error(f'case memo error {e}')
-
-                        case.telegram_id = chat_id
-                        case.save()
-
-                        tel_send_message(chat_id,f'{case.case_number}\n派單成功，正在尋找駕駛\n上車：{case.on_address}\n下車：{case.off_address}\n時間：{case.time_memo}\n備註：{case.memo}')
-                    elif texts[0] == '預約單':
-                        # 預約單功能尚未完成
-                        tel_send_message(chat_id,'這是預約單，預約單功能尚未完成!')
-                    elif texts[0] == '取消':
-                        # tel_send_message(chat_id,'這是取消單!')
-                        if "❤" in texts[1]:
-                            # 單號取消
-                            if Case.objects.filter(case_number=texts[1]).count() != 0:
-                                case = Case.objects.filter(case_number=texts[1]).first()
-                                if case.case_state != 'canceled':
-                                    case.case_state = 'canceled'
-                                    case.save()
-                                    UserCaseShip.objects.filter(case=case).delete()
-                                    
-                                    if case.user != None:
-                                        car_teams_string = case.user.car_teams_string()
-                                    else:
-                                        car_teams_string=''
-                                    tel_send_message(chat_id,f'{case.case_number}-{car_teams_string}\n--------------------------\n取消成功\n--------------------------\n上車:{case.on_address}')
-                                else:
-                                    if case.user != None:
-                                        car_teams_string = case.user.car_teams_string()
-                                    else:
-                                        car_teams_string=''
-                                    tel_send_message(chat_id,f'{case.case_number}-{car_teams_string}\n--------------------------\n此單已被取消\n--------------------------\n上車:{case.on_address}')
-                            else:
-                                tel_send_message(chat_id,f'取消失敗，找不到此單號')
-                        elif "上車" in texts[1]:
-                            # 依上車位置取消
+                    try:
+                        if texts[0] == '派單':
                             on_address = texts[1].replace('上車','').replace(':','').replace('：','')
+                            off_address = texts[2].replace('下車','').replace(':','').replace('：','')
+                            
+                            case = Case()
+                            case.case_state = 'wait'
 
-                            if Case.objects.filter(on_address=on_address).count() != 0:
-                                case = Case.objects.filter(on_address=on_address).order_by('-id').first()
-                                if case.case_state != 'canceled':
-                                    case.case_state = 'canceled'
-                                    case.save()
-                                    UserCaseShip.objects.filter(case=case).delete()
+                            case.on_address = on_address
+                            case.off_address = off_address
 
-                                    if case.user != None:
-                                        car_teams_string = case.user.car_teams_string()
+                            now = datetime.now()
+                            now_string = now.strftime('%Y%m%d')
+                            case.create_time = now
+
+                            # !! 這裡要先做派單人員 跟 Server 的綁定
+                            carTeam = CarTeam.objects.all().first()
+                            carTeam.day_case_count = carTeam.day_case_count + 1
+                            carTeam.save()
+
+                            case.carTeam = carTeam
+                            car_team_number_string = carTeam.get_car_team_number_string
+
+                            case.case_number = f'{case.carTeam.name} ❤️{now_string}.{car_team_number_string}❤️'
+                            
+                            path = 'https://maps.googleapis.com/maps/api/geocode/json?address='
+                            
+                            try:
+                                onUrl = path+on_address+"&key="+"AIzaSyCrzmspoFyEFYlQyMqhEkt3x5kkY8U3C-Y"
+                                logger.info(onUrl)
+                                response = requests.get(onUrl)
+                                logger.info(response.text)
+
+                                resp_json_payload = response.json()
+                                case.on_lat = resp_json_payload['results'][0]['geometry']['location']['lat']
+                                case.on_lng = resp_json_payload['results'][0]['geometry']['location']['lng']
+                            except Exception as e:
+                                print(f'on location error {e}')
+                                logger.error(f'on location error {e}')
+                                tel_send_message(chat_id,'無法辨識上車地點')
+                                raise APIException("error")
+
+                            try:
+                                offUrl = path+off_address+"&key="+"AIzaSyCrzmspoFyEFYlQyMqhEkt3x5kkY8U3C-Y"
+                                logger.info(response.text)
+                                response = requests.get(offUrl)
+                                logger.info(response.text)
+
+                                resp_json_payload = response.json()
+                                case.off_lat = resp_json_payload['results'][0]['geometry']['location']['lat']
+                                case.off_lng = resp_json_payload['results'][0]['geometry']['location']['lng']
+                            except Exception as e:
+                                print(f'off location error {e}')
+                                logger.error(f'off location error {e}')
+
+                            try:
+                                case.time_memo = texts[3].replace('時間','').replace(':','').replace('：','')
+                                case.memo = texts[4].replace('備註','').replace(':','').replace('：','')
+                            except Exception as e:
+                                print(f'case memo error {e}')
+                                logger.error(f'case memo error {e}')
+
+                            case.telegram_id = chat_id
+                            case.save()
+
+                            tel_send_message(chat_id,f'{case.case_number}\n派單成功，正在尋找駕駛\n上車：{case.on_address}\n下車：{case.off_address}\n時間：{case.time_memo}\n備註：{case.memo}')
+                        elif texts[0] == '預約單':
+                            # 預約單功能尚未完成
+                            tel_send_message(chat_id,'這是預約單，預約單功能尚未完成!')
+                        elif texts[0] == '取消':
+                            # tel_send_message(chat_id,'這是取消單!')
+                            if "❤" in texts[1]:
+                                # 單號取消
+                                if Case.objects.filter(case_number=texts[1]).count() != 0:
+                                    case = Case.objects.filter(case_number=texts[1]).first()
+                                    if case.case_state != 'canceled':
+                                        case.case_state = 'canceled'
+                                        case.save()
+                                        UserCaseShip.objects.filter(case=case).delete()
+                                        
+                                        if case.user != None:
+                                            car_teams_string = case.user.car_teams_string()
+                                        else:
+                                            car_teams_string=''
+                                        tel_send_message(chat_id,f'{case.case_number}-{car_teams_string}\n--------------------------\n取消成功\n--------------------------\n上車:{case.on_address}')
                                     else:
-                                        car_teams_string=''
-                                    tel_send_message(chat_id,f'{case.case_number}-{car_teams_string}\n--------------------------\n取消成功\n--------------------------\n上車:{case.on_address}')
+                                        if case.user != None:
+                                            car_teams_string = case.user.car_teams_string()
+                                        else:
+                                            car_teams_string=''
+                                        tel_send_message(chat_id,f'{case.case_number}-{car_teams_string}\n--------------------------\n此單已被取消\n--------------------------\n上車:{case.on_address}')
                                 else:
-                                    if case.user != None:
-                                        car_teams_string = case.user.car_teams_string()
+                                    tel_send_message(chat_id,f'取消失敗，找不到此單號')
+                            elif "上車" in texts[1]:
+                                # 依上車位置取消
+                                on_address = texts[1].replace('上車','').replace(':','').replace('：','')
+
+                                if Case.objects.filter(on_address=on_address).count() != 0:
+                                    case = Case.objects.filter(on_address=on_address).order_by('-id').first()
+                                    if case.case_state != 'canceled':
+                                        case.case_state = 'canceled'
+                                        case.save()
+                                        UserCaseShip.objects.filter(case=case).delete()
+
+                                        if case.user != None:
+                                            car_teams_string = case.user.car_teams_string()
+                                        else:
+                                            car_teams_string=''
+                                        tel_send_message(chat_id,f'{case.case_number}-{car_teams_string}\n--------------------------\n取消成功\n--------------------------\n上車:{case.on_address}')
                                     else:
-                                        car_teams_string=''
-                                    tel_send_message(chat_id,f'{case.case_number}-{car_teams_string}\n--------------------------\n此單已被取消\n--------------------------\n上車:{case.on_address}')
-                            else:
-                                tel_send_message(chat_id,f'取消失敗，找不到此上車位置的單')
-                    else:
-                        tel_send_message(chat_id,'動作不明確!')
+                                        if case.user != None:
+                                            car_teams_string = case.user.car_teams_string()
+                                        else:
+                                            car_teams_string=''
+                                        tel_send_message(chat_id,f'{case.case_number}-{car_teams_string}\n--------------------------\n此單已被取消\n--------------------------\n上車:{case.on_address}')
+                                else:
+                                    tel_send_message(chat_id,f'取消失敗，找不到此上車位置的單')
+                        else:
+                            tel_send_message(chat_id,'動作不明確!')
+                    except:
+                        tel_send_message(chat_id,'格式錯誤!')
                 else:
                     tel_send_message(chat_id, "您沒有派單的權限~")
             elif texts[0] == '綁定':
