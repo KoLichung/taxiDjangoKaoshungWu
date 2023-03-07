@@ -106,11 +106,17 @@ def callback(request):
                             case.case_state = 'canceled'
                             case.save()
                             UserCaseShip.objects.filter(case=case).delete()
-
-                            car_teams_string = case.user.car_teams_string()
+                            
+                            if case.user != None:
+                                car_teams_string = case.user.car_teams_string()
+                            else:
+                                car_teams_string=''
                             tel_send_message(chat_id,f'{case.case_number}-{car_teams_string}\n--------------------------\n取消成功\n--------------------------\n上車:{case.on_address}')
                         else:
-                            car_teams_string = case.user.car_teams_string()
+                            if case.user != None:
+                                car_teams_string = case.user.car_teams_string()
+                            else:
+                                car_teams_string=''
                             tel_send_message(chat_id,f'{case.case_number}-{car_teams_string}\n--------------------------\n此單已被取消\n--------------------------\n上車:{case.on_address}')
                     else:
                         tel_send_message(chat_id,f'取消失敗，找不到此單號')
@@ -125,10 +131,16 @@ def callback(request):
                             case.save()
                             UserCaseShip.objects.filter(case=case).delete()
 
-                            car_teams_string = case.user.car_teams_string()
+                            if case.user != None:
+                                car_teams_string = case.user.car_teams_string()
+                            else:
+                                car_teams_string=''
                             tel_send_message(chat_id,f'{case.case_number}-{car_teams_string}\n--------------------------\n取消成功\n--------------------------\n上車:{case.on_address}')
                         else:
-                            car_teams_string = case.user.car_teams_string()
+                            if case.user != None:
+                                car_teams_string = case.user.car_teams_string()
+                            else:
+                                car_teams_string=''
                             tel_send_message(chat_id,f'{case.case_number}-{car_teams_string}\n--------------------------\n此單已被取消\n--------------------------\n上車:{case.on_address}')
                     else:
                         tel_send_message(chat_id,f'取消失敗，找不到此上車位置的單')
