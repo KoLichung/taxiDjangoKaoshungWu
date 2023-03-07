@@ -55,6 +55,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     
     line_id = models.CharField(max_length=255, default='', blank = True, null=True, unique=True)
     telegram_id = models.CharField(max_length=128, default='', blank = True, null=True)
+    is_telegram_bot_enable = models.BooleanField(default=True)
 
     vehicalLicence = models.CharField(max_length=255, default='', null=True) #車牌
     # userId = models.CharField(max_length=10, default='', null=True ) #台號

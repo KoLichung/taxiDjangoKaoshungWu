@@ -23,11 +23,29 @@ def callback(request):
         message = json.loads(request.body)
         chat_id,txt = parse_message(message)
         if txt == "hi":
-            tel_send_message(chat_id,"Hello!!")
+            if User.objects.filter(telegram_id=chat_id).count() != 0:
+                user = User.objects.filter(telegram_id=chat_id).first()
+                tel_send_message(chat_id, f"Hello!! {user.name}({user.nick_name})")
+            else:
+                tel_send_message(chat_id,"Hello!!")
         else:
             texts = txt.split('\n')
 
-            if texts[0] == '派單':
+            if texts[0] == '綁定':
+                # 用 user phone 綁定
+                try:
+                    phone = texts[1]
+                    if User.objects.filter(phone=phone).count()!=0:
+                        user = User.objects.filter(phone=phone).first()
+                        user.telegram_id = chat_id
+                        user.save()
+                        tel_send_message(chat_id, f"綁定成功!!{user.name}({user.nick_name})")
+                    else:
+                        tel_send_message(chat_id, f"找不到這個使用者, 無法綁定")
+                except:
+                    tel_send_message(chat_id, "無法綁定，請檢查格式是否正確~")
+
+            elif texts[0] == '派單':
                 on_address = texts[1].replace('上車','').replace(':','').replace('：','')
                 off_address = texts[2].replace('下車','').replace(':','').replace('：','')
                 
@@ -92,7 +110,6 @@ def callback(request):
                 case.save()
 
                 tel_send_message(chat_id,f'{case.case_number}\n派單成功，正在尋找駕駛\n上車：{case.on_address}\n下車：{case.off_address}\n時間：{case.time_memo}\n備註：{case.memo}')
-
             elif texts[0] == '預約單':
                 # 預約單功能尚未完成
                 tel_send_message(chat_id,'這是預約單，預約單功能尚未完成!')
@@ -144,8 +161,6 @@ def callback(request):
                             tel_send_message(chat_id,f'{case.case_number}-{car_teams_string}\n--------------------------\n此單已被取消\n--------------------------\n上車:{case.on_address}')
                     else:
                         tel_send_message(chat_id,f'取消失敗，找不到此上車位置的單')
-
-
             else:
                 tel_send_message(chat_id,'動作不明確!')
        
