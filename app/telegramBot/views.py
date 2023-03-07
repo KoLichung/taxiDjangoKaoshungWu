@@ -97,7 +97,7 @@ def callback(request):
                 # 預約單功能尚未完成
                 tel_send_message(chat_id,'這是預約單，預約單功能尚未完成!')
             elif texts[0] == '取消':
-                tel_send_message(chat_id,'這是取消單!')
+                # tel_send_message(chat_id,'這是取消單!')
                 if "❤" in texts[1]:
                     # 單號取消
                     if Case.objects.filter(case_number=texts[1]).count() != 0:
