@@ -48,7 +48,7 @@ def callback(request):
 
                 case.carTeam = carTeam
                 car_team_number_string = carTeam.get_car_team_number_string
-                
+
                 case.case_number = f'{case.carTeam.name} ❤️{now_string}.{car_team_number_string}❤️'
                 
                 path = 'https://maps.googleapis.com/maps/api/geocode/json?address='
@@ -110,6 +110,7 @@ def callback(request):
                             car_teams_string = case.user.car_teams_string()
                             tel_send_message(chat_id,f'{case.case_number}-{car_teams_string}\n--------------------------\n取消成功\n--------------------------\n上車:{case.on_address}')
                         else:
+                            car_teams_string = case.user.car_teams_string()
                             tel_send_message(chat_id,f'{case.case_number}-{car_teams_string}\n--------------------------\n此單已被取消\n--------------------------\n上車:{case.on_address}')
                     else:
                         tel_send_message(chat_id,f'取消失敗，找不到此單號')
@@ -127,6 +128,7 @@ def callback(request):
                             car_teams_string = case.user.car_teams_string()
                             tel_send_message(chat_id,f'{case.case_number}-{car_teams_string}\n--------------------------\n取消成功\n--------------------------\n上車:{case.on_address}')
                         else:
+                            car_teams_string = case.user.car_teams_string()
                             tel_send_message(chat_id,f'{case.case_number}-{car_teams_string}\n--------------------------\n此單已被取消\n--------------------------\n上車:{case.on_address}')
                     else:
                         tel_send_message(chat_id,f'取消失敗，找不到此上車位置的單')
