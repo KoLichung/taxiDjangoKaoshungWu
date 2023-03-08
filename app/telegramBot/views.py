@@ -86,7 +86,7 @@ def callback(request):
                                     case.save()
 
                                 if '下車' in text:
-                                    off_address = texts[2].replace('下車','').replace(':','').replace('：','')
+                                    off_address = text.replace('下車','').replace(':','').replace('：','')
                                     case.off_address = off_address
                             
                                     try:
@@ -102,16 +102,24 @@ def callback(request):
                                         print(f'off location error {e}')
                                         logger.error(f'off location error {e}')
 
+                                    if case.on_lat != None:
+                                        case.save()
 
                                 if '時間' in text:
-                                    case.time_memo = texts[3].replace('時間','').replace(':','').replace('：','')
+                                    case.time_memo = text.replace('時間','').replace(':','').replace('：','')
+                                    if case.on_lat != None:
+                                        case.save()
                                 
                                 if '備註' in text:
-                                    case.memo = texts[4].replace('備註','').replace(':','').replace('：','')
+                                    case.memo = text.replace('備註','').replace(':','').replace('：','')
+                                    if case.on_lat != None:
+                                        case.save()
+                            
+                            if case.on_lat != None:
+                                tel_send_message(chat_id,f'{case.case_number}\n派單成功，正在尋找駕駛\n上車：{case.on_address}\n下車：{case.off_address}\n時間：{case.time_memo}\n備註：{case.memo}')
+                            else:
+                                tel_send_message(chat_id,'派單失敗,無法辨識上車地點')
                                 
-                            case.save()
-
-                            tel_send_message(chat_id,f'{case.case_number}\n派單成功，正在尋找駕駛\n上車：{case.on_address}\n下車：{case.off_address}\n時間：{case.time_memo}\n備註：{case.memo}')
                         elif texts[0] == '預約單':
                             # 預約單功能尚未完成
                             tel_send_message(chat_id,'這是預約單，預約單功能尚未完成!')
