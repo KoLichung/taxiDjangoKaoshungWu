@@ -35,7 +35,7 @@ def callback(request):
             if User.objects.filter(telegram_id=chat_id).count() != 0:
                 user = User.objects.filter(telegram_id=chat_id).first()
                 if user.is_telegram_bot_enable:
-                    # try:
+                    try:
                         if texts[0] == '派單':
                             case = Case()
                             case.case_state = 'wait'
@@ -173,8 +173,8 @@ def callback(request):
                                     tel_send_message(chat_id,f'取消失敗，找不到此上車位置的單')
                         else:
                             tel_send_message(chat_id,'動作不明確!')
-                    # except:
-                    #     tel_send_message(chat_id,'格式錯誤!')
+                    except:
+                        tel_send_message(chat_id,'格式錯誤!')
                 else:
                     tel_send_message(chat_id, "您沒有派單的權限~")
             elif texts[0] == '綁定':
