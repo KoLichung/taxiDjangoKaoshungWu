@@ -70,17 +70,17 @@ def callback(request):
                                     now_string = now.strftime('%Y%m%d')
                                     case.create_time = now
 
-                                    # try:
-                                    carTeam = UserCarTeamShip.objects.filter(user=user).order_by('id').first()
-                                    carTeam.day_case_count = carTeam.day_case_count + 1
-                                    carTeam.save()
+                                    try:
+                                        carTeam = UserCarTeamShip.objects.filter(user=user).order_by('id').first().carTeam
+                                        carTeam.day_case_count = carTeam.day_case_count + 1
+                                        carTeam.save()
 
-                                    case.carTeam = carTeam
-                                    car_team_number_string = carTeam.get_car_team_number_string
-                                    case.case_number = f'{case.carTeam.name} ❤️{now_string}.{car_team_number_string}❤️'
-                                    # except:
-                                        # tel_send_message(chat_id,'派單者可能未指定車隊')
-                                        # raise APIException("error")
+                                        case.carTeam = carTeam
+                                        car_team_number_string = carTeam.get_car_team_number_string
+                                        case.case_number = f'{case.carTeam.name} ❤️{now_string}.{car_team_number_string}❤️'
+                                    except:
+                                        tel_send_message(chat_id,'派單者可能未指定車隊')
+                                        raise APIException("error")
                                     
                                     case.telegram_id = chat_id
                                     case.save()
