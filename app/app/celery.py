@@ -1,6 +1,7 @@
 import os
 from celery import Celery
 from celery.schedules import crontab
+from modelCore.models import CarTeam
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'app.settings')
 app = Celery('app')
@@ -13,21 +14,23 @@ def setup_periodic_tasks(sender, **kwargs):
     # sender.add_periodic_task(30.0, test_get_user_count.s('world'), expires=10)
     sender.add_periodic_task(2.0, case_ship_count_down.s('world'), expires=10)
 
-    #run at 0800 of first day of month every taiwan time
-    # sender.add_periodic_task(
-    #     crontab(hour=1, minute=0, day_of_month='1'),
-    #     cal_month_summary.s('calcualte month summary'),
-    # )
+    #run at 2400 of first day of month every taiwan time
+    sender.add_periodic_task(
+        crontab(hour=16, minute=0, day_of_month='1'),
+        car_team_count_return_to_zero.s('calcualte month summary'),
+    )
 
 @app.task
 def case_ship_count_down(arg):
     from task.tasks import countDownUserCaseShip
     countDownUserCaseShip()
 
-# @app.task
-# def cal_month_summary(arg):
-#     from task.tasks import createMonthSummary
-#     createMonthSummary()
+@app.task
+def car_team_count_return_to_zero(arg):
+    car_teams = CarTeam.objects.all()
+    for car_team in car_teams:
+        car_team.day_case_count = 0
+        car_team.save()
 
 @app.task
 def test_add(arg):
