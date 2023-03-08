@@ -1,7 +1,6 @@
 import os
 from celery import Celery
 from celery.schedules import crontab
-from modelCore.models import CarTeam
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'app.settings')
 app = Celery('app')
@@ -27,10 +26,8 @@ def case_ship_count_down(arg):
 
 @app.task
 def car_team_count_return_to_zero(arg):
-    car_teams = CarTeam.objects.all()
-    for car_team in car_teams:
-        car_team.day_case_count = 0
-        car_team.save()
+    from task.tasks import car_team_count_return_to_zero
+    car_team_count_return_to_zero()
 
 @app.task
 def test_add(arg):

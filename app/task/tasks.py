@@ -1,7 +1,7 @@
 from __future__ import absolute_import, unicode_literals
 
 from celery import shared_task
-from modelCore.models import User, UserCaseShip, Case, UserStoreMoney
+from modelCore.models import User, UserCaseShip, Case, UserStoreMoney, CarTeam
 from django.contrib.gis.geos import Point
 from django.contrib.gis.db.models.functions import GeometryDistance
 from django.db.models import Q
@@ -107,7 +107,11 @@ def countDownUserCaseShip():
                         if case.telegram_id != None and case.telegram_id != '':
                             tel_send_message(case.telegram_id, f'{case.case_number}\n抱歉目前附近無符合駕駛!\n-----------------\n上車:{case.on_address}')
                     
-
+def car_team_count_return_to_zero():
+    car_teams = CarTeam.objects.all()
+    for car_team in car_teams:
+        car_team.day_case_count = 0
+        car_team.save()
 
 # https://maps.googleapis.com/maps/api/directions/json?origin=Toronto&destination=Montreal&key=AIzaSyCdP86OffSMXL82nbHA0l6K0W2xrdZ5xLk
 # https://maps.googleapis.com/maps/api/directions/json?origin=24.131111816506685,120.6426299846543&destination=24.028106564811345,120.69707448525111&key=AIzaSyCdP86OffSMXL82nbHA0l6K0W2xrdZ5xLk
