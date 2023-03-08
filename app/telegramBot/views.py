@@ -174,7 +174,7 @@ def callback(request):
                         else:
                             tel_send_message(chat_id,'動作不明確!')
                     except:
-                        tel_send_message(chat_id,'格式錯誤!')
+                        tel_send_message(chat_id,'格式錯誤或內容錯誤!')
                 else:
                     tel_send_message(chat_id, "您沒有派單的權限~")
             elif texts[0] == '綁定':
