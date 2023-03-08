@@ -277,7 +277,7 @@ class UpdateUserOnlineState(APIView):
             user.is_online = False
             user.save()
             return Response({'message': "ok"})
-        elif (isOnline == 'True' or isOnline == 'true') and user.left_money >= 0:
+        elif (isOnline == 'True' or isOnline == 'true') and user.left_money > -100:
             user.is_online = True
             user.save()
             return Response({'message': "ok"})
