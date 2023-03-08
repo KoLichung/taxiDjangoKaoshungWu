@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from rest_framework.exceptions import APIException
-from modelCore.models import Customer, User, Case, UserCaseShip, CarTeam
+from modelCore.models import Customer, User, Case, UserCaseShip, CarTeam, UserCarTeamShip
 from datetime import datetime
 
 import requests
@@ -37,67 +37,78 @@ def callback(request):
                 if user.is_telegram_bot_enable:
                     try:
                         if texts[0] == '派單':
-                            on_address = texts[1].replace('上車','').replace(':','').replace('：','')
-                            off_address = texts[2].replace('下車','').replace(':','').replace('：','')
-                            
                             case = Case()
                             case.case_state = 'wait'
 
-                            case.on_address = on_address
-                            case.off_address = off_address
+                            for index, text in enumerate(texts):
 
-                            now = datetime.now()
-                            now_string = now.strftime('%Y%m%d')
-                            case.create_time = now
+                                path = 'https://maps.googleapis.com/maps/api/geocode/json?address='
 
-                            # !! 這裡要先做派單人員 跟 Server 的綁定
-                            carTeam = CarTeam.objects.all().first()
-                            carTeam.day_case_count = carTeam.day_case_count + 1
-                            carTeam.save()
+                                if '上車' in text:
+                                    on_address = texts.replace('上車','').replace(':','').replace('：','')
 
-                            case.carTeam = carTeam
-                            car_team_number_string = carTeam.get_car_team_number_string
+                                    try:
+                                        onUrl = path+on_address+"&key="+"AIzaSyCrzmspoFyEFYlQyMqhEkt3x5kkY8U3C-Y"
+                                        logger.info(onUrl)
+                                        response = requests.get(onUrl)
+                                        logger.info(response.text)
 
-                            case.case_number = f'{case.carTeam.name} ❤️{now_string}.{car_team_number_string}❤️'
+                                        resp_json_payload = response.json()
+                                        on_lat = resp_json_payload['results'][0]['geometry']['location']['lat']
+                                        on_lng = resp_json_payload['results'][0]['geometry']['location']['lng']
+                                    except Exception as e:
+                                        print(f'on location error {e}')
+                                        logger.error(f'on location error {e}')
+                                        tel_send_message(chat_id,'無法辨識上車地點')
+                                        raise APIException("error")
+                                    
+                                    case.on_address = on_address
+                                    case.on_lat = on_lat
+                                    case.on_lng = on_lng
+
+                                    now = datetime.now()
+                                    now_string = now.strftime('%Y%m%d')
+                                    case.create_time = now
+
+                                    try:
+                                        carTeam = UserCarTeamShip.objects.filter(user=user).order_by('id').first()
+                                        carTeam.day_case_count = carTeam.day_case_count + 1
+                                        carTeam.save()
+
+                                        case.carTeam = carTeam
+                                        car_team_number_string = carTeam.get_car_team_number_string
+                                        case.case_number = f'{case.carTeam.name} ❤️{now_string}.{car_team_number_string}❤️'
+                                    except:
+                                        tel_send_message(chat_id,'派單者可能未指定車隊')
+                                        raise APIException("error")
+                                    
+                                    case.telegram_id = chat_id
+                                    case.save()
+
+                                if '下車' in text:
+                                    off_address = texts[2].replace('下車','').replace(':','').replace('：','')
+                                    case.off_address = off_address
                             
-                            path = 'https://maps.googleapis.com/maps/api/geocode/json?address='
-                            
-                            try:
-                                onUrl = path+on_address+"&key="+"AIzaSyCrzmspoFyEFYlQyMqhEkt3x5kkY8U3C-Y"
-                                logger.info(onUrl)
-                                response = requests.get(onUrl)
-                                logger.info(response.text)
+                                    try:
+                                        offUrl = path+off_address+"&key="+"AIzaSyCrzmspoFyEFYlQyMqhEkt3x5kkY8U3C-Y"
+                                        logger.info(response.text)
+                                        response = requests.get(offUrl)
+                                        logger.info(response.text)
 
-                                resp_json_payload = response.json()
-                                case.on_lat = resp_json_payload['results'][0]['geometry']['location']['lat']
-                                case.on_lng = resp_json_payload['results'][0]['geometry']['location']['lng']
-                            except Exception as e:
-                                print(f'on location error {e}')
-                                logger.error(f'on location error {e}')
-                                tel_send_message(chat_id,'無法辨識上車地點')
-                                raise APIException("error")
+                                        resp_json_payload = response.json()
+                                        case.off_lat = resp_json_payload['results'][0]['geometry']['location']['lat']
+                                        case.off_lng = resp_json_payload['results'][0]['geometry']['location']['lng']
+                                    except Exception as e:
+                                        print(f'off location error {e}')
+                                        logger.error(f'off location error {e}')
 
-                            try:
-                                offUrl = path+off_address+"&key="+"AIzaSyCrzmspoFyEFYlQyMqhEkt3x5kkY8U3C-Y"
-                                logger.info(response.text)
-                                response = requests.get(offUrl)
-                                logger.info(response.text)
 
-                                resp_json_payload = response.json()
-                                case.off_lat = resp_json_payload['results'][0]['geometry']['location']['lat']
-                                case.off_lng = resp_json_payload['results'][0]['geometry']['location']['lng']
-                            except Exception as e:
-                                print(f'off location error {e}')
-                                logger.error(f'off location error {e}')
-
-                            try:
-                                case.time_memo = texts[3].replace('時間','').replace(':','').replace('：','')
-                                case.memo = texts[4].replace('備註','').replace(':','').replace('：','')
-                            except Exception as e:
-                                print(f'case memo error {e}')
-                                logger.error(f'case memo error {e}')
-
-                            case.telegram_id = chat_id
+                                if '時間' in text:
+                                    case.time_memo = texts[3].replace('時間','').replace(':','').replace('：','')
+                                
+                                if '備註' in text:
+                                    case.memo = texts[4].replace('備註','').replace(':','').replace('：','')
+                                
                             case.save()
 
                             tel_send_message(chat_id,f'{case.case_number}\n派單成功，正在尋找駕駛\n上車：{case.on_address}\n下車：{case.off_address}\n時間：{case.time_memo}\n備註：{case.memo}')

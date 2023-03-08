@@ -38,7 +38,7 @@
                   <th scope="col">業主</th>
                   <th scope="col">審核</th>
                   <th scope="col">姓名</th>
-                  <th scope="col">台號</th>
+                  <th scope="col">暱稱</th>
                   <th scope="col">車牌</th>
                   <th scope="col">屬性</th>
                 </tr>
@@ -64,30 +64,9 @@
                       {% endif %}
                     </td>
                     <td class="text-nowrap">{{ driver.name }}</td>
-                    <td class="text-nowrap">{{ driver.userId }}</td>
+                    <td class="text-nowrap">{{ driver.nick_name }}</td>
                     <td class="text-nowrap">{{ driver.vehicalLicence }}</td> 
-                    <td class="text-nowrap">{{ driver.car_color }} {{ driver.car_model }} {{ driver.number_sites }} 人 
-                      {% if driver.type == 'car' %}
-                        房車
-                      {% elif driver.type == 'suv' %}
-                        休旅車
-                      {% elif driver.type == 'sports_car' %}
-                        跑車
-                      {% elif driver.type == 'van' %}
-                        箱型車
-                      {% endif %}
-                      {{ theType }} 
-                      
-                      {% if driver.category == 'taxi' %}
-                        計程車
-                      {% elif driver.category == 'diversity' %}
-                        多元
-                      {% elif driver.category == 'rental_car' %}
-                        租賃車
-                      {% elif driver.category == 'x_card' %}
-                        X牌
-                      {% endif %}
-                    </td>
+                    <td class="text-nowrap">{{ driver.car_color }} {{ driver.number_sites }} 人 </td>
                   </tr>
                 {% endfor %}
               </tbody>
@@ -130,10 +109,10 @@
                             {% endif %}
                           />
                           <label for="isPassed">審核&emsp;</label>
-                          <input id="dispatch_fee_percent" type="text" placeholder="10" style="width: 40px" name="dispatch_fee_percent"
+                          {% comment %} <input id="dispatch_fee_percent" type="text" placeholder="10" style="width: 40px" name="dispatch_fee_percent"
                             value={{driver.dispatch_fee_percent_integer}}
                           />
-                          <label for="dispatch_fee_percent">% 派遣費用</label>
+                          <label for="dispatch_fee_percent">% 派遣費用</label> {% endcomment %}
                         </div>
                       </div>
 
@@ -144,20 +123,8 @@
                         <input class="form-control" id="username" name="username" type="text" value="{{ driver.name }}"/>
                       </div>
                       <div class="mb-3">
-                        <label class="col-form-label" for="userIdNumber"
-                          >台號(身分證後五碼)</label
-                        >
-                        <input
-                          class="form-control"
-                          id="userIdNumber"
-                          type="text"
-                          value="{{ driver.userId }}"
-                          name="userIdNumber"
-                        />
-                      </div>
-                      <div class="mb-3">
                         <label class="col-form-label" for="vehicalLicenceNumber"
-                          >車號(ABC-123)</label
+                          >車號(1234)</label
                         >
                         <input
                           class="form-control"
@@ -229,7 +196,7 @@
                         </div>
                       </div>
   
-                      <div class="mb-3">
+                      {% comment %} <div class="mb-3">
                         <label class="col-form-label" for="carType"
                           >車別</label
                         >
@@ -311,14 +278,14 @@
                             </label>
                           </div>
                         </div>
-                      </div>
+                      </div> {% endcomment %}
   
-                      <div class="mb-3">
+                      {% comment %} <div class="mb-3">
                         <label class="col-form-label" for="carModelName"
                           >車型</label
                         >
                         <input class="form-control" id="carModelName" type="text" placeholder="Toyota Wish" name="carModelName" value="{{ driver.car_model }}"/>
-                      </div>
+                      </div> {% endcomment %}
   
                       <div class="mb-3">
                         <label class="col-form-label" for="car-Color"

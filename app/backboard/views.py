@@ -231,21 +231,21 @@ def drivers(request):
         else:
             user.is_passed = False
 
-        if(request.POST.get("dispatch_fee_percent")!=""):
-            try:
-                user.dispatch_fee_percent_integer = int(request.POST.get("dispatch_fee_percent"))
-            except:
-                print("parse fee percent error")
+        # if(request.POST.get("dispatch_fee_percent")!=""):
+        #     try:
+        #         user.dispatch_fee_percent_integer = int(request.POST.get("dispatch_fee_percent"))
+        #     except:
+        #         print("parse fee percent error")
 
         user.name = request.POST.get("username")
         user.userId = request.POST.get("userIdNumber")
         user.vehicalLicence = request.POST.get("vehicalLicenceNumber")
-        user.idNumber=request.POST.get("IDNumber")
+        # user.idNumber=request.POST.get("IDNumber")
         user.phone=request.POST.get("phoneNumber")
         user.gender=request.POST.get("driverGender")
-        user.car_model=request.POST.get("carModelName")
-        user.category=request.POST.get("carCategory")
-        user.type=request.POST.get("carType")
+        # user.car_model=request.POST.get("carModelName")
+        # user.category=request.POST.get("carCategory")
+        # user.type=request.POST.get("carType")
         user.car_color=request.POST.get("car-Color")
         user.number_sites=request.POST.get("sitesNumber")
         user.save()
@@ -279,15 +279,12 @@ def credit_topup(request):
         return redirect('/backboard/')
     
     if request.method == 'POST':
-        vehicalLicence = request.POST.get("vehicalLicence")
+        phone = request.POST.get("phone")
         moneyType = request.POST.get("moneyType")
         money = int(request.POST.get("money"))
-        print(vehicalLicence)
-        print(moneyType)
-        print(money)
         
         try:
-            user = User.objects.filter(vehicalLicence=vehicalLicence).first()
+            user = User.objects.filter(phone=phone).first()
             # today_min = datetime.combine(date.today(), time.min)
             # today_max = datetime.combine(date.today(), time.max)
             # if( UserStoreMoney.objects.filter(user=user, date__range=(today_min, today_max)).count()==0 ):

@@ -101,7 +101,7 @@ class User(AbstractBaseUser, PermissionsMixin):
                 if car_teams_string == '':
                     car_teams_string = ship.carTeam.name
                 else:
-                    car_teams_string = car_teams_string+','+ ship.carTeam.name
+                    car_teams_string = car_teams_string+' '+ ship.carTeam.name
             return car_teams_string
         else:
             return '無車隊'
