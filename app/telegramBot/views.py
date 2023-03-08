@@ -45,7 +45,7 @@ def callback(request):
                                 path = 'https://maps.googleapis.com/maps/api/geocode/json?address='
 
                                 if '上車' in text:
-                                    on_address = texts.replace('上車','').replace(':','').replace('：','')
+                                    on_address = text.replace('上車','').replace(':','').replace('：','')
 
                                     try:
                                         onUrl = path+on_address+"&key="+"AIzaSyCrzmspoFyEFYlQyMqhEkt3x5kkY8U3C-Y"
