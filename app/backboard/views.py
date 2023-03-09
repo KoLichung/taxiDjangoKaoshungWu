@@ -214,6 +214,8 @@ def drivers(request):
             drivers = User.objects.filter(~Q(id=1)).order_by('-id')
             # drivers = User.objects.all()
 
+        carTeams = CarTeam.objects.all()
+
         paginator = Paginator(drivers, 10)
         if request.GET.get('page') != None:
             page_number = request.GET.get('page') 
@@ -222,7 +224,8 @@ def drivers(request):
         page_obj = paginator.get_page(page_number)
 
         page_obj.adjusted_elided_pages = paginator.get_elided_page_range(page_number)
-        return render(request, 'backboard/drivers.html', {'drivers': page_obj})
+        return render(request, 'backboard/drivers.html', {'drivers': page_obj,'carTeams':carTeams})
+    
     elif request.method == 'POST':
         user = User.objects.get(id=request.POST.get("userId"))
 
