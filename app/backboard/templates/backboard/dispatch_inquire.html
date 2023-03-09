@@ -13,6 +13,7 @@
           <div class="mb-3 row">
             <label class="col-sm-2 col-form-label" for="datePicker">日期區間：</label>
             <div class="col-sm-10">
+              <p>(目前區間 {{qDate}})</p>
               <input class="form-control datetimepicker" 
                     id="datePicker" 
                     type="text" 
@@ -20,6 +21,10 @@
                     placeholder="年-月-日 ～ 年-月-日" 
                     data-options='{"mode":"range","dateFormat":"Y-m-d","disableMobile":true}' 
                     value="{{ qDate_string }}"/>
+              {% comment %} <br>
+              <input class="form-control datetimepicker" id="timepicker2" type="text" 
+              placeholder="d/m/y to d/m/y" value='02/03/2012 to 03/04/2012' 
+              data-options='{"mode":"range","dateFormat":"d/m/y","disableMobile":true}' /> {% endcomment %}
             </div>
           </div>
           
