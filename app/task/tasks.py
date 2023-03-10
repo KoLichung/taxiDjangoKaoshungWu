@@ -22,6 +22,7 @@ def countDownUserCaseShip():
         ref_location = Point(float(case.on_lng), float(case.on_lat), srid=4326)
 
         asking_user_ids = list(UserCaseShip.objects.all().values_list('user',flat=True).distinct())
+        logger.info(f'asking_user_ids {asking_user_ids}')
 
         if UserCaseShip.objects.filter(case=case).count() == 0:
             # 先 new 一個 user_case_ship 且 user == None
@@ -32,6 +33,7 @@ def countDownUserCaseShip():
             
             # 1.要在線 2.要通過審核 3.非任務中 4.非詢問案件中
             qulified_users = User.objects.filter(is_online=True, is_passed=True, is_on_task=False).filter(~Q(id__in=asking_user_ids))
+            logger.info(f'qulified_users {qulified_users}')
             if qulified_users.count() != 0:
                 user = qulified_users.order_by(GeometryDistance("location", ref_location)).first()
                 
@@ -123,7 +125,7 @@ def getTimePredict(on_lat, on_long, off_lat, off_long):
     key='AIzaSyCdP86OffSMXL82nbHA0l6K0W2xrdZ5xLk'
     url = f'https://maps.googleapis.com/maps/api/directions/json?origin={on_lat},{on_long}&destination={off_lat},{off_long}&key={key}'
     response = requests.get(url)
-    logger.info(response)
+    # logger.info(response)
     resp_json_payload = response.json()
     time_predict = resp_json_payload['routes'][0]['legs'][0]['duration']['value']
     # return secs
