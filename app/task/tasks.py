@@ -33,7 +33,7 @@ def countDownUserCaseShip():
             # 1.要在線 2.要通過審核 3.非任務中 4.非詢問案件中
             qulified_users = User.objects.filter(is_online=True, is_passed=True, is_on_task=False).filter(~Q(id__in=asking_user_ids))
             if qulified_users.count() != 0:
-                user = qulify_users.order_by(GeometryDistance("location", ref_location)).first()
+                user = qulified_users.order_by(GeometryDistance("location", ref_location)).first()
                 
                 timePredict = getTimePredict(user.current_lat, user.current_lng, case.on_lat, case.on_lng)
 
