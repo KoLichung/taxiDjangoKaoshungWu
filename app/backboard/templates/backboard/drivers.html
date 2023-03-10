@@ -9,20 +9,24 @@
           <h4>所有司機</h4>
         </div>
         
+        {% comment %} 查詢 {% endcomment %}
         <form method="get">
           {% comment %} <input name="q" type="text" placeholder="Search..."> {% endcomment %}
         
           <div class="mb-2 mx-3">
             <input
               class="form-control"
-              type="phoneNumber"
-              placeholder="台號"
+              type="text"
+              placeholder="手機號碼"
               name="q"
+              value="{{ request.GET.q }}"
             />
           </div>
 
           <div class="mb-1 mx-5">
-            <button class="btn btn-primary d-block w-100 mt-3 text-light"
+            <button 
+              type="submit"
+              class="btn btn-primary d-block w-100 mt-3 text-light"
               onclick="location.href='{% url 'drivers' %}'"
             >
               <b>查詢</b>
@@ -30,6 +34,7 @@
           </div>
         </form>
 
+        {% comment %} 司機列表 {% endcomment %}
         <div class="mt-5">
           <div class="table-responsive scrollbar">
             <table class="table table-hover table-striped overflow-hidden">
@@ -48,9 +53,7 @@
                   <tr class="align-middle">
                     <td class="text-nowrap">
                       <button class="btn p-0" type="button" data-bs-toggle="modal" 
-                      
                       data-bs-target="#modal{{driver.id}}"
-                    
                       >
                         <span class="text-500 fas fa-edit"></span>
                       </button>
@@ -74,6 +77,7 @@
           </div>
         </div>
 
+        {% comment %} modal {% endcomment %}
         {% for driver in drivers %}
           <div class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" id="modal{{driver.id}}" >
             <div class="modal-dialog" role="document">
@@ -100,6 +104,7 @@
                         <label class="col-form-label" for="isPartTime">管理</label>
                         <div>
                           <input
+                            class="form-check-input"
                             type="checkbox"
                             id="isPassed"
                             name="isPassed"
@@ -115,42 +120,39 @@
                           <label for="dispatch_fee_percent">% 派遣費用</label> {% endcomment %}
                         </div>
                       </div>
+
+                      
                       
                       <div class="mb-3">
                         <label class="col-form-label" for="carType">車隊</label>
-                        <br>       
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" id="inlineCheckbox1" type="checkbox" value="option1" />
-                          <label class="form-check-label" for="inlineCheckbox1">Item 1</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" id="inlineCheckbox2" type="checkbox" value="option2" />
-                          <label class="form-check-label" for="inlineCheckbox2">Item 2</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" id="inlineCheckbox3" type="checkbox" value="option3" disabled="" />
-                          <label class="form-check-label" for="inlineCheckbox3">Item 3 (disabled)</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" id="inlineCheckbox1" type="checkbox" value="option1" />
-                          <label class="form-check-label" for="inlineCheckbox1">Item 1</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" id="inlineCheckbox2" type="checkbox" value="option2" />
-                          <label class="form-check-label" for="inlineCheckbox2">Item 2</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" id="inlineCheckbox3" type="checkbox" value="option3" disabled="" />
-                          <label class="form-check-label" for="inlineCheckbox3">Item 3 (disabled)</label>
-                        </div>
+                        <br> 
+                        {% comment %} 所有車隊名 {% endcomment %}
+                        {% for carTeam in carTeams %}  
+
+                          <div class="form-check form-check-inline">
+                            <input class="form-check-input" id="carTeamName" name="carTeams[]" type="checkbox" value="{{ carTeam.id }}" 
+                              {% if carTeam.id in user_carTeam_ids %}
+                              checked
+                              {% endif %}
+                            />
+                            <label class="form-check-label" for="carTeamName">{{ carTeam.name }}</label>                
+                          </div>
+
+                        {% endfor %}  
+                        
+
                       </div>
 
+                      
+
+                      {% comment %} 姓名 {% endcomment %}
                       <div class="mb-3">
                         <label class="col-form-label" for="username">
                           真實姓名
                         </label>
                         <input class="form-control" id="username" name="username" type="text" value="{{ driver.name }}"/>
                       </div>
+                      {% comment %} 車號 {% endcomment %}
                       <div class="mb-3">
                         <label class="col-form-label" for="vehicalLicenceNumber"
                           >車號(1234)</label
@@ -164,6 +166,7 @@
 
                         />
                       </div>
+                      {% comment %} 手機號碼 {% endcomment %}
                       <div class="mb-3">
                         <label class="col-form-label" for="phoneNumber"
                           >手機號碼</label
@@ -176,6 +179,7 @@
                           name="phoneNumber"
                         />
                       </div>
+                      {% comment %} 身分證字號 {% endcomment %}
                       <div class="mb-3">
                         <label class="col-form-label" for="IDNumber"
                           >身分證字號
@@ -188,7 +192,7 @@
                           name="IDNumber"
                         />
                       </div>
-  
+                      {% comment %} 性別 {% endcomment %}
                       <div class="mb-3">
                         <label class="col-form-label" for="driverGender">
                           性別
@@ -344,11 +348,13 @@
                     </form>
                   </div>
                 </div>
+
               </div>
             </div>
           </div>
         {% endfor %}
 
+        {% comment %} page {% endcomment %}
         <div class="text-center">
           {% for page_number in drivers.adjusted_elided_pages %}
               {% if page_number == drivers.paginator.ELLIPSIS %}

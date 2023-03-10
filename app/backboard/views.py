@@ -209,7 +209,7 @@ def drivers(request):
         # context = {}
         if request.GET.get("q") != None and request.GET.get("q") != "":
             print(request.GET.get("q"))
-            drivers = User.objects.filter(userId=request.GET.get("q")).order_by('-id')
+            drivers = User.objects.filter(phone=request.GET.get("q")).order_by('-id')
         else:
             drivers = User.objects.filter(~Q(id=1)).order_by('-id')
             # drivers = User.objects.all()
@@ -224,10 +224,11 @@ def drivers(request):
         page_obj = paginator.get_page(page_number)
 
         page_obj.adjusted_elided_pages = paginator.get_elided_page_range(page_number)
-        return render(request, 'backboard/drivers.html', {'drivers': page_obj,'carTeams':carTeams})
+        return render(request, 'backboard/drivers.html', {'drivers': page_obj,'carTeams':carTeams,})
     
     elif request.method == 'POST':
-        user = User.objects.get(id=request.POST.get("userId"))
+        
+        user = User.objects.get(id=request.POST.get('userId'))
 
         if(request.POST.get("isPassed")!= None and request.POST.get("isPassed")=="true"):
             user.is_passed = True
@@ -240,19 +241,50 @@ def drivers(request):
         #     except:
         #         print("parse fee percent error")
 
+        
+        carTeams = CarTeam.objects.all() #全部的 carTeam 
+        user_car_teams = UserCarTeamShip.objects.filter(user=user) #司機原所屬的carTeam
+        #user_car_teams = user.user_car_teams
+        user_carTeam_ids = list(user_car_teams.values_list('carTeam_id',flat=True)) #返回一個用 values_list()讓他不再是 object 的 list 
+
+        selected_carTeams = []
+        carTeam_ids = request.POST.getlist('carTeams[]') #前端打勾的 carTeam
+        print(carTeam_ids)
+
+        for carTeam_id in carTeam_ids:
+            carTeam = CarTeam.objects.get(id=carTeam_id)
+            if UserCarTeamShip.objects.filter(user=user, carTeam=carTeam).exists(): #如果在前端打勾的 carTeam 有在 userCarTeam 的話
+                userCarTeam = UserCarTeamShip.objects.get(user=user, carTeam = carTeam) # userCarTeam = 已選的 carTeam
+            else:
+                userCarTeam = UserCarTeamShip() #否則 userCarTeam = ??
+
+            userCarTeam.user = user
+            userCarTeam.carTeam = carTeam
+            userCarTeam.save() 
+            selected_carTeams.append(carTeam)
+
+        for user_carTeam in user_car_teams:
+            if user_carTeam.carTeam not in selected_carTeams:
+                user_carTeam.delete()
+        
+
         user.name = request.POST.get("username")
-        user.userId = request.POST.get("userIdNumber")
+        #user.userId = request.POST.get("userIdNumber")
         user.vehicalLicence = request.POST.get("vehicalLicenceNumber")
-        # user.idNumber=request.POST.get("IDNumber")
+        user.idNumber=request.POST.get("IDNumber")
         user.phone=request.POST.get("phoneNumber")
         user.gender=request.POST.get("driverGender")
-        # user.car_model=request.POST.get("carModelName")
-        # user.category=request.POST.get("carCategory")
-        # user.type=request.POST.get("carType")
         user.car_color=request.POST.get("car-Color")
         user.number_sites=request.POST.get("sitesNumber")
-        user.save()
-        return redirect('/backboard/drivers')
+        
+        user.save() 
+    
+        return redirect('/backboard/drivers',{
+            'user':user,
+            'carTeams':carTeams, 
+            'user_car_teams':user_car_teams, 
+            'user_carTeam_ids':user_carTeam_ids,
+        })
 
 def accounting_records(request):
     userStoreMoneys = UserStoreMoney.objects.order_by('-id')
