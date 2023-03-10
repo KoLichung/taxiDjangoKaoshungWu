@@ -21,6 +21,8 @@ def countDownUserCaseShip():
     for case in cases:
         ref_location = Point(float(case.on_lng), float(case.on_lat), srid=4326)
 
+        asking_user_ids = list(UserCaseShip.objects.all().values_list('user',flat=True).distinct())
+
         if UserCaseShip.objects.filter(case=case).count() == 0:
             # 先 new 一個 user_case_ship 且 user == None
             # 用 user == None 來檢查(並表示) 目前有 tasker 正在派單
@@ -28,8 +30,10 @@ def countDownUserCaseShip():
             userCaseShip.case = case
             userCaseShip.save() 
             
-            if User.objects.filter(is_online=True, is_passed=True, is_on_task=False).count() != 0:
-                user = User.objects.filter(is_online=True, is_passed=True, is_on_task=False).order_by(GeometryDistance("location", ref_location)).first()
+            # 1.要在線 2.要通過審核 3.非任務中 4.非詢問案件中
+            qulified_users = User.objects.filter(is_online=True, is_passed=True, is_on_task=False).filter(~Q(id__in=asking_user_ids))
+            if qulified_users.count() != 0:
+                user = qulify_users.order_by(GeometryDistance("location", ref_location)).first()
                 
                 timePredict = getTimePredict(user.current_lat, user.current_lng, case.on_lat, case.on_lng)
 
@@ -64,7 +68,9 @@ def countDownUserCaseShip():
                     # countdown_second == 0,         
                     # 把此 user 加入排除名單
                     # 如果司機已加入排除名單, 則此為司機拒絕接單
-                    if str(userCaseShip.user.id) not in userCaseShip.exclude_ids_text:
+                    exclude_ids_array = userCaseShip.exclude_ids_text.split(',')
+
+                    if str(userCaseShip.user.id) not in exclude_ids_array:
                         user = userCaseShip.user
                         car_teams_string = user.car_teams_string()
                         if case.telegram_id != None and case.telegram_id != '':
@@ -78,11 +84,10 @@ def countDownUserCaseShip():
                     userCaseShip.user = None
                     userCaseShip.save()
 
-                    exclude_ids_array = userCaseShip.exclude_ids_text.split(',')
-
                     # 尋找下一位
-                    if User.objects.filter(is_online=True, is_passed=True, is_on_task=False).filter(~Q(id__in=exclude_ids_array)).count() != 0:
-                        user = User.objects.filter(is_online=True, is_passed=True, is_on_task=False).filter(~Q(id__in=exclude_ids_array)).order_by(GeometryDistance("location", ref_location)).first()
+                    qulified_users = User.objects.filter(is_online=True, is_passed=True, is_on_task=False).filter(~Q(id__in=asking_user_ids)).filter(~Q(id__in=exclude_ids_array))
+                    if qulified_users.count() != 0:
+                        user = qulified_users.order_by(GeometryDistance("location", ref_location)).first()
 
                         timePredict = getTimePredict(user.current_lat, user.current_lng, case.on_lat, case.on_lng)
 
