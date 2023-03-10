@@ -70,7 +70,10 @@ def countDownUserCaseShip():
                     # countdown_second == 0,         
                     # 把此 user 加入排除名單
                     # 如果司機已加入排除名單, 則此為司機拒絕接單
-                    exclude_ids_array = userCaseShip.exclude_ids_text.split(',')
+                    if userCaseShip.exclude_ids_text != '':
+                        exclude_ids_array = userCaseShip.exclude_ids_text.split(',')
+                    else:
+                        exclude_ids_array = []
 
                     if str(userCaseShip.user.id) not in exclude_ids_array:
                         user = userCaseShip.user
