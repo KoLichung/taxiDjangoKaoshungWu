@@ -19,15 +19,14 @@ def countDownUserCaseShip():
 
     cases = Case.objects.filter(case_state='wait')
     for case in cases:
+        ref_location = Point(float(case.on_lng), float(case.on_lat), srid=4326)
+
         if UserCaseShip.objects.filter(case=case).count() == 0:
             # 先 new 一個 user_case_ship 且 user == None
             # 用 user == None 來檢查(並表示) 目前有 tasker 正在派單
             userCaseShip = UserCaseShip()
             userCaseShip.case = case
-            userCaseShip.save()
-            case.save()
-
-            ref_location = Point(float(case.on_lng), float(case.on_lat), srid=4326)
+            userCaseShip.save() 
             
             if User.objects.filter(is_online=True, is_passed=True).count() != 0:
                 user = User.objects.filter(is_online=True, is_passed=True).order_by(GeometryDistance("location", ref_location)).first()
