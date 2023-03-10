@@ -120,6 +120,9 @@ class CaseConfirmView(APIView):
             case.user = user
             case.save()
             
+            user.is_on_task = True
+            user.save()
+
             car_teams_string = user.car_teams_string()
 
             userCaseShip = UserCaseShip.objects.filter(case=case).first()
@@ -226,6 +229,7 @@ class CaseFinishedView(APIView):
                     final_dispatch_fee = case.dispatch_fee
 
                     user.left_money = user.left_money - case.dispatch_fee
+                    user.is_on_task = False
 
                     after_left_money = user.left_money
                     user.save()

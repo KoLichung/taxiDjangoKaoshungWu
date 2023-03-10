@@ -80,6 +80,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     current_lng = models.DecimalField(max_digits=9, decimal_places=6, blank = True, null=True)
     location = PointField(srid=4326, geography=True, blank=True, null=True)
 
+    is_on_task = models.BooleanField(default=False)
+
     # dispatch_fee_percent_integer = models.IntegerField(
     #     default=10,
     #     validators=[

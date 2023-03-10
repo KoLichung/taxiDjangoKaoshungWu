@@ -28,8 +28,8 @@ def countDownUserCaseShip():
             userCaseShip.case = case
             userCaseShip.save() 
             
-            if User.objects.filter(is_online=True, is_passed=True).count() != 0:
-                user = User.objects.filter(is_online=True, is_passed=True).order_by(GeometryDistance("location", ref_location)).first()
+            if User.objects.filter(is_online=True, is_passed=True, is_on_task=False).count() != 0:
+                user = User.objects.filter(is_online=True, is_passed=True, is_on_task=False).order_by(GeometryDistance("location", ref_location)).first()
                 
                 timePredict = getTimePredict(user.current_lat, user.current_lng, case.on_lat, case.on_lng)
 
@@ -81,8 +81,8 @@ def countDownUserCaseShip():
                     exclude_ids_array = userCaseShip.exclude_ids_text.split(',')
 
                     # 尋找下一位
-                    if User.objects.filter(is_online=True, is_passed=True).filter(~Q(id__in=exclude_ids_array)).count() != 0:
-                        user = User.objects.filter(is_online=True, is_passed=True).filter(~Q(id__in=exclude_ids_array)).order_by(GeometryDistance("location", ref_location)).first()
+                    if User.objects.filter(is_online=True, is_passed=True, is_on_task=False).filter(~Q(id__in=exclude_ids_array)).count() != 0:
+                        user = User.objects.filter(is_online=True, is_passed=True, is_on_task=False).filter(~Q(id__in=exclude_ids_array)).order_by(GeometryDistance("location", ref_location)).first()
 
                         timePredict = getTimePredict(user.current_lat, user.current_lng, case.on_lat, case.on_lng)
 
