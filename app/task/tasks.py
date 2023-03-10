@@ -21,7 +21,7 @@ def countDownUserCaseShip():
     for case in cases:
         ref_location = Point(float(case.on_lng), float(case.on_lat), srid=4326)
 
-        asking_user_ids = list(UserCaseShip.objects.all().values_list('user',flat=True).distinct())
+        asking_user_ids = list(UserCaseShip.objects.filter(~Q(user=None)).values_list('user',flat=True).distinct())
         print(f'asking_user_ids {asking_user_ids}')
 
         if UserCaseShip.objects.filter(case=case).count() == 0:
