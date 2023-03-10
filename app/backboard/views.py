@@ -224,7 +224,7 @@ def drivers(request):
         page_obj = paginator.get_page(page_number)
 
         page_obj.adjusted_elided_pages = paginator.get_elided_page_range(page_number)
-        return render(request, 'backboard/drivers.html', {'drivers': page_obj,'carTeams':carTeams,})
+        return render(request, 'backboard/drivers.html', {'drivers': page_obj,'carTeams':carTeams})
     
     elif request.method == 'POST':
         
@@ -244,25 +244,24 @@ def drivers(request):
         
         carTeams = CarTeam.objects.all() #全部的 carTeam 
         user_car_teams = UserCarTeamShip.objects.filter(user=user) #司機原所屬的carTeam
-        #user_car_teams = user.user_car_teams
-        user_carTeam_ids = list(user_car_teams.values_list('carTeam_id',flat=True)) #返回一個用 values_list()讓他不再是 object 的 list 
+        user_carTeam_ids = list(user_car_teams.values_list('carTeam',flat=True)) #返回一個用 values_list()讓他不再是 object 的 list 
 
         selected_carTeams = []
         carTeam_ids = request.POST.getlist('carTeams[]') #前端打勾的 carTeam
         print(carTeam_ids)
 
+        # 確認把所選的 car teams 存起來
         for carTeam_id in carTeam_ids:
             carTeam = CarTeam.objects.get(id=carTeam_id)
-            if UserCarTeamShip.objects.filter(user=user, carTeam=carTeam).exists(): #如果在前端打勾的 carTeam 有在 userCarTeam 的話
-                userCarTeam = UserCarTeamShip.objects.get(user=user, carTeam = carTeam) # userCarTeam = 已選的 carTeam
-            else:
+            if not UserCarTeamShip.objects.filter(user=user, carTeam=carTeam).exists(): #如果在前端打勾的 carTeam 有在 userCarTeam 的話
                 userCarTeam = UserCarTeamShip() #否則 userCarTeam = ??
+                userCarTeam.user = user
+                userCarTeam.carTeam = carTeam
+                userCarTeam.save() 
 
-            userCarTeam.user = user
-            userCarTeam.carTeam = carTeam
-            userCarTeam.save() 
             selected_carTeams.append(carTeam)
 
+        # 把沒選的 car teams 刪掉
         for user_carTeam in user_car_teams:
             if user_carTeam.carTeam not in selected_carTeams:
                 user_carTeam.delete()

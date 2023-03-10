@@ -128,16 +128,14 @@
                         <br> 
                         {% comment %} 所有車隊名 {% endcomment %}
                         {% for carTeam in carTeams %}  
-
                           <div class="form-check form-check-inline">
-                            <input class="form-check-input" id="carTeamName" name="carTeams[]" type="checkbox" value="{{ carTeam.id }}" 
-                              {% if carTeam.id in user_carTeam_ids %}
-                              checked
-                              {% endif %}
-                            />
+                              <input class="form-check-input" id="carTeamName" name="carTeams[]" type="checkbox" value="{{ carTeam.id }}" 
+                                {% if carTeam.id in driver.car_teams_id_array %}
+                                checked
+                                {% endif %}
+                              />
                             <label class="form-check-label" for="carTeamName">{{ carTeam.name }}</label>                
                           </div>
-
                         {% endfor %}  
                         
 

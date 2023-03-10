@@ -106,6 +106,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         else:
             return '無車隊'
 
+    def car_teams_id_array(self):
+        user_car_teams = UserCarTeamShip.objects.filter(user=self)
+        user_carTeam_ids = list(user_car_teams.values_list('carTeam',flat=True))
+        return user_carTeam_ids
 
 class CarTeam(models.Model):
     name = models.CharField(max_length=255)
