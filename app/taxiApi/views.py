@@ -46,6 +46,7 @@ class UserCaseViewSet(viewsets.GenericViewSet,
 
 #http://localhost:8000/api/car_teams/
 class CarTeamViewSet(viewsets.GenericViewSet,
+                    mixins.RetrieveModelMixin,
                     mixins.ListModelMixin,):
     queryset = CarTeam.objects.all()
     serializer_class = serializers.CarTeamSerializer
