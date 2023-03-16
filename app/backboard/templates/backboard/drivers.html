@@ -114,6 +114,17 @@
                             {% endif %}
                           />
                           <label for="isPassed">審核&emsp;</label>
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="is_telegram_bot_enable"
+                            name="is_telegram_bot_enable"
+                            value=true
+                            {% if driver.is_telegram_bot_enable %}
+                              checked
+                            {% endif %}
+                          />
+                          <label for="is_telegram_bot_enable">允許Telegram機器人派單&emsp;</label>
                           {% comment %} <input id="dispatch_fee_percent" type="text" placeholder="10" style="width: 40px" name="dispatch_fee_percent"
                             value={{driver.dispatch_fee_percent_integer}}
                           />

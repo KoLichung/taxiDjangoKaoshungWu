@@ -91,6 +91,7 @@
                 <tr class="align-middle">
                   <td class="text-nowrap">
                     {{ case.create_time|date:'Y-m-d' }}<br/>
+                    派單車隊{{ case.carTeam.name }}<br/>
                     訂單狀態：
                     {% if case.case_state == "canceled" %}
                       取消
@@ -139,7 +140,7 @@
                     車資：{{ case.case_money }} <br/>
                     扣帳：{{ case.dispatch_fee }} <br/>
                     {% comment %} 分潤：業主A 10 業主B 10<br /> {% endcomment %}
-                    司機：{{ case.user }}<br />
+                    司機：{{ case.user }}{{ case.user.car_teams_string()}}<br />
                     車號：{{ case.user.vehicalLicence}}
                   </td>
                 </tr>

@@ -9,12 +9,17 @@ import requests
 from dotenv import dotenv_values
 from django.contrib.gis.geos import Point
 from django.contrib.gis.db.models.functions import GeometryDistance
+from django.contrib import auth
 
 import json
 from datetime import datetime, date, time, timedelta
 
 def index(request):
     return render(request, 'backboard/index.html')
+
+def logout(request):
+    auth.logout(request)
+    return redirect('/backboard/login/')
 
 def home(request):
     if not request.user.is_authenticated or not request.user.is_staff:
@@ -29,8 +34,8 @@ def home(request):
         depature = request.POST.get("departure", "")
         destination = request.POST.get("destination", "")
         memo = request.POST.get("memo", "")
-        numberOfCars = request.POST.get("numberOfCars", "")
-        print(f"{phone} {name} {depature} {destination} {memo} {numberOfCars}")
+        # numberOfCars = request.POST.get("numberOfCars", "")
+        print(f"{phone} {name} {depature} {destination} {memo}")
 
         if Customer.objects.filter(phone=phone).count() == 0:
             customer = Customer()
@@ -179,7 +184,9 @@ def dispatch_inquire(request):
         })
 
 def passengers(request):
-    
+    if not request.user.is_authenticated or not request.user.is_staff:
+        return redirect('/backboard/login/')
+
     customers = Customer.objects.all()
     print(customers.count())
     if (request.GET.get("qName") != None and request.GET.get("qName") != ""):
@@ -204,6 +211,8 @@ def passengers(request):
     return render(request, 'backboard/passengers.html',{'customers':page_obj})
 
 def drivers(request):
+    if not request.user.is_authenticated or not request.user.is_staff:
+        return redirect('/backboard/login/')
 
     if request.method == 'GET':
         # context = {}
@@ -234,6 +243,11 @@ def drivers(request):
             user.is_passed = True
         else:
             user.is_passed = False
+
+        if(request.POST.get("is_telegram_bot_enable")!= None and request.POST.get("is_telegram_bot_enable")=="true"):
+            user.is_telegram_bot_enable = True
+        else:
+            user.is_telegram_bot_enable = False
 
         # if(request.POST.get("dispatch_fee_percent")!=""):
         #     try:
@@ -345,6 +359,8 @@ def credit_topup(request):
     return render(request, 'backboard/credit_topup.html')
 
 def dispatch_management(request):
+    if not request.user.is_authenticated or not request.user.is_staff:
+        return redirect('/backboard/login/')
     # online_drivers = User.objects.all().exclude(id=1)
     # on_task_drivers = User.objects.all().exclude(id=1)
     # on_the_way_drivers = User.objects.all().exclude(id=1)
