@@ -91,7 +91,7 @@
                 <tr class="align-middle">
                   <td class="text-nowrap">
                     {{ case.create_time|date:'Y-m-d' }}<br/>
-                    派單車隊{{ case.carTeam.name }}<br/>
+                    派單車隊：{{ case.carTeam.name }}<br/>
                     訂單狀態：
                     {% if case.case_state == "canceled" %}
                       取消
