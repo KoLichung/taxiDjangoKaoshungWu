@@ -43,6 +43,9 @@ def countDownUserCaseShip():
                     userCaseShip.user = user
                     userCaseShip.expect_second = timePredict
                     userCaseShip.save()
+
+                    from fcmNotify.tasks import sendTaskMessage
+                    sendTaskMessage(user)
                 else:
                     case.case_state = 'canceled'
                     case.save()
@@ -101,6 +104,9 @@ def countDownUserCaseShip():
                             userCaseShip.countdown_second = 16
                             userCaseShip.expect_second = timePredict
                             userCaseShip.save()
+
+                            from fcmNotify.tasks import sendTaskMessage
+                            sendTaskMessage(user)
                         else:
                             case.case_state = 'canceled'
                             case.save()
