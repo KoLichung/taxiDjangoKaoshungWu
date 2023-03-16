@@ -148,7 +148,7 @@ def dispatch_inquire(request):
         q_belonged_car_team = request.GET.get("belonged_car_team")
         case_ids = []
         for case in cases:
-            if q_belonged_car_team in case.user.car_teams_string():
+            if case.user != None and q_belonged_car_team in case.user.car_teams_string():
                 case_ids.append(case.id)
         cases = Case.objects.filter(id__in=case_ids).order_by('-id')
     
