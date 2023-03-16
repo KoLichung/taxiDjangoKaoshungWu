@@ -146,9 +146,11 @@ def dispatch_inquire(request):
     
     if (request.GET.get("belonged_car_team") != None and request.GET.get("belonged_car_team") != ""):
         q_belonged_car_team = request.GET.get("belonged_car_team")
-        cases = cases.filter(carTeam__name = q_belonged_car_team)
-        #print(cases)
-
+        case_ids = []
+        for case in cases:
+            if q_belonged_car_team in case.user.car_teams_string():
+                case_ids.append(case.id)
+        cases = Case.objects.filter(id__in=case_ids).order_by('-id')
     
     total_dispatch_fee = cases.aggregate(Sum('dispatch_fee'))
 

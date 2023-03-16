@@ -140,7 +140,7 @@
                     車資：{{ case.case_money }} <br/>
                     扣帳：{{ case.dispatch_fee }} <br/>
                     {% comment %} 分潤：業主A 10 業主B 10<br /> {% endcomment %}
-                    司機：{{ case.user }}{{ case.user.car_teams_string}}<br />
+                    司機：{{ case.user }} ( {{ case.user.car_teams_string}} )<br />
                     車號：{{ case.user.vehicalLicence}}
                   </td>
                 </tr>
