@@ -108,6 +108,13 @@ class User(AbstractBaseUser, PermissionsMixin):
         else:
             return '無車隊'
 
+    def main_car_team_string(self):
+        if UserCarTeamShip.objects.filter(user=self).count() > 0:
+            ships = UserCarTeamShip.objects.filter(user=self)
+            return ships[0].carTeam.name
+        else:
+            return '無車隊'
+
     def car_teams_id_array(self):
         user_car_teams = UserCarTeamShip.objects.filter(user=self)
         user_carTeam_ids = list(user_car_teams.values_list('carTeam',flat=True))
