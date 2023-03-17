@@ -13,6 +13,12 @@ from pathlib import Path
 from firebase_admin import initialize_app
 from socket import gethostname, gethostbyname
 from glob import glob
+import environ
+
+# Initialise environment variables
+env = environ.Env()
+environ.Env.read_env()
+API_KEY=env('api_key')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent

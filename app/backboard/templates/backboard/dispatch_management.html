@@ -1,7 +1,6 @@
 {% extends 'backboard/base.html' %} {% block content %}
 {% load static %}
 <div class="main card-body bg-light">
-  
   <div class="row mx-auto">
     <div class="col-8 mx-auto">
       <div class="my-3 text-center">
@@ -245,7 +244,7 @@
       }
 
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCdP86OffSMXL82nbHA0l6K0W2xrdZ5xLk&callback=initMap"></script> 
+    <script src="https://maps.googleapis.com/maps/api/js?key={{key}}&callback=initMap"></script> 
     <script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script>
   
   </div>

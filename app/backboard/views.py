@@ -13,6 +13,7 @@ from django.contrib import auth
 
 import json
 from datetime import datetime, date, time, timedelta
+from django.conf import settings
 
 def index(request):
     return render(request, 'backboard/index.html')
@@ -378,7 +379,9 @@ def dispatch_management(request):
     # page_obj.adjusted_elided_pages = paginator.get_elided_page_range(page_number)
 
     #return render(request, 'backboard/dispatch_management.html', {'online_drivers': online_drivers, 'on_task_drivers':on_task_drivers, 'on_the_way_drivers':on_the_way_drivers, 'pending_drivers':pending_drivers})
-    return render(request, 'backboard/dispatch_management.html')
+    key = settings.API_KEY
+    print(f'key {key}')
+    return render(request, 'backboard/dispatch_management.html',{'key':key})
 
 def ajax_get_drivers(request):
     online_drivers = User.objects.filter(is_online=True).exclude(id=1)

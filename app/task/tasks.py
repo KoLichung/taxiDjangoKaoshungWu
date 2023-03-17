@@ -10,6 +10,7 @@ from datetime import date, datetime, timedelta
 import requests
 import logging
 import json
+from django.conf import settings
 
 TOKEN = '5889906798:AAFR2O_uTBq_ZGPaDkqyfsHkWKK7EQ6bxj0'
 logger = logging.getLogger(__file__)
@@ -198,10 +199,10 @@ def car_team_count_return_to_zero():
         car_team.day_case_count = 0
         car_team.save()
 
-# https://maps.googleapis.com/maps/api/directions/json?origin=Toronto&destination=Montreal&key=AIzaSyCdP86OffSMXL82nbHA0l6K0W2xrdZ5xLk
-# https://maps.googleapis.com/maps/api/directions/json?origin=24.131111816506685,120.6426299846543&destination=24.028106564811345,120.69707448525111&key=AIzaSyCdP86OffSMXL82nbHA0l6K0W2xrdZ5xLk
+# https://maps.googleapis.com/maps/api/directions/json?origin=Toronto&destination=Montreal&key=
+# https://maps.googleapis.com/maps/api/directions/json?origin=24.131111816506685,120.6426299846543&destination=24.028106564811345,120.69707448525111&key=
 def getTimePredict(on_lat, on_long, off_lat, off_long):
-    key='AIzaSyCdP86OffSMXL82nbHA0l6K0W2xrdZ5xLk'
+    key=settings.API_KEY
     url = f'https://maps.googleapis.com/maps/api/directions/json?origin={on_lat},{on_long}&destination={off_lat},{off_long}&key={key}'
     response = requests.get(url)
     # logger.info(response)

@@ -8,6 +8,7 @@ from datetime import datetime
 import requests
 import logging
 import json
+from django.conf import settings
 
 # 要有 callback, 要先透過連結設定 webhook：
 # https://api.telegram.org/bot5889906798:AAFR2O_uTBq_ZGPaDkqyfsHkWKK7EQ6bxj0/setWebhook?url=https://chinghsien.com/telegram_bot/callback
@@ -48,7 +49,7 @@ def callback(request):
                                     on_address = text.replace('上車','').replace(':','').replace('：','')
 
                                     try:
-                                        onUrl = path+on_address+"&key="+"AIzaSyCrzmspoFyEFYlQyMqhEkt3x5kkY8U3C-Y"
+                                        onUrl = path+on_address+"&key="+settings.API_KEY
                                         logger.info(onUrl)
                                         response = requests.get(onUrl)
                                         logger.info(response.text)
@@ -90,7 +91,7 @@ def callback(request):
                                     case.off_address = off_address
                             
                                     try:
-                                        offUrl = path+off_address+"&key="+"AIzaSyCrzmspoFyEFYlQyMqhEkt3x5kkY8U3C-Y"
+                                        offUrl = path+off_address+"&key="+settings.API_KEY
                                         logger.info(response.text)
                                         response = requests.get(offUrl)
                                         logger.info(response.text)

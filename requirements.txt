@@ -13,3 +13,4 @@ redis==4.0.2
 boto3==1.24.16
 # line-bot-sdk
 # python-telegram-bot
+django-environ==0.10.0
