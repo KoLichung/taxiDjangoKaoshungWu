@@ -259,7 +259,10 @@ class UserCaseShip(models.Model):
         on_delete=models.RESTRICT,
         related_name='case_users'
     )
+    
+    ask_ranking_ids_text = models.TextField(default='',blank = True, null=True)
     exclude_ids_text = models.TextField(default='',blank = True, null=True)
+
     countdown_second = models.IntegerField(default=16)
     expect_second = models.IntegerField(default=0)
 
