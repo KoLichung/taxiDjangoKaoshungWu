@@ -25,10 +25,9 @@ def logout(request):
 def home(request):
     if not request.user.is_authenticated or not request.user.is_staff:
         return redirect('/backboard/login/')
-    # config = dotenv_values(".env")
-    # key = config['geoCodingKey']
-    # print(config.items())
-    # print(config['geoCodingKey'])
+    
+    carTeams = CarTeam.objects.all()
+
     if request.method == 'POST':
         phone = request.POST.get("passengerPhone", "")
         name = request.POST.get("passengerName", "")
@@ -36,6 +35,8 @@ def home(request):
         destination = request.POST.get("destination", "")
         memo = request.POST.get("memo", "")
         # numberOfCars = request.POST.get("numberOfCars", "")
+        carTeamId = request.POST.get("carTeam", "")
+
         print(f"{phone} {name} {depature} {destination} {memo}")
 
         if Customer.objects.filter(phone=phone).count() == 0:
@@ -45,9 +46,13 @@ def home(request):
             customer.save()
         else:
             customer = Customer.objects.filter(phone=phone).first()
+        
+        if carTeamId!=None and CarTeam.objects.filter(id=carTeamId).count() != 0:
+            carTeam = CarTeam.objects.get(id=carTeamId)
 
         case = Case()
         case.case_state = 'wait'
+        case.carTeam = carTeam
         case.customer = customer
         case.customer_name = customer.name
         case.customer_phone = customer.phone
@@ -56,7 +61,7 @@ def home(request):
         path = 'https://maps.googleapis.com/maps/api/geocode/json?address='
 
         case.on_address = depature
-        onUrl = path+depature+"&key="+"AIzaSyCrzmspoFyEFYlQyMqhEkt3x5kkY8U3C-Y"
+        onUrl = path+depature+"&key="+settings.API_KEY
         # print(onUrl)
         response = requests.get(onUrl)
         resp_json_payload = response.json()
@@ -64,7 +69,7 @@ def home(request):
         case.on_lng = resp_json_payload['results'][0]['geometry']['location']['lng']
 
         case.off_address = destination
-        onUrl = path+depature+"&key="+"AIzaSyCrzmspoFyEFYlQyMqhEkt3x5kkY8U3C-Y"
+        onUrl = path+depature+"&key="+settings.API_KEY
         response = requests.get(onUrl)
         resp_json_payload = response.json()
         case.off_lat = resp_json_payload['results'][0]['geometry']['location']['lat']
@@ -89,7 +94,7 @@ def home(request):
 
         return render(request, 'backboard/home.html', {'message': "新增成功"})
 
-    return render(request, 'backboard/home.html')
+    return render(request, 'backboard/home.html', {'carTeams':carTeams})
 
 def dispatch_inquire(request):
     if not request.user.is_authenticated or not request.user.is_staff:

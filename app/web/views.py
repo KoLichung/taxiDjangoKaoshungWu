@@ -15,6 +15,7 @@ from django.contrib.gis.geos import Point
 from django.contrib.gis.db.models.functions import GeometryDistance
 from django.db.models import Q
 import logging
+from django.conf import settings
 # Create your views here.
 
 logger = logging.getLogger(__file__)
@@ -71,7 +72,7 @@ def map(request):
     case = Case.objects.get(id=case_id)
     driver = case.user
 
-    return render(request, 'web/map.html', {'case': case, 'driver': driver})
+    return render(request, 'web/map.html', {'case': case, 'driver': driver, 'key':settings.API_KEY})
 
 
 def is_ajax(request):
@@ -128,7 +129,7 @@ def ajax_call_and_wait(request):
             # key = config['geoCodingKey']
 
             case.on_address = fromLoc
-            onUrl = path+fromLoc+"&key="+"AIzaSyCrzmspoFyEFYlQyMqhEkt3x5kkY8U3C-Y"
+            onUrl = path+fromLoc+"&key="+settings.API_KEY
             logger.info(onUrl)
             response = requests.get(onUrl)
             logger.info(response.text)
@@ -139,7 +140,7 @@ def ajax_call_and_wait(request):
 
             if toLoc != None and toLoc != '':
                 case.off_address = toLoc
-                onUrl = path+toLoc+"&key="+"AIzaSyCrzmspoFyEFYlQyMqhEkt3x5kkY8U3C-Y"
+                onUrl = path+toLoc+"&key="+settings.API_KEY
                 logger.info(response.text)
                 response = requests.get(onUrl)
                 logger.info(response.text)
@@ -260,7 +261,7 @@ def ajax_update_lat_lng(request):
     # key = config['geoCodingKey']
 
     path = "https://maps.googleapis.com/maps/api/geocode/json?language=zh-TW&latlng="
-    onUrl = path+f'{onLat},{onLng}&key=AIzaSyCrzmspoFyEFYlQyMqhEkt3x5kkY8U3C-Y'
+    onUrl = path+f'{onLat},{onLng}&key={settings.API_KEY}'
     response = requests.get(onUrl)
     resp_json_payload = response.json()
     address = resp_json_payload['results'][0]['formatted_address']

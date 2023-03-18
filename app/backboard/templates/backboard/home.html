@@ -30,17 +30,13 @@
             <input class="form-control" name="destination" placeholder="下車地點"/>
           </div>
 
-          {% comment %} <div class="mb-2 mx-3">
-            <select class="form-select js-choice" id="numberOfCars" size="1" name="numberOfCars"
-              data-options='{"removeItemButton":true,"placeholder":true}'
-            >
-              <option value="1">1輛車</option>
-              <option value="2">2輛車</option>
-              <option value="3">3輛車</option>
-              <option value="4">4輛車</option>
-              <option value="5">5輛車</option>
+          <div class="mb-2 mx-3">
+            <select class="form-select js-choice" id="carTeam" size="1" name="carTeam">
+             {% for carTeam in carTeams %}
+              <option value={{carTeam.id}}>{{carTeam.name}}</option>
+             {% endfor %}
             </select>
-          </div> {% endcomment %}
+          </div>
 
           {% comment %} <div class="mb-2 mx-3">
             <select

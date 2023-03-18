@@ -49,13 +49,14 @@ def countDownUserCaseShip():
                 otherTeamUsersIds = []
                 noneTeamUsersIds = []
                 for user in User.objects.filter(is_online=True, is_passed=True, is_on_task=False).filter(~Q(id__in=asking_user_ids)).order_by(GeometryDistance("location", ref_location)):
-                    if case.carTeam == None or user.main_car_team_string == case.carTeam.name:
+                    if case.carTeam == None or user.main_car_team_string() == case.carTeam.name:
                         teamUsersIds.append(user.id)
-                    elif user.main_car_team_string == '無車隊':
+                    elif user.main_car_team_string() == '無車隊':
                         noneTeamUsersIds.append(user.id)
                     else:
                         otherTeamUsersIds.append(user.id)
                 
+                print(f'adminUsersIds {adminUsersIds}')
                 print(f'teamUsersIds {teamUsersIds}')
                 print(f'otherTeamUsersIds {otherTeamUsersIds}')
                 print(f'noneTeamUsersIds {noneTeamUsersIds}')
@@ -70,7 +71,10 @@ def countDownUserCaseShip():
                 
                 if userCaseShip.ask_ranking_ids_text != '':
                     qulified_user_ids = userCaseShip.ask_ranking_ids_text.split(',')
-                    rankUsers = User.objects.filter(id__in=qulified_user_ids)
+                    rankUsers = []
+                    for id in qulified_user_ids:
+                        rankUsers.append(User.objects.get(id=id))
+                    # User.objects.filter(id__in=qulified_user_ids)
 
                     for user in rankUsers:
                         timePredict = getTimePredict(user.current_lat, user.current_lng, case.on_lat, case.on_lng)
@@ -140,16 +144,21 @@ def countDownUserCaseShip():
                     # qulified_users = User.objects.filter(is_online=True, is_passed=True, is_on_task=False).filter(~Q(id__in=asking_user_ids)).filter(~Q(id__in=exclude_ids_array))
                     # if qulified_users.count() != 0:
                     
+                    print(f'exclude_ids_text {userCaseShip.exclude_ids_text}')
+                    exclude_ids_array = userCaseShip.exclude_ids_text.split(',')
+
                     if userCaseShip.ask_ranking_ids_text != userCaseShip.exclude_ids_text:
-                        user = qulified_users.order_by(GeometryDistance("location", ref_location)).first()
+                        # user = qulified_users.order_by(GeometryDistance("location", ref_location)).first()
 
                         qulified_user_ids = userCaseShip.ask_ranking_ids_text.split(',')
-                        rankUsers = User.objects.filter(id__in=qulified_user_ids)
+                        rankUsers = []
+                        for id in qulified_user_ids:
+                            rankUsers.append(User.objects.get(id=id))
 
                         for user in rankUsers:
 
                             if str(user.id) not in exclude_ids_array:
-                                if user.is_ontaks == False and user.id not in asking_user_ids:
+                                if user.is_on_task == False and user.id not in asking_user_ids:
                                     timePredict = getTimePredict(user.current_lat, user.current_lng, case.on_lat, case.on_lng)
 
                                     if timePredict < 900:
@@ -167,13 +176,13 @@ def countDownUserCaseShip():
                                         if len(userCaseShip.exclude_ids_text) == 0:
                                             userCaseShip.exclude_ids_text = str(user.id)
                                         else:
-                                            userCaseShip.exclude_ids_text = userCaseShip.exclude_ids_text + f',{userCaseShip.user.id}'
+                                            userCaseShip.exclude_ids_text = userCaseShip.exclude_ids_text + f',{user.id}'
                                         userCaseShip.save()
                                 else:
                                     if len(userCaseShip.exclude_ids_text) == 0:
-                                        userCaseShip.exclude_ids_text = str(userCaseShip.user.id)
+                                        userCaseShip.exclude_ids_text = str(user.id)
                                     else:
-                                        userCaseShip.exclude_ids_text = userCaseShip.exclude_ids_text + f',{userCaseShip.user.id}'
+                                        userCaseShip.exclude_ids_text = userCaseShip.exclude_ids_text + f',{user.id}'
                                     userCaseShip.save()
 
                         
