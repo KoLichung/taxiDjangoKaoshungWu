@@ -69,7 +69,8 @@ def home(request):
         case.on_lng = resp_json_payload['results'][0]['geometry']['location']['lng']
 
         case.off_address = destination
-        onUrl = path+depature+"&key="+settings.API_KEY
+        onUrl = path+destination+"&key="+settings.API_KEY
+        # print(onUrl)
         response = requests.get(onUrl)
         resp_json_payload = response.json()
         case.off_lat = resp_json_payload['results'][0]['geometry']['location']['lat']
@@ -92,7 +93,7 @@ def home(request):
         # from fcmNotify.tasks import sendTaskMessage
         # sendTaskMessage(user)
 
-        return render(request, 'backboard/home.html', {'message': "新增成功"})
+        return render(request, 'backboard/home.html', {'message': "新增成功", 'carTeams':carTeams})
 
     return render(request, 'backboard/home.html', {'carTeams':carTeams})
 
