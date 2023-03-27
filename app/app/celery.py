@@ -15,7 +15,7 @@ def setup_periodic_tasks(sender, **kwargs):
 
     #run at 2400 of first day of month every taiwan time
     sender.add_periodic_task(
-        crontab(hour=16, minute=0, day_of_month='1'),
+        crontab(hour=16, minute=0),
         car_team_count_return_to_zero.s('calcualte month summary'),
     )
 

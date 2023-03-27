@@ -16,7 +16,8 @@ class CustomerAdmin(admin.ModelAdmin):
 
 @admin.register(Case)
 class CaseAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user','case_state', 'create_time', 'on_address', 'off_time', 'off_address', 'case_money')
+    list_display = ('id', 'user','', 'create_time', 'on_address', 'off_time', 'off_address', 'case_money')
+    list_filter = ['case_state']
 
 @admin.register(UserCaseShip)
 class UserCaseShipAdmin(admin.ModelAdmin):
