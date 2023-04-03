@@ -12,6 +12,7 @@ class CaseSerializer(serializers.ModelSerializer):
     user_left_money = serializers.IntegerField(default=0)
     countdown_second = serializers.IntegerField(default=0)
     expect_second = serializers.IntegerField(default=0)
+    carTeamName = serializers.CharField(read_only=True, default='')
 
     class Meta:
         model = Case

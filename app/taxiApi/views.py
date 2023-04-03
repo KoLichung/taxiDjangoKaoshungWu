@@ -72,6 +72,7 @@ class GetCaseViewSet(viewsets.GenericViewSet,
             user_case_ship = UserCaseShip.objects.filter(user=self.request.user, case = queryset[i]).first()
             queryset[i].countdown_second = user_case_ship.countdown_second
             queryset[i].expect_second = user_case_ship.expect_second
+            queryset[i].carTeamName = queryset[i].carTeam.name
 
         return queryset
     
