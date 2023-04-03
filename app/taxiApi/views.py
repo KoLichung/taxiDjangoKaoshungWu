@@ -236,6 +236,9 @@ class CaseFinishedView(APIView):
                     after_left_money = user.left_money
                     user.save()
                     
+                    car_teams_string = case.user.car_teams_string()
+                    tel_send_message(case.telegram_id, f'{case.carTeam.name}{case.case_number}-{car_teams_string}\n任務結束\n實際車資：{case.case_money}\n該趟回金：{case.dispatch_fee}\n剩餘餘額：{user.left_money}\n駕駛人員：{user.nick_name}')
+
                     return Response({
                         'message':'ok', 
                         'before_left_money':before_left_money,
