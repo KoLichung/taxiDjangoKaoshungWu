@@ -88,7 +88,7 @@ class CaseDetailView(APIView):
     def get(self, request):
         case_id= self.request.query_params.get('case_id')
         case = Case.objects.get(id=case_id)
-        serializer = serializers.MessageSerializer(case)
+        serializer = serializers.CaseSerializer(case)
         return Response(serializer.data)
 
 #http://localhost:8000/api/update_lat_lng?lat=23.23&lng=124.24
