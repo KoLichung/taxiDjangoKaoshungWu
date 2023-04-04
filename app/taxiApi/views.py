@@ -56,7 +56,8 @@ class CarTeamViewSet(viewsets.GenericViewSet,
 
 #http://localhost:8000/api/get_cases/
 class GetCaseViewSet(viewsets.GenericViewSet,
-                    mixins.ListModelMixin,):
+                    mixins.ListModelMixin,
+                    mixins.RetrieveModelMixin):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
 
@@ -237,7 +238,7 @@ class CaseFinishedView(APIView):
                     user.save()
                     
                     car_teams_string = case.user.car_teams_string()
-                    tel_send_message(case.telegram_id, f'{case.carTeam.name}{case.case_number}-{car_teams_string}\n任務結束\n實際車資：{case.case_money}\n該趟回金：{case.dispatch_fee}\n剩餘餘額：{user.left_money}\n駕駛人員：{user.nick_name}')
+                    tel_send_message(case.telegram_id, f'{case.case_number}-{car_teams_string}\n任務結束\n實際車資：{case.case_money}\n該趟回金：{case.dispatch_fee}\n剩餘餘額：{user.left_money}\n駕駛人員：{user.nick_name}')
 
                     return Response({
                         'message':'ok', 
