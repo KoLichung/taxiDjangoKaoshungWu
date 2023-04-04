@@ -137,8 +137,6 @@ def callback(request):
                                         # 刪除詢問中 ship
                                         UserCaseShip.objects.filter(case=case).delete()
                                         
-                                        
-
                                         if case.user != None:
                                             car_teams_string = case.user.car_teams_string()
 
@@ -146,7 +144,6 @@ def callback(request):
                                             user = case.user
                                             user.is_on_task = False
                                             user.save()
-
                                         else:
                                             car_teams_string=''
                                         tel_send_message(chat_id,f'{case.case_number}-{car_teams_string}\n--------------------------\n取消成功\n--------------------------\n上車:{case.on_address}')

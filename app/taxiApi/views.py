@@ -122,6 +122,7 @@ class CaseConfirmView(APIView):
         # try:
         case = Case.objects.get(id=case_id)
         if(case.user != None):
+            UserCaseShip.objects.filter(case=case).delete()
             raise APIException("this case already belong to someone")
         else:
             user = self.request.user
