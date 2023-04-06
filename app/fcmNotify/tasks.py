@@ -1,9 +1,16 @@
-from firebase_admin.messaging import Message, Notification
+from firebase_admin.messaging import Message, Notification, APNSConfig, APNSPayload, Aps
 from fcm_django.models import FCMDevice
 
 def sendTest():
     message = Message(
         notification= Notification(title="title", body="text"),
+        apns=APNSConfig(
+            payload=APNSPayload(
+                aps=Aps(
+                    sound="default",
+                )
+            )
+        ),
         # data={
         #     "Nick" : "Mario",
         #     "body" : "great match!",
@@ -18,6 +25,13 @@ def sendTest():
 def sendTaskMessage(user):
     message = Message(
         notification= Notification(title="新任務來囉！", body="回 app 接單~"),
+        apns=APNSConfig(
+            payload=APNSPayload(
+                aps=Aps(
+                    sound="default",
+                )
+            )
+        ),
     )
     devices = FCMDevice.objects.filter(user=user)
     devices.send_message(message)
