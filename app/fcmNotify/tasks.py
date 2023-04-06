@@ -23,11 +23,15 @@ def sendTest():
     devices.send_message(message)
 
 def sendTaskMessage(user):
+    num_of_badge = 99 # your badge
+
     message = Message(
+        data="message.data",
         notification= Notification(title="新任務來囉！", body="回 app 接單~"),
         apns=APNSConfig(
             payload=APNSPayload(
                 aps=Aps(
+                    badge=num_of_badge,
                     sound="default",
                 )
             )
