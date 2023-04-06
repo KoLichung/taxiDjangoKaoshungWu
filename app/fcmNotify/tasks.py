@@ -1,9 +1,6 @@
 from firebase_admin.messaging import Message, Notification, APNSConfig, APNSPayload, Aps
 from fcm_django.models import FCMDevice
 
-import logging
-logger = logging.getLogger(__file__)
-
 def sendTest():
     message = Message(
         notification= Notification(title="title", body="text"),
