@@ -84,6 +84,7 @@ def countDownUserCaseShip():
                             userCaseShip.expect_second = timePredict
                             userCaseShip.save()
 
+                            logger.info('sending notification!')
                             from fcmNotify.tasks import sendTaskMessage
                             sendTaskMessage(user)
                             break
@@ -167,6 +168,7 @@ def countDownUserCaseShip():
                                         userCaseShip.expect_second = timePredict
                                         userCaseShip.save()
 
+                                        logger.info('sending notification!')
                                         from fcmNotify.tasks import sendTaskMessage
                                         sendTaskMessage(user)
 
