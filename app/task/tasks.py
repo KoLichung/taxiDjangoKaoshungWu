@@ -17,6 +17,7 @@ logger = logging.getLogger(__file__)
 
 @shared_task
 def countDownUserCaseShip():
+    logger.info('count dowon user ship')
 
     cases = Case.objects.filter(case_state='wait')
     for case in cases:
