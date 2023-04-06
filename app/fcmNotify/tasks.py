@@ -1,6 +1,9 @@
 from firebase_admin.messaging import Message, Notification, APNSConfig, APNSPayload, Aps
 from fcm_django.models import FCMDevice
 
+import logging
+logger = logging.getLogger(__file__)
+
 def sendTest():
     message = Message(
         notification= Notification(title="title", body="text"),
@@ -37,6 +40,10 @@ def sendTaskMessage(user):
             )
         ),
     )
+
+    logger.info('message')
+    logger.info(message)
+
     devices = FCMDevice.objects.filter(user=user)
     devices.send_message(message)
     print("send fcm")
