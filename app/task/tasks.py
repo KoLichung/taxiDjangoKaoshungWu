@@ -17,8 +17,7 @@ logger = logging.getLogger(__file__)
 
 @shared_task
 def countDownUserCaseShip():
-    logger.info('count dowon user ship')
-
+    
     cases = Case.objects.filter(case_state='wait')
     for case in cases:
         ref_location = Point(float(case.on_lng), float(case.on_lat), srid=4326)

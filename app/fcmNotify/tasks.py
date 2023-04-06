@@ -26,10 +26,8 @@ def sendTest():
     devices.send_message(message)
 
 def sendTaskMessage(user):
-    logger.info('sendTaskMessage here')
 
     message = Message(
-        data="message.data",
         notification= Notification(title="新任務來囉！", body="回 app 接單~"),
         apns=APNSConfig(
             payload=APNSPayload(
@@ -39,9 +37,6 @@ def sendTaskMessage(user):
             )
         ),
     )
-
-    logger.info('message')
-    logger.info(message)
 
     devices = FCMDevice.objects.filter(user=user)
     devices.send_message(message)
