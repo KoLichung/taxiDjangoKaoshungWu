@@ -26,7 +26,7 @@ def sendTest():
     devices.send_message(message)
 
 def sendTaskMessage(user):
-    num_of_badge = 99 # your badge
+    logger.info('sendTaskMessage here')
 
     message = Message(
         data="message.data",
@@ -34,7 +34,6 @@ def sendTaskMessage(user):
         apns=APNSConfig(
             payload=APNSPayload(
                 aps=Aps(
-                    badge=num_of_badge,
                     sound="default",
                 )
             )
