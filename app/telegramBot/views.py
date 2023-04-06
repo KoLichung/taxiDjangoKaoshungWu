@@ -19,7 +19,7 @@ logger = logging.getLogger(__file__)
 @csrf_exempt
 def callback(request):
     if request.method == 'POST':
-        logger.info(request.body)
+        # logger.info(request.body)
         
         message = json.loads(request.body)
         chat_id,txt = parse_message(message)
@@ -50,9 +50,9 @@ def callback(request):
 
                                     try:
                                         onUrl = path+on_address+"&key="+settings.API_KEY
-                                        logger.info(onUrl)
+                                        # logger.info(onUrl)
                                         response = requests.get(onUrl)
-                                        logger.info(response.text)
+                                        # logger.info(response.text)
 
                                         resp_json_payload = response.json()
                                         on_lat = resp_json_payload['results'][0]['geometry']['location']['lat']
@@ -92,9 +92,9 @@ def callback(request):
                             
                                     try:
                                         offUrl = path+off_address+"&key="+settings.API_KEY
-                                        logger.info(response.text)
+                                        # logger.info(response.text)
                                         response = requests.get(offUrl)
-                                        logger.info(response.text)
+                                        # logger.info(response.text)
 
                                         resp_json_payload = response.json()
                                         case.off_lat = resp_json_payload['results'][0]['geometry']['location']['lat']
@@ -208,7 +208,7 @@ def callback(request):
 
 def parse_message(message):
     print("message-->",message)
-    logger.info(f'message-->{message}')
+    # logger.info(f'message-->{message}')
     try:
         chat_id = message['message']['chat']['id']
         txt = message['message']['text']
@@ -231,7 +231,7 @@ def tel_send_message(chat_id, text):
                 'text': text
                 }
     r = requests.post(url,json=payload)
-    logger.info(r)
+    # logger.info(r)
     # return r
 
 
