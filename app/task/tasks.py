@@ -235,20 +235,26 @@ def countDownUserCaseShip():
                     # qulified_users = User.objects.filter(is_online=True, is_passed=True, is_on_task=False).filter(~Q(id__in=asking_user_ids)).filter(~Q(id__in=exclude_ids_array))
                     # if qulified_users.count() != 0:
                     
-                    print(f'exclude_ids_text {userCaseShip.exclude_ids_text}')
                     exclude_ids_array = userCaseShip.exclude_ids_text.split(',')
+                    print(f'exclude_ids_array {exclude_ids_array}')
 
                     if userCaseShip.ask_manager_ids_text != '':
                         print('=============asking admin drivers ===============')
                         qulified_user_ids = userCaseShip.ask_manager_ids_text.split(',')
                         rankUsers = []
+                        exclude_id = ''
+
                         for id in qulified_user_ids:
                             if id not in exclude_ids_array:
                                 rankUsers.append(User.objects.get(id=id))
                             else:
-                                qulified_user_ids.remove(id)
-                                userCaseShip.ask_manager_ids_text = ','.join(str(x) for x in qulified_user_ids)
-                                userCaseShip.save()
+                                exclude_id = id
+
+                        if exclude_id != '':
+                            qulified_user_ids.remove(exclude_id)
+
+                        userCaseShip.ask_manager_ids_text = ','.join(str(x) for x in qulified_user_ids)
+                        userCaseShip.save()
 
                         for user in rankUsers:
                             timePredict = getTimePredict(user.current_lat, user.current_lng, case.on_lat, case.on_lng)
@@ -270,19 +276,24 @@ def countDownUserCaseShip():
                                 userCaseShip.ask_manager_ids_text = ''
                                 userCaseShip.save()
                                 break
-                 
 
                     if userCaseShip.ask_manager_ids_text == '' and userCaseShip.ask_same_car_team_ids_text != '':
                         print('=============asking same team drivers ===============')
                         qulified_user_ids = userCaseShip.ask_same_car_team_ids_text.split(',')
                         rankUsers = []
+                        exclude_id = ''
+
                         for id in qulified_user_ids:
                             if id not in exclude_ids_array:
                                 rankUsers.append(User.objects.get(id=id))
                             else:
-                                qulified_user_ids.remove(id)
-                                userCaseShip.ask_same_car_team_ids_text = ','.join(str(x) for x in qulified_user_ids)
-                                userCaseShip.save()
+                                exclude_id = id
+
+                        if exclude_id != '':
+                            qulified_user_ids.remove(exclude_id)
+
+                        userCaseShip.ask_same_car_team_ids_text = ','.join(str(x) for x in qulified_user_ids)
+                        userCaseShip.save()
 
                         for user in rankUsers:
                             timePredict = getTimePredict(user.current_lat, user.current_lng, case.on_lat, case.on_lng)
@@ -310,13 +321,19 @@ def countDownUserCaseShip():
                         print('=============asking not same team drivers ===============')
                         qulified_user_ids = userCaseShip.ask_not_same_car_team_ids_text.split(',')
                         rankUsers = []
+                        exclude_id = ''
+
                         for id in qulified_user_ids:
                             if id not in exclude_ids_array:
                                 rankUsers.append(User.objects.get(id=id))
                             else:
-                                qulified_user_ids.remove(id)
-                                userCaseShip.ask_not_same_car_team_ids_text = ','.join(str(x) for x in qulified_user_ids)
-                                userCaseShip.save()
+                                exclude_id = id
+
+                        if exclude_id != '':
+                            qulified_user_ids.remove(exclude_id)
+
+                        userCaseShip.ask_not_same_car_team_ids_text = ','.join(str(x) for x in qulified_user_ids)
+                        userCaseShip.save()
 
                         for user in rankUsers:
                             timePredict = getTimePredict(user.current_lat, user.current_lng, case.on_lat, case.on_lng)
@@ -343,13 +360,19 @@ def countDownUserCaseShip():
                     if userCaseShip.ask_manager_ids_text == '' and userCaseShip.ask_same_car_team_ids_text == '' and userCaseShip.ask_not_same_car_team_ids_text == '' and userCaseShip.ask_no_car_team_ids_text != '':
                         qulified_user_ids = userCaseShip.ask_no_car_team_ids_text.split(',')
                         rankUsers = []
+                        exclude_id = ''
+
                         for id in qulified_user_ids:
                             if id not in exclude_ids_array:
                                 rankUsers.append(User.objects.get(id=id))
                             else:
-                                qulified_user_ids.remove(id)
-                                userCaseShip.ask_no_car_team_ids_text = ','.join(str(x) for x in qulified_user_ids)
-                                userCaseShip.save()
+                                exclude_id = id
+
+                        if exclude_id != '':
+                            qulified_user_ids.remove(exclude_id)
+
+                        userCaseShip.ask_no_car_team_ids_text = ','.join(str(x) for x in qulified_user_ids)
+                        userCaseShip.save()
 
                         for user in rankUsers:
                             timePredict = getTimePredict(user.current_lat, user.current_lng, case.on_lat, case.on_lng)
