@@ -29,7 +29,7 @@ def sendTaskMessage(user):
         apns=APNSConfig(
             payload=APNSPayload(
                 aps=Aps(
-                    sound="default",
+                    sound="ding_dong.caf",
                 )
             )
         ),
