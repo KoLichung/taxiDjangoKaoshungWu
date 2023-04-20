@@ -84,17 +84,27 @@ def countDownUserCaseShip():
                         rankUsers.append(User.objects.get(id=id))
 
                     for user in rankUsers:
-                        timePredict = getTimePredict(user.current_lat, user.current_lng, case.on_lat, case.on_lng)
-                        if timePredict < 900:
-                            userCaseShip.user = user
-                            userCaseShip.expect_second = timePredict
-                            userCaseShip.save()
+                        try:
+                            timePredict = getTimePredict(user.current_lat, user.current_lng, case.on_lat, case.on_lng)
+                            if timePredict < 900:
+                                userCaseShip.user = user
+                                userCaseShip.expect_second = timePredict
+                                userCaseShip.save()
 
-                            from fcmNotify.tasks import sendTaskMessage
-                            sendTaskMessage(user)
-                            break
-                        else:
-                            # 按照順序排, 有一個大於 15 分鐘, 後面就不用問了
+                                from fcmNotify.tasks import sendTaskMessage
+                                sendTaskMessage(user)
+                                break
+                            else:
+                                # 按照順序排, 有一個大於 15 分鐘, 後面就不用問了
+                                if len(userCaseShip.exclude_ids_text) == 0:
+                                    userCaseShip.exclude_ids_text = str(user.id)
+                                else:
+                                    userCaseShip.exclude_ids_text = userCaseShip.exclude_ids_text + f',{user.id}'
+                                userCaseShip.ask_manager_ids_text = ''
+                                userCaseShip.save()
+                                break
+                        except Exception as e:
+                            print(e)
                             if len(userCaseShip.exclude_ids_text) == 0:
                                 userCaseShip.exclude_ids_text = str(user.id)
                             else:
@@ -110,17 +120,27 @@ def countDownUserCaseShip():
                         rankUsers.append(User.objects.get(id=id))
 
                     for user in rankUsers:
-                        timePredict = getTimePredict(user.current_lat, user.current_lng, case.on_lat, case.on_lng)
-                        if timePredict < 900:
-                            userCaseShip.user = user
-                            userCaseShip.expect_second = timePredict
-                            userCaseShip.save()
+                        try:
+                            timePredict = getTimePredict(user.current_lat, user.current_lng, case.on_lat, case.on_lng)
+                            if timePredict < 900:
+                                userCaseShip.user = user
+                                userCaseShip.expect_second = timePredict
+                                userCaseShip.save()
 
-                            from fcmNotify.tasks import sendTaskMessage
-                            sendTaskMessage(user)
-                            break
-                        else:
-                            # 按照順序排, 有一個大於 15 分鐘, 後面就不用問了
+                                from fcmNotify.tasks import sendTaskMessage
+                                sendTaskMessage(user)
+                                break
+                            else:
+                                # 按照順序排, 有一個大於 15 分鐘, 後面就不用問了
+                                if len(userCaseShip.exclude_ids_text) == 0:
+                                    userCaseShip.exclude_ids_text = str(user.id)
+                                else:
+                                    userCaseShip.exclude_ids_text = userCaseShip.exclude_ids_text + f',{user.id}'
+                                userCaseShip.ask_same_car_team_ids_text = ''
+                                userCaseShip.save()
+                                break
+                        except Exception as e:
+                            print(e)
                             if len(userCaseShip.exclude_ids_text) == 0:
                                 userCaseShip.exclude_ids_text = str(user.id)
                             else:
@@ -136,17 +156,27 @@ def countDownUserCaseShip():
                         rankUsers.append(User.objects.get(id=id))
 
                     for user in rankUsers:
-                        timePredict = getTimePredict(user.current_lat, user.current_lng, case.on_lat, case.on_lng)
-                        if timePredict < 900:
-                            userCaseShip.user = user
-                            userCaseShip.expect_second = timePredict
-                            userCaseShip.save()
+                        try:
+                            timePredict = getTimePredict(user.current_lat, user.current_lng, case.on_lat, case.on_lng)
+                            if timePredict < 900:
+                                userCaseShip.user = user
+                                userCaseShip.expect_second = timePredict
+                                userCaseShip.save()
 
-                            from fcmNotify.tasks import sendTaskMessage
-                            sendTaskMessage(user)
-                            break
-                        else:
-                            # 按照順序排, 有一個大於 15 分鐘, 後面就不用問了
+                                from fcmNotify.tasks import sendTaskMessage
+                                sendTaskMessage(user)
+                                break
+                            else:
+                                # 按照順序排, 有一個大於 15 分鐘, 後面就不用問了
+                                if len(userCaseShip.exclude_ids_text) == 0:
+                                    userCaseShip.exclude_ids_text = str(user.id)
+                                else:
+                                    userCaseShip.exclude_ids_text = userCaseShip.exclude_ids_text + f',{user.id}'
+                                userCaseShip.ask_not_same_car_team_ids_text = ''
+                                userCaseShip.save()
+                                break
+                        except Exception as e:
+                            print(e)
                             if len(userCaseShip.exclude_ids_text) == 0:
                                 userCaseShip.exclude_ids_text = str(user.id)
                             else:
@@ -162,17 +192,27 @@ def countDownUserCaseShip():
                         rankUsers.append(User.objects.get(id=id))
 
                     for user in rankUsers:
-                        timePredict = getTimePredict(user.current_lat, user.current_lng, case.on_lat, case.on_lng)
-                        if timePredict < 900:
-                            userCaseShip.user = user
-                            userCaseShip.expect_second = timePredict
-                            userCaseShip.save()
+                        try:
+                            timePredict = getTimePredict(user.current_lat, user.current_lng, case.on_lat, case.on_lng)
+                            if timePredict < 900:
+                                userCaseShip.user = user
+                                userCaseShip.expect_second = timePredict
+                                userCaseShip.save()
 
-                            from fcmNotify.tasks import sendTaskMessage
-                            sendTaskMessage(user)
-                            break
-                        else:
-                            # 按照順序排, 有一個大於 15 分鐘, 後面就不用問了
+                                from fcmNotify.tasks import sendTaskMessage
+                                sendTaskMessage(user)
+                                break
+                            else:
+                                # 按照順序排, 有一個大於 15 分鐘, 後面就不用問了
+                                if len(userCaseShip.exclude_ids_text) == 0:
+                                    userCaseShip.exclude_ids_text = str(user.id)
+                                else:
+                                    userCaseShip.exclude_ids_text = userCaseShip.exclude_ids_text + f',{user.id}'
+                                userCaseShip.ask_no_car_team_ids_text = ''
+                                userCaseShip.save()
+                                break
+                        except Exception as e:
+                            print(e)
                             if len(userCaseShip.exclude_ids_text) == 0:
                                 userCaseShip.exclude_ids_text = str(user.id)
                             else:
@@ -257,18 +297,28 @@ def countDownUserCaseShip():
                         userCaseShip.save()
 
                         for user in rankUsers:
-                            timePredict = getTimePredict(user.current_lat, user.current_lng, case.on_lat, case.on_lng)
-                            if timePredict < 900:
-                                userCaseShip.user = user
-                                userCaseShip.countdown_second = 18
-                                userCaseShip.expect_second = timePredict
-                                userCaseShip.save()
+                            try:
+                                timePredict = getTimePredict(user.current_lat, user.current_lng, case.on_lat, case.on_lng)
+                                if timePredict < 900:
+                                    userCaseShip.user = user
+                                    userCaseShip.countdown_second = 18
+                                    userCaseShip.expect_second = timePredict
+                                    userCaseShip.save()
 
-                                from fcmNotify.tasks import sendTaskMessage
-                                sendTaskMessage(user)
-                                break
-                            else:
-                                # 按照順序排, 有一個大於 15 分鐘, 後面就不用問了
+                                    from fcmNotify.tasks import sendTaskMessage
+                                    sendTaskMessage(user)
+                                    break
+                                else:
+                                    # 按照順序排, 有一個大於 15 分鐘, 後面就不用問了
+                                    if len(userCaseShip.exclude_ids_text) == 0:
+                                        userCaseShip.exclude_ids_text = str(user.id)
+                                    else:
+                                        userCaseShip.exclude_ids_text = userCaseShip.exclude_ids_text + f',{user.id}'
+                                    userCaseShip.ask_manager_ids_text = ''
+                                    userCaseShip.save()
+                                    break
+                            except Exception as e:
+                                print(e)
                                 if len(userCaseShip.exclude_ids_text) == 0:
                                     userCaseShip.exclude_ids_text = str(user.id)
                                 else:
@@ -296,19 +346,29 @@ def countDownUserCaseShip():
                         userCaseShip.save()
 
                         for user in rankUsers:
-                            timePredict = getTimePredict(user.current_lat, user.current_lng, case.on_lat, case.on_lng)
-                            print(f'=============time predict {timePredict} ===============')
-                            if timePredict < 900:
-                                userCaseShip.user = user
-                                userCaseShip.countdown_second = 18
-                                userCaseShip.expect_second = timePredict
-                                userCaseShip.save()
+                            try:
+                                timePredict = getTimePredict(user.current_lat, user.current_lng, case.on_lat, case.on_lng)
+                                print(f'=============time predict {timePredict} ===============')
+                                if timePredict < 900:
+                                    userCaseShip.user = user
+                                    userCaseShip.countdown_second = 18
+                                    userCaseShip.expect_second = timePredict
+                                    userCaseShip.save()
 
-                                from fcmNotify.tasks import sendTaskMessage
-                                sendTaskMessage(user)
-                                break
-                            else:
-                                # 按照順序排, 有一個大於 15 分鐘, 後面就不用問了
+                                    from fcmNotify.tasks import sendTaskMessage
+                                    sendTaskMessage(user)
+                                    break
+                                else:
+                                    # 按照順序排, 有一個大於 15 分鐘, 後面就不用問了
+                                    if len(userCaseShip.exclude_ids_text) == 0:
+                                        userCaseShip.exclude_ids_text = str(user.id)
+                                    else:
+                                        userCaseShip.exclude_ids_text = userCaseShip.exclude_ids_text + f',{user.id}'
+                                    userCaseShip.ask_same_car_team_ids_text = ''
+                                    userCaseShip.save()
+                                    break
+                            except Exception as e:
+                                print(e)
                                 if len(userCaseShip.exclude_ids_text) == 0:
                                     userCaseShip.exclude_ids_text = str(user.id)
                                 else:
@@ -336,19 +396,29 @@ def countDownUserCaseShip():
                         userCaseShip.save()
 
                         for user in rankUsers:
-                            timePredict = getTimePredict(user.current_lat, user.current_lng, case.on_lat, case.on_lng)
-                            print(f'=============time predict {timePredict} ===============')
-                            if timePredict < 900:
-                                userCaseShip.user = user
-                                userCaseShip.countdown_second = 18
-                                userCaseShip.expect_second = timePredict
-                                userCaseShip.save()
+                            try:
+                                timePredict = getTimePredict(user.current_lat, user.current_lng, case.on_lat, case.on_lng)
+                                print(f'=============time predict {timePredict} ===============')
+                                if timePredict < 900:
+                                    userCaseShip.user = user
+                                    userCaseShip.countdown_second = 18
+                                    userCaseShip.expect_second = timePredict
+                                    userCaseShip.save()
 
-                                from fcmNotify.tasks import sendTaskMessage
-                                sendTaskMessage(user)
-                                break
-                            else:
-                                # 按照順序排, 有一個大於 15 分鐘, 後面就不用問了
+                                    from fcmNotify.tasks import sendTaskMessage
+                                    sendTaskMessage(user)
+                                    break
+                                else:
+                                    # 按照順序排, 有一個大於 15 分鐘, 後面就不用問了
+                                    if len(userCaseShip.exclude_ids_text) == 0:
+                                        userCaseShip.exclude_ids_text = str(user.id)
+                                    else:
+                                        userCaseShip.exclude_ids_text = userCaseShip.exclude_ids_text + f',{user.id}'
+                                    userCaseShip.ask_not_same_car_team_ids_text = ''
+                                    userCaseShip.save()
+                                    break
+                            except Exception as e:
+                                print(e)
                                 if len(userCaseShip.exclude_ids_text) == 0:
                                     userCaseShip.exclude_ids_text = str(user.id)
                                 else:
@@ -375,18 +445,28 @@ def countDownUserCaseShip():
                         userCaseShip.save()
 
                         for user in rankUsers:
-                            timePredict = getTimePredict(user.current_lat, user.current_lng, case.on_lat, case.on_lng)
-                            if timePredict < 900:
-                                userCaseShip.user = user
-                                userCaseShip.countdown_second = 18
-                                userCaseShip.expect_second = timePredict
-                                userCaseShip.save()
+                            try:
+                                timePredict = getTimePredict(user.current_lat, user.current_lng, case.on_lat, case.on_lng)
+                                if timePredict < 900:
+                                    userCaseShip.user = user
+                                    userCaseShip.countdown_second = 18
+                                    userCaseShip.expect_second = timePredict
+                                    userCaseShip.save()
 
-                                from fcmNotify.tasks import sendTaskMessage
-                                sendTaskMessage(user)
-                                break
-                            else:
-                                # 按照順序排, 有一個大於 15 分鐘, 後面就不用問了
+                                    from fcmNotify.tasks import sendTaskMessage
+                                    sendTaskMessage(user)
+                                    break
+                                else:
+                                    # 按照順序排, 有一個大於 15 分鐘, 後面就不用問了
+                                    if len(userCaseShip.exclude_ids_text) == 0:
+                                        userCaseShip.exclude_ids_text = str(user.id)
+                                    else:
+                                        userCaseShip.exclude_ids_text = userCaseShip.exclude_ids_text + f',{user.id}'
+                                    userCaseShip.ask_no_car_team_ids_text = ''
+                                    userCaseShip.save()
+                                    break
+                            except Exception as e:
+                                print(e)
                                 if len(userCaseShip.exclude_ids_text) == 0:
                                     userCaseShip.exclude_ids_text = str(user.id)
                                 else:

@@ -35,6 +35,7 @@ class FCMDeviceViewSet(APIView):
                 return Response({'message': "ok"})
             else:
                 fcmDevice = FCMDevice.objects.filter(device_id=device_id).first()
+                fcmDevice.user = self.request.user
                 fcmDevice.registration_id = registration_id
                 fcmDevice.device_id = device_id
                 fcmDevice.save()
