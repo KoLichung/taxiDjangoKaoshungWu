@@ -30,6 +30,8 @@ def callback(request):
                 tel_send_message(chat_id, f"Hello!! {user.name}({user.nick_name})")
             else:
                 tel_send_message(chat_id,"Hello!!")
+        elif txt == 'error':
+            tel_send_message(chat_id,"訊息有誤，請聯繫管理員!!")
         else:
             texts = txt.split('\n')
             
@@ -214,8 +216,12 @@ def parse_message(message):
         txt = message['message']['text']
     except Exception as e:
         logger.error(e)
-        chat_id = message['edited_message']['chat']['id']
-        txt = message['edited_message']['text']
+        try:
+            chat_id = message['edited_message']['chat']['id']
+            txt = message['edited_message']['text']
+        except:
+            chat_id = message['my_chat_member']['chat']['id']
+            txt = 'error'
 
 
     # print("chat_id-->", chat_id)
