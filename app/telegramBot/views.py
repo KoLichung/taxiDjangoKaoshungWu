@@ -19,7 +19,7 @@ logger = logging.getLogger(__file__)
 @csrf_exempt
 def callback(request):
     if request.method == 'POST':
-        # logger.info(request.body)
+        logger.info(request.body)
         
         message = json.loads(request.body)
         chat_id,txt = parse_message(message)
@@ -186,18 +186,18 @@ def callback(request):
                 else:
                     tel_send_message(chat_id, "您沒有派單的權限~")
             elif texts[0] == '綁定':
-                    # 用 user phone 綁定
-                    try:
-                        phone = texts[1]
-                        if User.objects.filter(phone=phone).count()!=0:
-                            user = User.objects.filter(phone=phone).first()
-                            user.telegram_id = chat_id
-                            user.save()
-                            tel_send_message(chat_id, f"綁定成功!!{user.name}({user.nick_name})")
-                        else:
-                            tel_send_message(chat_id, f"找不到這個使用者, 無法綁定")
-                    except:
-                        tel_send_message(chat_id, "無法綁定，請檢查格式是否正確~")
+                # 用 user phone 綁定
+                try:
+                    phone = texts[1]
+                    if User.objects.filter(phone=phone).count()!=0:
+                        user = User.objects.filter(phone=phone).first()
+                        user.telegram_id = chat_id
+                        user.save()
+                        tel_send_message(chat_id, f"綁定成功!!{user.name}({user.nick_name})")
+                    else:
+                        tel_send_message(chat_id, f"找不到這個使用者, 無法綁定")
+                except:
+                    tel_send_message(chat_id, "無法綁定，請檢查格式是否正確~")
             else:
                 tel_send_message(chat_id, "請先進行身份綁定~")
                 
