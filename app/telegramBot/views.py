@@ -220,8 +220,11 @@ def parse_message(message):
             chat_id = message['edited_message']['chat']['id']
             txt = message['edited_message']['text']
         except:
-            chat_id = message['my_chat_member']['chat']['id']
-            txt = 'error'
+            try:
+                chat_id = message['my_chat_member']['chat']['id']
+                txt = 'error'
+            except:
+                logger('parse error')
 
 
     # print("chat_id-->", chat_id)
