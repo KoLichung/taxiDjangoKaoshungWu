@@ -211,21 +211,40 @@ def callback(request):
 def parse_message(message):
     print("message-->",message)
     # logger.info(f'message-->{message}')
-    try:
+    # try:
+    #     chat_id = message['message']['chat']['id']
+    #     txt = message['message']['text']
+    # except Exception as e:
+    #     logger.error(e)
+    #     try:
+    #         chat_id = message['edited_message']['chat']['id']
+    #         txt = message['edited_message']['text']
+    #     except:
+    #         try:
+    #             chat_id = message['my_chat_member']['chat']['id']
+    #             txt = 'error'
+    #         except:
+    #             logger('parse error')
+    
+    if message['message'] != None:
         chat_id = message['message']['chat']['id']
-        txt = message['message']['text']
-    except Exception as e:
-        logger.error(e)
-        try:
-            chat_id = message['edited_message']['chat']['id']
+        if message['message']['text'] != None:
+            txt = message['message']['text']
+        else:
+            txt = 'error'
+    elif message['edited_message'] != None:
+        chat_id = message['edited_message']['chat']['id']
+        if message['edited_message']['text'] != None:
             txt = message['edited_message']['text']
-        except:
-            try:
-                chat_id = message['my_chat_member']['chat']['id']
-                txt = 'error'
-            except:
-                logger('parse error')
-
+        else:
+            txt = 'error'
+    elif message['my_chat_member'] != None:
+        chat_id = message['my_chat_member']['chat']['id']
+        txt = 'error'
+    else:
+        logger.error('something wrong!')
+        chat_id  = 0
+        txt = 'error'
 
     # print("chat_id-->", chat_id)
     # print("txt-->", txt)
