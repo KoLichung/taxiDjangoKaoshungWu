@@ -228,15 +228,15 @@ def parse_message(message):
     
     if message['message'] != None:
         chat_id = message['message']['chat']['id']
-        if message['message']['text'] != None:
+        try:
             txt = message['message']['text']
-        else:
+        except:
             txt = 'error'
     elif message['edited_message'] != None:
         chat_id = message['edited_message']['chat']['id']
-        if message['edited_message']['text'] != None:
+        try:
             txt = message['edited_message']['text']
-        else:
+        except:
             txt = 'error'
     elif message['my_chat_member'] != None:
         chat_id = message['my_chat_member']['chat']['id']
