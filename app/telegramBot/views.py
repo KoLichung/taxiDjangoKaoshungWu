@@ -130,8 +130,14 @@ def callback(request):
                             # tel_send_message(chat_id,'這是取消單!')
                             if "❤" in texts[1]:
                                 # 單號取消
-                                if Case.objects.filter(case_number=texts[1]).count() != 0:
-                                    case = Case.objects.filter(case_number=texts[1]).first()
+                                if '-' in texts[1]:
+                                    theIndex = texts[1].index('-')
+                                    case_id = texts[1][:theIndex]
+                                else:
+                                    case_id = texts[1]
+
+                                if Case.objects.filter(case_number=case_id).count() != 0:
+                                    case = Case.objects.filter(case_number=case_id).first()
                                     if case.case_state != 'canceled':
                                         case.case_state = 'canceled'
                                         case.save()
