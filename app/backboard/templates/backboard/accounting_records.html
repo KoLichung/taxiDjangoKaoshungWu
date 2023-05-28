@@ -3,13 +3,39 @@
   <div class="card-body bg-light">
     <div class="row">
       <div class="col"></div>
-
+      
       <div class="col-lg-6 col-md-8 col-sm-8">
         <div class="my-3 text-center">
-          <h4>帳務紀錄</h4>
+          <h4>帳務紀錄(所有司機)</h4>
         </div>
- 
-        <div class="table-responsive scrollbar">
+        
+        {% comment %} 查詢 {% endcomment %}
+        <form method="get">
+          {% comment %} <input name="q" type="text" placeholder="Search..."> {% endcomment %}
+        
+          <div class="mb-2 mx-3">
+            <input
+              class="form-control"
+              type="text"
+              placeholder="手機號碼"
+              name="q"
+              value="{{ request.GET.q }}"
+            />
+          </div>
+
+          <div class="mb-1 mx-5">
+            <button 
+              type="submit"
+              class="btn btn-primary d-block w-100 mt-3 text-light"
+              onclick="location.href='{% url 'accounting_records' %}'"
+            >
+              <b>查詢</b>
+            </button>
+          </div>
+        </form>
+
+
+        <div class="table-responsive scrollbar mt-5">
           <table class="table table-hover table-striped overflow-hidden">
             <thead>
               <tr class="table-head-custom">
@@ -24,7 +50,7 @@
               {% for userStoreMoney in userStoreMoneys %}
               <tr class="align-middle">
                 <td class="text-nowrap">{{ userStoreMoney.date.date }}</td>
-                <td class="text-nowrap">{{ userStoreMoney.user }}</td>
+                <td class="text-nowrap">{{ userStoreMoney.user }} ({{userStoreMoney.user.phone}})</td>
                 <td class="text-nowrap">{{ userStoreMoney.increase_money }}</td>
                 <td class="text-nowrap">{{ userStoreMoney.user_left_money }}</td>
                 <td class="text-nowrap">{{ userStoreMoney.sum_money }}</td>

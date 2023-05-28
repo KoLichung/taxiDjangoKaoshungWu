@@ -139,7 +139,7 @@ class CaseConfirmView(APIView):
 
             userCaseShip = UserCaseShip.objects.filter(case=case).first()
             expect_minutes = int(userCaseShip.expect_second / 60)
-            tel_send_message(case.telegram_id, f'{case.case_number}-{car_teams_string}\n車輛預估 {expect_minutes}~{expect_minutes+2} 分鐘到達\n駕駛:{user.nick_name}\n車色:{user.car_color}\n車號:{user.vehicalLicence}\n--------------------------\n備註:\n車上禁食、菸、檳榔\n{user.car_memo}\n--------------------------\n上車:{case.on_address}')
+            tel_send_message(case.telegram_id, f'{case.case_number}-{car_teams_string}\n車輛預估 {expect_minutes}~{expect_minutes+4} 分鐘到達\n駕駛:{user.nick_name}\n車色:{user.car_color}\n車號:{user.vehicalLicence}\n--------------------------\n備註:\n車上禁食、菸、檳榔\n{user.car_memo}\n--------------------------\n上車:{case.on_address}')
 
             #delete ships
             UserCaseShip.objects.filter(case=case).delete()

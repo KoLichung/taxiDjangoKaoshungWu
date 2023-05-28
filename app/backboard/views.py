@@ -309,7 +309,15 @@ def drivers(request):
         })
 
 def accounting_records(request):
-    userStoreMoneys = UserStoreMoney.objects.order_by('-id')
+
+    if request.GET.get("q") != None and request.GET.get("q") != "":
+        print(request.GET.get("q"))
+        # drivers = User.objects.filter(phone=request.GET.get("q")).order_by('-id')
+        user = User.objects.filter(phone=request.GET.get("q")).first()
+        userStoreMoneys = UserStoreMoney.objects.filter(user=user)
+    else:
+        userStoreMoneys = UserStoreMoney.objects.order_by('-id')
+
     print(userStoreMoneys.count())
 
     paginator = Paginator(userStoreMoneys, 10)

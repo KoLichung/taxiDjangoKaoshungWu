@@ -39,7 +39,8 @@ def callback(request):
                 user = User.objects.filter(telegram_id=chat_id).first()
                 if user.is_telegram_bot_enable:
                     try:
-                        if texts[0] == '派單':
+                        # 派單
+                        if '上車：' in texts[0] or '上車:' in texts[0] or '上：' in texts[0] or '上:' in texts[0]:
                             case = Case()
                             case.case_state = 'wait'
 
@@ -47,8 +48,8 @@ def callback(request):
 
                                 path = 'https://maps.googleapis.com/maps/api/geocode/json?address='
 
-                                if '上車' in text:
-                                    on_address = text.replace('上車','').replace(':','').replace('：','')
+                                if '上車：' in text or '上車:' in text or '上：' in text or '上:' in text:
+                                    on_address = text.replace('上車：','').replace('上車:','').replace('上：','').replace('上:','')
 
                                     try:
                                         onUrl = path+on_address+"&key="+settings.API_KEY

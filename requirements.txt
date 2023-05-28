@@ -5,8 +5,8 @@ requests>=2.27.1
 firebase_admin>=5.2.0
 fcm_django>=1.0.8
 python-dotenv
-uwsgi>=2.0.18,<2.1.0
-psycopg2-binary>=2.7.5,<=2.9.3
+uwsgi>=2.0.18
+psycopg2-binary>=2.7.5
 # psycopg2>=2.9.3
 celery==5.2.1
 redis==4.0.2
