@@ -13,6 +13,8 @@ def setup_periodic_tasks(sender, **kwargs):
     # sender.add_periodic_task(30.0, test_get_user_count.s('world'), expires=10)
     sender.add_periodic_task(2.0, case_ship_count_down.s('world'), expires=10)
 
+    sender.add_periodic_task(30.0, check_penalty_state.s('world'), expires=10)
+
     #run at 2400 of first day of month every taiwan time
     sender.add_periodic_task(
         crontab(hour=16, minute=0),
@@ -23,6 +25,11 @@ def setup_periodic_tasks(sender, **kwargs):
 def case_ship_count_down(arg):
     from task.tasks import countDownUserCaseShip
     countDownUserCaseShip()
+
+@app.task
+def check_penalty_state(arg):
+    from task.tasks import checkPenaltyState
+    checkPenaltyState()
 
 @app.task
 def car_team_count_return_to_zero(arg):
