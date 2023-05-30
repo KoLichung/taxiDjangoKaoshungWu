@@ -298,13 +298,13 @@ class UpdateUserOnlineState(APIView):
             user.is_online = False
             user.save()
             return Response({'message': "ok"})
-        elif (isOnline == 'True' or isOnline == 'true') and user.left_money > -100:
+        elif (isOnline == 'True' or isOnline == 'true') and user.left_money > -100 and user.is_in_penalty == False:
             user.is_online = True
             user.save()
             return Response({'message': "ok"})
         else:
             print("not sure")
-            return Response({'message': "no left money"})
+            return Response({'message': "no left money or in penalty"})
 
 class AppVersionView(APIView):
 
