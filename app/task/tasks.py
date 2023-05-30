@@ -500,6 +500,7 @@ def checkPenaltyState():
     # now_time = datetime(now.year , now.month , now.day , now.hour , now.minute)
 
     now_time = datetime.now()
+    print(f'now time {now_time}')
 
     users = User.objects.filter(is_in_penalty=True)
     for user in users:
