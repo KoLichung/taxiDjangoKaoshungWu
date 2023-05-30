@@ -504,9 +504,10 @@ def checkPenaltyState():
 
     users = User.objects.filter(is_in_penalty=True)
     for user in users:
-        the_penalty_datetime = datetime(user.penalty_datetime.year, user.penalty_datetime.month, user.penalty_datetime.day, user.penalty_datetime.hour, user.penalty_datetime.minute)
+        the_time = user.penalty_datetime + timedelta(hours=8)
+        the_penalty_datetime = datetime(the_time.year, the_time.month, the_time.day, the_time.hour, the_time.minute)
         print(f'the_penalty_datetime {the_penalty_datetime}')
-        
+
         if the_penalty_datetime < now_time:
             user.is_in_penalty = False
             user.violation_time = 0
