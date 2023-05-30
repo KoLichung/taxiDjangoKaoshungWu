@@ -343,7 +343,7 @@ class CaseRefuseView(APIView):
                 user.save()
             else:
                 user.violation_time = 5
-                user.penalty_datetime = datetime.now() + timedelta(mins=15)
+                user.penalty_datetime = datetime.now() + timedelta(minutes=15)
                 user.is_in_penalty = True
                 user.save()
 

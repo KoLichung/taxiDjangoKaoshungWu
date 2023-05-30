@@ -273,7 +273,7 @@ def countDownUserCaseShip():
                             user.save()
                         else:
                             user.violation_time = 5
-                            user.penalty_datetime = datetime.now() + timedelta(mins=15)
+                            user.penalty_datetime = datetime.now() + timedelta(minutes=15)
                             user.is_in_penalty = True
                             user.save()
 
@@ -497,7 +497,7 @@ def countDownUserCaseShip():
 def checkPenaltyState():
     users = User.objects.filter(is_in_penalty=True)
     for user in users:
-        if user.penalty_datetime < datetime.now() + timedelta(mins=15):
+        if user.penalty_datetime < datetime.now() + timedelta(minutes=15):
             user.is_in_penalty = False
             user.violation_time = 0
             user.penalty_datetime = None
