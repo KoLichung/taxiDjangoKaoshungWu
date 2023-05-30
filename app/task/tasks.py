@@ -495,9 +495,11 @@ def countDownUserCaseShip():
                             tel_send_message(case.telegram_id, f'{case.case_number}\n抱歉目前附近無符合駕駛!\n-----------------\n上車:{case.on_address}')
 
 def checkPenaltyState():
-    now = datetime.now() + timedelta(hours=8)
-    print(f'now time {now}')
-    now_time = datetime(now.year , now.month , now.day , now.hour , now.minute)
+    # now = datetime.now() + timedelta(hours=8)
+    # print(f'now time {now}')
+    # now_time = datetime(now.year , now.month , now.day , now.hour , now.minute)
+
+    now_time = datetime.now()
 
     users = User.objects.filter(is_in_penalty=True)
     for user in users:
