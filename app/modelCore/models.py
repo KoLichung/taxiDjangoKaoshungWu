@@ -82,6 +82,10 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     is_on_task = models.BooleanField(default=False)
 
+    violation_time = models.IntegerField(default=0)
+    is_in_penalty = models.BooleanField(default=False)
+    penalty_datetime = models.DateTimeField(auto_now=False,blank = True,null=True)
+
     # dispatch_fee_percent_integer = models.IntegerField(
     #     default=10,
     #     validators=[

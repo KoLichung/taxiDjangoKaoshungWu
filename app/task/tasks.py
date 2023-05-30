@@ -33,7 +33,7 @@ def countDownUserCaseShip():
             userCaseShip.save() 
 
             # 1.要在線 2.要通過審核 3.非任務中 4.非詢問案件中
-            qulified_users = User.objects.filter(is_online=True, is_passed=True, is_on_task=False).filter(~Q(id__in=asking_user_ids))
+            qulified_users = User.objects.filter(is_online=True, is_passed=True, is_on_task=False, is_in_penalty=False).filter(~Q(id__in=asking_user_ids))
             print(f'qulified_users {qulified_users}')
             if qulified_users.count() != 0:
                 
@@ -267,6 +267,15 @@ def countDownUserCaseShip():
                             userCaseShip.exclude_ids_text = str(userCaseShip.user.id)
                         else:
                             userCaseShip.exclude_ids_text = userCaseShip.exclude_ids_text + f',{userCaseShip.user.id}'
+                            
+                        if user.violation_time < 4:
+                            user.violation_time = user.violation_time + 1
+                            user.save()
+                        else:
+                            user.violation_time = 5
+                            user.penalty_datetime = datetime.now() + timedelta(mins=15)
+                            user.is_in_penalty = True
+                            user.save()
 
                     userCaseShip.user = None
                     userCaseShip.save()
@@ -484,7 +493,17 @@ def countDownUserCaseShip():
 
                         if case.telegram_id != None and case.telegram_id != '':
                             tel_send_message(case.telegram_id, f'{case.case_number}\n抱歉目前附近無符合駕駛!\n-----------------\n上車:{case.on_address}')
-                    
+
+def checkPenaltyState():
+    users = User.objects.filter(is_in_penalty=True)
+    for user in users:
+        if user.penalty_datetime < datetime.now() + timedelta(mins=15):
+            user.is_in_penalty = False
+            user.violation_time = 0
+            user.penalty_datetime = None
+            user.save()
+
+
 def car_team_count_return_to_zero():
     car_teams = CarTeam.objects.all()
     for car_team in car_teams:

@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from modelCore.models import Case, UserCaseShip, UserStoreMoney, AppVersion, CarTeam
 from taxiApi import serializers
 from django.utils import timezone as datetime
+from datetime import timedelta
 from django.contrib.gis.geos import Point
 import requests
 import logging
@@ -74,6 +75,8 @@ class GetCaseViewSet(viewsets.GenericViewSet,
             queryset[i].countdown_second = user_case_ship.countdown_second
             queryset[i].expect_second = user_case_ship.expect_second
             queryset[i].carTeamName = queryset[i].carTeam.name
+            queryset[i].violation_time = self.request.user.violation_time
+            queryset[i].penalty_datetime = self.request.user.penalty_datetime
 
         return queryset
     
@@ -133,6 +136,7 @@ class CaseConfirmView(APIView):
             case.save()
             
             user.is_on_task = True
+            user.violation_time = 0
             user.save()
 
             car_teams_string = user.car_teams_string()
@@ -143,7 +147,7 @@ class CaseConfirmView(APIView):
 
             #delete ships
             UserCaseShip.objects.filter(case=case).delete()
-
+            
             return Response({'message': "ok"})
         # except:
         #     raise APIException("no this case")
@@ -335,6 +339,16 @@ class CaseRefuseView(APIView):
                 userCaseShip.exclude_ids_text = userCaseShip.exclude_ids_text + f',{userCaseShip.user.id}'
 
             userCaseShip.save()
+
+            if user.violation_time < 4:
+                user.violation_time = user.violation_time + 1
+                user.save()
+            else:
+                user.violation_time = 5
+                user.penalty_datetime = datetime.now() + timedelta(mins=15)
+                user.is_in_penalty = True
+                user.save()
+
             return Response({'message': "ok"})
         except:
             raise APIException("no this case")
