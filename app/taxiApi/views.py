@@ -75,8 +75,6 @@ class GetCaseViewSet(viewsets.GenericViewSet,
             queryset[i].countdown_second = user_case_ship.countdown_second
             queryset[i].expect_second = user_case_ship.expect_second
             queryset[i].carTeamName = queryset[i].carTeam.name
-            queryset[i].violation_time = self.request.user.violation_time
-            queryset[i].penalty_datetime = self.request.user.penalty_datetime
 
         return queryset
     
@@ -84,7 +82,7 @@ class GetCaseViewSet(viewsets.GenericViewSet,
         # Note the use of `get_queryset()` instead of `self.queryset`
         queryset = self.get_queryset()
         serializer = self.serializer_class(queryset, many=True)
-        return Response({'cases':serializer.data,'left_money':self.request.user.left_money})
+        return Response({'cases':serializer.data,'left_money':self.request.user.left_money,'violation_time':self.request.user.violation_time,'penalty_datetime':self.request.user.penalty_datetime})
 
 class CaseDetailView(APIView):
 

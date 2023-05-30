@@ -13,9 +13,6 @@ class CaseSerializer(serializers.ModelSerializer):
     countdown_second = serializers.IntegerField(default=0)
     expect_second = serializers.IntegerField(default=0)
     carTeamName = serializers.CharField(read_only=True, default='')
-    
-    violation_time = serializers.IntegerField(default=0)
-    penalty_datetime = serializers.DateTimeField()
 
     class Meta:
         model = Case
