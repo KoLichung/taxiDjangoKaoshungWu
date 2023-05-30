@@ -496,6 +496,7 @@ def countDownUserCaseShip():
 
 def checkPenaltyState():
     now = datetime.now() + timedelta(hours=8)
+    print(f'now time {now}')
     now_time = datetime(now.year , now.month , now.day , now.hour , now.minute)
 
     users = User.objects.filter(is_in_penalty=True)
