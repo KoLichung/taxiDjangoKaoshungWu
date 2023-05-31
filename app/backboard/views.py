@@ -316,13 +316,13 @@ def accounting_records(request):
         # print(request.GET.get("q"))
         # drivers = User.objects.filter(phone=request.GET.get("q")).order_by('-id')
         user = User.objects.filter(phone=request.GET.get("q")).first()
-        userStoreMoneys = UserStoreMoney.objects.filter(user=user)
+        userStoreMoneys = UserStoreMoney.objects.filter(user=user).order_by('-id')
     else:
         userStoreMoneys = UserStoreMoney.objects.order_by('-id')
 
     # print(userStoreMoneys.count())
 
-    paginator = Paginator(userStoreMoneys, 10)
+    paginator = Paginator(userStoreMoneys, 20)
     if request.GET.get('page') != None:
         page_number = request.GET.get('page') 
     else:
