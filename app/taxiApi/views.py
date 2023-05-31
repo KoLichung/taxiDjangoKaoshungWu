@@ -134,7 +134,6 @@ class CaseConfirmView(APIView):
             case.save()
             
             user.is_on_task = True
-            user.violation_time = 0
             user.save()
 
             car_teams_string = user.car_teams_string()
@@ -244,6 +243,7 @@ class CaseFinishedView(APIView):
 
                     user.left_money = user.left_money - case.dispatch_fee
                     user.is_on_task = False
+                    user.violation_time = 0
 
                     after_left_money = user.left_money
                     user.save()
