@@ -310,15 +310,17 @@ def drivers(request):
 
 def accounting_records(request):
 
+    query=None
     if request.GET.get("q") != None and request.GET.get("q") != "":
-        print(request.GET.get("q"))
+        query = request.GET.get("q")
+        # print(request.GET.get("q"))
         # drivers = User.objects.filter(phone=request.GET.get("q")).order_by('-id')
         user = User.objects.filter(phone=request.GET.get("q")).first()
         userStoreMoneys = UserStoreMoney.objects.filter(user=user)
     else:
         userStoreMoneys = UserStoreMoney.objects.order_by('-id')
 
-    print(userStoreMoneys.count())
+    # print(userStoreMoneys.count())
 
     paginator = Paginator(userStoreMoneys, 10)
     if request.GET.get('page') != None:
@@ -329,7 +331,7 @@ def accounting_records(request):
 
     page_obj.adjusted_elided_pages = paginator.get_elided_page_range(page_number)
 
-    return render(request, 'backboard/accounting_records.html',{'userStoreMoneys': page_obj})
+    return render(request, 'backboard/accounting_records.html',{'userStoreMoneys': page_obj,'q':query})
 
 # def accounting_statistics(request):
 #     summarys = MonthSummary.objects.all().order_by('-id')[:2]
