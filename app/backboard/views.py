@@ -171,7 +171,7 @@ def dispatch_inquire(request):
     # else:
     #     cases = Case.objects.order_by('-id')
     
-    paginator = Paginator(cases, 15)
+    paginator = Paginator(cases, 10)
     if request.GET.get('page') != None:
         page_number = request.GET.get('page') 
     else:
