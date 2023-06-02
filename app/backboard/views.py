@@ -171,7 +171,7 @@ def dispatch_inquire(request):
     # else:
     #     cases = Case.objects.order_by('-id')
     
-    paginator = Paginator(cases, 20)
+    paginator = Paginator(cases, 15)
     if request.GET.get('page') != None:
         page_number = request.GET.get('page') 
     else:
@@ -187,6 +187,7 @@ def dispatch_inquire(request):
             'end_Date':q_end_date_string,
             'assigned_car_team':q_assigned_car_team,
             'belonged_car_team':q_belonged_car_team,
+            'current_page':page_number,
             'cases':page_obj, 
             'carTeams':carTeams, 
             'total_dispatch_fee':total_dispatch_fee, 
