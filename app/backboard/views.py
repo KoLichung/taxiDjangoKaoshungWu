@@ -146,11 +146,13 @@ def dispatch_inquire(request):
         qDate_string = f'{q_start_date_string} ~ {q_end_date_string}'
         print(qDate_string)
 
+    q_assigned_car_team = ''
     if (request.GET.get("assigned_car_team") != None and request.GET.get("assigned_car_team") != ""):
         q_assigned_car_team = request.GET.get("assigned_car_team")
         cases = cases.filter(carTeam__name = q_assigned_car_team)
         #print(cases)
     
+    q_belonged_car_team=''
     if (request.GET.get("belonged_car_team") != None and request.GET.get("belonged_car_team") != ""):
         q_belonged_car_team = request.GET.get("belonged_car_team")
         case_ids = []
@@ -169,16 +171,14 @@ def dispatch_inquire(request):
     # else:
     #     cases = Case.objects.order_by('-id')
     
-    # paginator = Paginator(cases, 10)
-    # if request.GET.get('page') != None:
-    #     page_number = request.GET.get('page') 
-    # else:
-    #     page_number = 1
-    # page_obj = paginator.get_page(page_number)
+    paginator = Paginator(cases, 20)
+    if request.GET.get('page') != None:
+        page_number = request.GET.get('page') 
+    else:
+        page_number = 1
+    page_obj = paginator.get_page(page_number)
 
-    # page_obj.adjusted_elided_pages = paginator.get_elided_page_range(page_number)
-    
-    # return render(request, 'backboard/dispatch_inquire.html',{'cases':page_obj})
+    page_obj.adjusted_elided_pages = paginator.get_elided_page_range(page_number)
 
     return render(request, 'backboard/dispatch_inquire.html', {
             # 'qDate':'2023-03-23+~+2023-03-30',
@@ -187,7 +187,7 @@ def dispatch_inquire(request):
             'end_Date':q_end_date_string,
             'assigned_car_team':q_assigned_car_team,
             'belonged_car_team':q_belonged_car_team,
-            'cases':cases, 
+            'cases':page_obj, 
             'carTeams':carTeams, 
             'total_dispatch_fee':total_dispatch_fee, 
         })
