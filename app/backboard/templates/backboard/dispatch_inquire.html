@@ -153,7 +153,7 @@
 
         <div class="text-center">
           {% for page_number in cases.adjusted_elided_pages %} 
-            {% if page_number == current_page|slugify %} 
+            {% if page_number|slugify == current_page %} 
               {{page_number}} 
             {% else %}
               <a href="?page={{page_number}}&qDate={{qDate}}&assigned_car_team={{assigned_car_team}}&belonged_car_team={{belonged_car_team}}" class="{% if page_number == cases.number %}current{% endif %}">&nbsp;&nbsp;{{page_number}}&nbsp;&nbsp;</a>
