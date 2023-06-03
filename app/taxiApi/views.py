@@ -52,9 +52,8 @@ class CarTeamViewSet(viewsets.GenericViewSet,
     queryset = CarTeam.objects.all()
     serializer_class = serializers.CarTeamSerializer
 
-
     def get_queryset(self):
-        return self.queryset
+        return self.queryset.order_by('id')
 
 #http://localhost:8000/api/get_cases/
 class GetCaseViewSet(viewsets.GenericViewSet,
