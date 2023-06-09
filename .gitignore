@@ -2,6 +2,7 @@
 *.env
 .idea/
 ec2-user*
+*.db
 
 venv/*
 data/*
