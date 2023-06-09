@@ -5,6 +5,7 @@ from .models import User, UserStoreMoney, Customer, Case, UserCaseShip, CaseSumm
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'phone', 'is_online', 'is_passed', 'is_on_task', 'current_lat', 'current_lng')
+    search_fields = ('name', 'phone')
 
 @admin.register(UserStoreMoney)
 class UserStoreMoneyAdmin(admin.ModelAdmin):
