@@ -47,6 +47,7 @@ ALLOWED_HOSTS = [
     'localhost',
     '0.0.0.0',
     '45.76.55.51',
+    '104.238.148.98',
     'chinghsien.com'
 ]
 ALLOWED_HOSTS.extend(
