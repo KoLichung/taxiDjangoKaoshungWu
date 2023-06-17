@@ -264,11 +264,11 @@ class UserCaseShip(models.Model):
         related_name='case_users'
     )
     
-    ask_ranking_ids_text = models.TextField(default='',blank = True, null=True)
-    ask_manager_ids_text = models.TextField(default='',blank = True, null=True)
+    # ask_ranking_ids_text = models.TextField(default='',blank = True, null=True)
+    # ask_manager_ids_text = models.TextField(default='',blank = True, null=True)
     ask_same_car_team_ids_text = models.TextField(default='',blank = True, null=True)
     ask_not_same_car_team_ids_text = models.TextField(default='',blank = True, null=True)
-    ask_no_car_team_ids_text = models.TextField(default='',blank = True, null=True)
+    # ask_no_car_team_ids_text = models.TextField(default='',blank = True, null=True)
 
     exclude_ids_text = models.TextField(default='',blank = True, null=True)
 
