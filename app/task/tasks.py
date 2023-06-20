@@ -27,6 +27,8 @@ def dispatch_driver(case_id):
     case = Case.objects.get(id=case_id)
     # case 如果已經有 user 就不執行繼續派任務
     if case.user == None:
+        
+        print(f'case number {case.case_number}, case_state {case.case_state}')
 
         if UserCaseShip.objects.filter(case=case).count() != 0:
             userCaseShip = UserCaseShip.objects.filter(case=case).first()
@@ -62,6 +64,7 @@ def dispatch_driver(case_id):
             exclude_ids_array = case.exclude_ids_text.split(',')
         else:
             exclude_ids_array = []
+        print(f'exclude_ids_array {exclude_ids_array}')
 
         # 詢問少於 10 台車, 且有符合駕駛, 才派單
         if qulified_users.count() > 0 and len(exclude_ids_array) < 10:
