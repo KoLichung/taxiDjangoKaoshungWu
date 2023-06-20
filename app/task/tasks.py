@@ -40,6 +40,7 @@ def dispatch_driver(case_id):
                     case.exclude_ids_text = str(user.id)
                 else:
                     case.exclude_ids_text = case.exclude_ids_text + f',{user.id}'
+                case.save()
 
                 if case.telegram_id != None and case.telegram_id != '':
                     car_teams_string = user.car_teams_string()
@@ -58,7 +59,6 @@ def dispatch_driver(case_id):
         # qulified_users = User.objects.filter(is_online=True, is_on_task=False, is_in_penalty=False, is_asking=False).order_by('-id')
 
         print(qulified_users)
-
 
         if case.exclude_ids_text != '':
             exclude_ids_array = case.exclude_ids_text.split(',')
