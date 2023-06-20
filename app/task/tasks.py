@@ -26,7 +26,7 @@ def dispatch_driver(case_id):
     # print(f'case id = {case_id}')
     case = Case.objects.get(id=case_id)
     # case 如果已經有 user 就不執行繼續派任務
-    if case.user == None:
+    if case.user == None and (case.case_state == 'wait' or case.case_state == 'dispatching'):
         
         print(f'case number {case.case_number}, case_state {case.case_state}')
 
