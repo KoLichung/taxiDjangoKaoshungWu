@@ -197,7 +197,7 @@ def callback(request):
                             tel_send_message(chat_id,'動作不明確!')
                     except Exception as e: 
                         print(e)
-                        logger.info(e)
+                        logger.error(e)
                         tel_send_message(chat_id,'格式錯誤或內容錯誤!')
                 else:
                     tel_send_message(chat_id, "您沒有派單的權限~")
