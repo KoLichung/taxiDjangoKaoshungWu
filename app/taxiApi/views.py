@@ -329,7 +329,10 @@ class CaseRefuseView(APIView):
             if case.telegram_id != None and case.telegram_id != '':
                 tel_send_message(case.telegram_id, f'{case.case_number}-{car_teams_string}\n{user.nick_name} 駕駛人放棄接單\n-----------------------\n上車:{case.on_address}')
 
-            # userCaseShip = UserCaseShip.objects.filter(case=case).first()
+            userCaseShip = UserCaseShip.objects.filter(case=case).first()
+            userCaseShip.user = None
+            userCaseShip.save()
+            
             # userCaseShip.countdown_second = 0
 
             # if len(userCaseShip.exclude_ids_text) == 0:
@@ -344,6 +347,7 @@ class CaseRefuseView(APIView):
             else:
                 case.exclude_ids_text = case.exclude_ids_text + f',{user.id}'
             case.save()
+            
 
             if user.violation_time < 4:
                 user.violation_time = user.violation_time + 1
