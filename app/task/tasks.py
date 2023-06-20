@@ -13,6 +13,101 @@ from django.conf import settings
 
 TOKEN = '5889906798:AAFR2O_uTBq_ZGPaDkqyfsHkWKK7EQ6bxj0'
 
+
+@shared_task
+def dispatch_driver(case_id):
+    # print(f'case id = {case_id}')
+    case = Case.objects.get(id=case_id)
+    # case 如果已經有 user 就不執行繼續派任務
+    if case.user == None:
+
+        if UserCaseShip.objects.filter(case=case).count() != 0:
+            userCaseShip = UserCaseShip.objects.filter(case=case).first()
+
+            if userCaseShip.user != None:
+                user = userCaseShip.user
+
+                if len(case.exclude_ids_text) == 0:
+                    case.exclude_ids_text = str(user.id)
+                else:
+                    case.exclude_ids_text = case.exclude_ids_text + f',{user.id}'
+
+                if case.telegram_id != None and case.telegram_id != '':
+                    car_teams_string = user.car_teams_string()
+                    tel_send_message(case.telegram_id, f'{case.case_number}-{car_teams_string}\n{user.nick_name} 駕駛人未接單\n-----------------------\n上車:{case.on_address}')
+                user.is_asking = False
+                user.save()
+        else:
+            # 第一次派單
+            userCaseShip = UserCaseShip()
+            userCaseShip.case = case
+            userCaseShip.save()
+
+        print(f'case on lat {case.on_lat} case on lng {case.on_lng} case on address {case.on_address}')
+        ref_location = Point(float(case.on_lng), float(case.on_lat), srid=4326)
+        qulified_users = User.objects.filter(is_online=True, is_on_task=False, is_in_penalty=False, is_asking=False).order_by(GeometryDistance("location", ref_location))[:15]
+        # qulified_users = User.objects.filter(is_online=True, is_on_task=False, is_in_penalty=False, is_asking=False).order_by('-id')
+
+        print(qulified_users)
+
+
+        if case.exclude_ids_text != '':
+            exclude_ids_array = case.exclude_ids_text.split(',')
+        else:
+            exclude_ids_array = []
+
+        # 詢問少於 10 台車, 且有符合駕駛, 才派單
+        if qulified_users.count() > 0 and len(exclude_ids_array) < 10:
+            is_deleted = False
+
+            for user in qulified_users:
+                print(f'checking user {user}')
+                if str(user.id) not in exclude_ids_array:
+                    try:
+                        timePredict = getTimePredict(user.current_lat, user.current_lng, case.on_lat, case.on_lng)
+                        print(f'the predict time = {timePredict}')
+                        if timePredict < 900:  
+                            userCaseShip.user = user
+                            userCaseShip.expect_second = timePredict
+                            userCaseShip.save()
+
+                            user.is_asking = True
+                            user.save()
+
+                            from fcmNotify.tasks import sendTaskMessage
+                            sendTaskMessage(user)
+
+                            # 18秒後 再執行一次
+                            dispatch_driver.apply_async( (case.id,), countdown=18)
+
+                            break
+                        else:
+                            userCaseShip.delete()
+                            case.case_state = 'canceled'
+                            case.save()
+                            if case.telegram_id != None and case.telegram_id != '':
+                                tel_send_message(case.telegram_id, f'{case.case_number}\n抱歉目前附近無符合駕駛!\n-----------------\n上車:{case.on_address}')
+                            is_deleted = True
+                            break
+                            
+                    except Exception as e:
+                        print(f'cannot get user id {user.id} predict time')
+            
+            # after loop, can't find user
+            if userCaseShip.user == None and is_deleted==False:                
+                userCaseShip.delete()
+                case.case_state = 'canceled'
+                case.save()
+                if case.telegram_id != None and case.telegram_id != '':
+                    tel_send_message(case.telegram_id, f'{case.case_number}\n抱歉目前附近無符合駕駛!\n-----------------\n上車:{case.on_address}')
+
+        else:
+            userCaseShip.delete()
+            case.case_state = 'canceled'
+            case.save()
+            if case.telegram_id != None and case.telegram_id != '':
+                tel_send_message(case.telegram_id, f'{case.case_number}\n抱歉目前附近無符合駕駛!\n-----------------\n上車:{case.on_address}')
+
 # 在 celery task 裡面, 要看 log 要用 print, 然後在 celery log 裡面看~
 @shared_task
 def countDownUserCaseShip():

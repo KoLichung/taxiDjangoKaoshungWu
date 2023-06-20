@@ -11,7 +11,8 @@ app.autodiscover_tasks()
 def setup_periodic_tasks(sender, **kwargs):
     # sender.add_periodic_task(60.0, test_add.s('world'), expires=10)
     # sender.add_periodic_task(30.0, test_get_user_count.s('world'), expires=10)
-    sender.add_periodic_task(2.0, case_ship_count_down.s('world'), expires=10)
+
+    # sender.add_periodic_task(2.0, case_ship_count_down.s('world'), expires=10)
 
     sender.add_periodic_task(30.0, check_penalty_state.s('world'), expires=10)
 

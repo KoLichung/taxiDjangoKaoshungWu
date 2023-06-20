@@ -4,7 +4,7 @@ from .models import User, UserStoreMoney, Customer, Case, UserCaseShip, CaseSumm
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'phone', 'is_online', 'is_passed', 'is_on_task', 'current_lat', 'current_lng')
+    list_display = ('id', 'name', 'phone', 'is_online', 'is_passed', 'is_on_task', 'is_asking','current_lat', 'current_lng')
     search_fields = ('name', 'phone')
 
 @admin.register(UserStoreMoney)
@@ -22,7 +22,7 @@ class CaseAdmin(admin.ModelAdmin):
 
 @admin.register(UserCaseShip)
 class UserCaseShipAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'case', 'countdown_second', 'exclude_ids_text')
+    list_display = ('id', 'user', 'case')
 
 @admin.register(CaseSummary)
 class CaseSummaryAdmin(admin.ModelAdmin):

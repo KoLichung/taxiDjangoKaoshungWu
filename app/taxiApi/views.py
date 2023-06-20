@@ -134,6 +134,7 @@ class CaseConfirmView(APIView):
             case.save()
             
             user.is_on_task = True
+            user.is_asking = False
             user.save()
 
             car_teams_string = user.car_teams_string()
@@ -328,23 +329,31 @@ class CaseRefuseView(APIView):
             if case.telegram_id != None and case.telegram_id != '':
                 tel_send_message(case.telegram_id, f'{case.case_number}-{car_teams_string}\n{user.nick_name} 駕駛人放棄接單\n-----------------------\n上車:{case.on_address}')
 
-            userCaseShip = UserCaseShip.objects.filter(case=case).first()
-            userCaseShip.countdown_second = 0
+            # userCaseShip = UserCaseShip.objects.filter(case=case).first()
+            # userCaseShip.countdown_second = 0
 
-            if len(userCaseShip.exclude_ids_text) == 0:
-                userCaseShip.exclude_ids_text = str(userCaseShip.user.id)
+            # if len(userCaseShip.exclude_ids_text) == 0:
+            #     userCaseShip.exclude_ids_text = str(userCaseShip.user.id)
+            # else:
+            #     userCaseShip.exclude_ids_text = userCaseShip.exclude_ids_text + f',{userCaseShip.user.id}'
+
+            # userCaseShip.save()
+
+            if len(case.exclude_ids_text) == 0:
+                case.exclude_ids_text = str(user.id)
             else:
-                userCaseShip.exclude_ids_text = userCaseShip.exclude_ids_text + f',{userCaseShip.user.id}'
-
-            userCaseShip.save()
+                case.exclude_ids_text = case.exclude_ids_text + f',{user.id}'
+            case.save()
 
             if user.violation_time < 4:
                 user.violation_time = user.violation_time + 1
+                user.is_asking = False
                 user.save()
             else:
                 user.violation_time = 5
                 user.penalty_datetime = datetime.now() + timedelta(minutes=15)
                 user.is_in_penalty = True
+                user.is_asking = False
                 user.save()
 
             return Response({'message': "ok"})

@@ -81,6 +81,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     location = PointField(srid=4326, geography=True, blank=True, null=True)
 
     is_on_task = models.BooleanField(default=False)
+    # 20230/06/20 新增 is_asking
+    is_asking = models.BooleanField(default=False) 
 
     violation_time = models.IntegerField(default=0)
     is_in_penalty = models.BooleanField(default=False)
@@ -249,6 +251,7 @@ class Case(models.Model):
     off_time = models.DateTimeField(auto_now=False, blank = True, null=True)
 
     dispatch_fee = models.IntegerField(default=0, blank = True, null=True)
+    exclude_ids_text = models.TextField(default='',blank = True, null=True)
 
 class UserCaseShip(models.Model):
     user =  models.ForeignKey(
@@ -264,16 +267,22 @@ class UserCaseShip(models.Model):
         related_name='case_users'
     )
     
+    expect_second = models.IntegerField(default=0)
+    dispatch_time = models.DateTimeField(auto_now=False, blank = True, null=True)
+
     # ask_ranking_ids_text = models.TextField(default='',blank = True, null=True)
     # ask_manager_ids_text = models.TextField(default='',blank = True, null=True)
-    ask_same_car_team_ids_text = models.TextField(default='',blank = True, null=True)
-    ask_not_same_car_team_ids_text = models.TextField(default='',blank = True, null=True)
     # ask_no_car_team_ids_text = models.TextField(default='',blank = True, null=True)
 
-    exclude_ids_text = models.TextField(default='',blank = True, null=True)
+    # 以下是 2023/06/20 修正, 去掉 ask_same_car_team_ids_text, ask_not_same_car_team_ids_text, countdown_second
+    # 並把 exclude_ids_text 移到 Case
 
-    countdown_second = models.IntegerField(default=18)
-    expect_second = models.IntegerField(default=0)
+    # ask_same_car_team_ids_text = models.TextField(default='',blank = True, null=True)
+    # ask_not_same_car_team_ids_text = models.TextField(default='',blank = True, null=True)
+    
+    # exclude_ids_text = models.TextField(default='',blank = True, null=True)
+    # countdown_second = models.IntegerField(default=18)
+    
 
 class CaseSummary(models.Model):
     case = models.ForeignKey(

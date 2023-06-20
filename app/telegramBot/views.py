@@ -9,6 +9,7 @@ import requests
 import logging
 import json
 from django.conf import settings
+from task.tasks import dispatch_driver
 
 # 要有 callback, 要先透過連結設定 webhook：
 # https://api.telegram.org/bot5889906798:AAFR2O_uTBq_ZGPaDkqyfsHkWKK7EQ6bxj0/setWebhook?url=https://chinghsien.com/telegram_bot/callback
@@ -87,7 +88,7 @@ def callback(request):
                                         raise APIException("error")
                                     
                                     case.telegram_id = chat_id
-                                    case.save()
+                                    # case.save()
 
                                 if '下車' in text:
                                     off_address = text.replace('下車','').replace(':','').replace('：','')
@@ -106,18 +107,22 @@ def callback(request):
                                         print(f'off location error {e}')
                                         logger.error(f'off location error {e}')
 
-                                    if case.on_lat != None:
-                                        case.save()
+                                    # if case.on_lat != None:
+                                    #     case.save()
 
                                 if '時間' in text:
                                     case.time_memo = text.replace('時間','').replace(':','').replace('：','')
-                                    if case.on_lat != None:
-                                        case.save()
+                                    # if case.on_lat != None:
+                                    #     case.save()
                                 
                                 if '備註' in text:
                                     case.memo = text.replace('備註','').replace(':','').replace('：','')
-                                    if case.on_lat != None:
-                                        case.save()
+                                    # if case.on_lat != None:
+                                    #     case.save()
+                                
+                                if case.on_lat != None:
+                                    case.save()
+                                    dispatch_driver.delay(case.id)
                             
                             if case.on_lat != None:
                                 tel_send_message(chat_id,f'{case.case_number}\n派單成功，正在尋找駕駛\n上車：{case.on_address}\n下車：{case.off_address}\n時間：{case.time_memo}\n備註：{case.memo}')
