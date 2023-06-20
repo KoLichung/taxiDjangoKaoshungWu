@@ -9,7 +9,7 @@ import requests
 import logging
 import json
 from django.conf import settings
-from task.tasks import dispatch_driver
+from app.celery import app_dispatch_driver
 
 # 要有 callback, 要先透過連結設定 webhook：
 # https://api.telegram.org/bot5889906798:AAFR2O_uTBq_ZGPaDkqyfsHkWKK7EQ6bxj0/setWebhook?url=https://chinghsien.com/telegram_bot/callback
@@ -122,7 +122,7 @@ def callback(request):
                                 
                                 if case.on_lat != None:
                                     case.save()
-                                    dispatch_driver.delay(case.id)
+                                    app_dispatch_driver.delay(case.id)
                             
                             if case.on_lat != None:
                                 tel_send_message(chat_id,f'{case.case_number}\n派單成功，正在尋找駕駛\n上車：{case.on_address}\n下車：{case.off_address}\n時間：{case.time_memo}\n備註：{case.memo}')

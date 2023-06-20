@@ -46,3 +46,8 @@ def test_add(arg):
 def test_get_user_count(arg):
     from task.tasks import getUserCount
     getUserCount()
+
+@app.task
+def app_dispatch_driver(case_id):
+    from task.tasks import dispatch_driver
+    dispatch_driver(case_id)
