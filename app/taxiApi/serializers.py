@@ -10,7 +10,7 @@ class UserStoreMoneySerializer(serializers.ModelSerializer):
 class CaseSerializer(serializers.ModelSerializer):
     ship_state = serializers.CharField(read_only=True, default='')
     user_left_money = serializers.IntegerField(default=0)
-    countdown_second = serializers.IntegerField(default=0)
+    dispatch_time = serializers.DateTimeField()
     expect_second = serializers.IntegerField(default=0)
     carTeamName = serializers.CharField(read_only=True, default='')
 
