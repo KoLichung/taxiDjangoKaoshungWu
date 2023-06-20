@@ -256,4 +256,4 @@ LOGIN_REDIRECT_URL = '/backboard/'
 # CELERY_BROKER_URL = "redis://redis:6379"
 # CELERY_RESULT_BACKEND = "redis://redis:6379"
 
-CELERY_BROKER_URL = 'amqp://guest:guest@localhost'
+CELERY_BROKER_URL = os.environ.get('RABBITMQ_SERVER','amqp://guest:guest@localhost')
