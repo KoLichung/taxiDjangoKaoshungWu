@@ -45,7 +45,15 @@ def dispatch_driver(case_id):
                 if case.telegram_id != None and case.telegram_id != '':
                     car_teams_string = user.car_teams_string()
                     tel_send_message(case.telegram_id, f'{case.case_number}-{car_teams_string}\n{user.nick_name} 駕駛人未接單\n-----------------------\n上車:{case.on_address}')
+                
                 user.is_asking = False
+                if user.violation_time < 4:
+                    user.violation_time = user.violation_time + 1
+                else:
+                    user.violation_time = 5
+                    user.penalty_datetime = datetime.now() + timedelta(minutes=15)
+                    user.is_in_penalty = True
+                
                 user.save()
         else:
             # 第一次派單
