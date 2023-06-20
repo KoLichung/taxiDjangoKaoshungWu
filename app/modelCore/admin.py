@@ -22,7 +22,7 @@ class CaseAdmin(admin.ModelAdmin):
 
 @admin.register(UserCaseShip)
 class UserCaseShipAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'case')
+    list_display = ('id', 'user', 'case', 'expect_second', 'dispatch_time')
 
 @admin.register(CaseSummary)
 class CaseSummaryAdmin(admin.ModelAdmin):

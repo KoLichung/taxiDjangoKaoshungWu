@@ -76,6 +76,7 @@ def dispatch_driver(case_id):
                         if timePredict < 900:  
                             userCaseShip.user = user
                             userCaseShip.expect_second = timePredict
+                            userCaseShip.dispatch_time = datetime.now()
                             userCaseShip.save()
 
                             user.is_asking = True
