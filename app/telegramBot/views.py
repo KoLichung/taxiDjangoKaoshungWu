@@ -118,14 +118,9 @@ def callback(request):
                                     case.memo = text.replace('備註','').replace(':','').replace('：','')
                                     # if case.on_lat != None:
                                     #     case.save()
-                                
-                                if case.on_lat != None:
-                                    case.save()
-
-                                    from app.celery import app_dispatch_driver
-                                    app_dispatch_driver.delay(case.id)
                             
                             if case.on_lat != None:
+                                case.save()
                                 tel_send_message(chat_id,f'{case.case_number}\n派單成功，正在尋找駕駛\n上車：{case.on_address}\n下車：{case.off_address}\n時間：{case.time_memo}\n備註：{case.memo}')
                             else:
                                 tel_send_message(chat_id,'派單失敗,無法辨識上車地點')

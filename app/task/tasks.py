@@ -13,6 +13,13 @@ from django.conf import settings
 
 TOKEN = '5889906798:AAFR2O_uTBq_ZGPaDkqyfsHkWKK7EQ6bxj0'
 
+@shared_task
+def checkToDispatch():
+    cases = Case.objects.filter(case_state='wait')
+    for case in cases:
+        dispatch_driver.delay(case.id)
+        case.case_state = 'dispatching'
+        case.save()
 
 @shared_task
 def dispatch_driver(case_id):

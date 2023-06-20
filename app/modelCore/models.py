@@ -199,6 +199,7 @@ class Case(models.Model):
     #(wait, way_to_catch, arrived, catched, on_road, finished, canceled)
     CASE_STATE_CHOICES = [
         ('wait', 'wait'),
+        ('dispatching', 'dispatching'),
         ('way_to_catch', 'way_to_catch'),
         ('arrived', 'arrived'),
         ('catched', 'catched'),
