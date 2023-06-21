@@ -89,6 +89,8 @@ class CaseDetailView(APIView):
     def get(self, request):
         case_id= self.request.query_params.get('case_id')
         case = Case.objects.get(id=case_id)
+        case.dispatch_time = datetime.now()
+
         serializer = serializers.CaseSerializer(case)
         return Response(serializer.data)
 
@@ -332,7 +334,7 @@ class CaseRefuseView(APIView):
             userCaseShip = UserCaseShip.objects.filter(case=case).first()
             userCaseShip.user = None
             userCaseShip.save()
-            
+
             # userCaseShip.countdown_second = 0
 
             # if len(userCaseShip.exclude_ids_text) == 0:
