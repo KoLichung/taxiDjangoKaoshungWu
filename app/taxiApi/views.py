@@ -42,8 +42,14 @@ class UserCaseViewSet(viewsets.GenericViewSet,
     queryset = Case.objects.all()
     serializer_class = serializers.CaseSerializer
 
+    # def get_queryset(self):
+    #     return self.queryset.filter(user=self.request.user).order_by('-id')
+
     def get_queryset(self):
-        return self.queryset.filter(user=self.request.user).order_by('-id')
+        queryset = self.get_queryset()
+        for i in range(len(queryset)):
+            queryset[i].dispatch_time = None
+        return queryset
 
 #http://localhost:8000/api/car_teams/
 class CarTeamViewSet(viewsets.GenericViewSet,
