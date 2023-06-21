@@ -153,6 +153,7 @@ def callback(request):
                                             # 調整 user 的 is_on_task 狀態
                                             user = case.user
                                             user.is_on_task = False
+                                            user.is_asking = False
                                             user.save()
                                         else:
                                             car_teams_string=''
