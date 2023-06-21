@@ -46,7 +46,7 @@ class UserCaseViewSet(viewsets.GenericViewSet,
     #     return self.queryset.filter(user=self.request.user).order_by('-id')
 
     def get_queryset(self):
-        queryset = self.get_queryset.filter(user=self.request.user).order_by('-id')
+        queryset = self.queryset.filter(user=self.request.user).order_by('-id')
         for i in range(len(queryset)):
             queryset[i].dispatch_time = None
         return queryset
