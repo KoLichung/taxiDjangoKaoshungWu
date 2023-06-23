@@ -7,6 +7,9 @@ from modelCore.models import User
 from fcm_django.models import FCMDevice
 from firebase_admin.messaging import Message, Notification
 from fcm_django.models import FCMDevice
+import logging
+
+logger = logging.getLogger(__file__)
 
 class TestFCMViewSet(APIView):
     def get(self, request, format=None):
@@ -24,6 +27,8 @@ class FCMDeviceViewSet(APIView):
             registration_id = request.data.get('registration_id')
             device_id = request.data.get('device_id')
             type = request.data.get('type')
+
+            logger.info(request.data)
 
             if FCMDevice.objects.filter(device_id=device_id).count() == 0:
                 fcmDevice = FCMDevice()
