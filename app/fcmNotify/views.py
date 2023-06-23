@@ -27,7 +27,8 @@ class FCMDeviceViewSet(APIView):
             registration_id = request.data.get('registration_id')
             device_id = request.data.get('device_id')
             type = request.data.get('type')
-
+            
+            logger.info(self.request.user)
             logger.info(request.data)
 
             if FCMDevice.objects.filter(device_id=device_id).count() == 0:
