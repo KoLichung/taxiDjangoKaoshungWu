@@ -143,20 +143,27 @@ def callback(request):
                                     if case.case_state != 'canceled':
                                         case.case_state = 'canceled'
                                         case.save()
-
-                                        # 刪除詢問中 ship
-                                        UserCaseShip.objects.filter(case=case).delete()
                                         
                                         if case.user != None:
                                             car_teams_string = case.user.car_teams_string()
 
-                                            # 調整 user 的 is_on_task 狀態
+                                            # 調整 user 的 is_on_task, is_asking 狀態
                                             user = case.user
                                             user.is_on_task = False
                                             user.is_asking = False
                                             user.save()
                                         else:
                                             car_teams_string=''
+
+                                             # 調整 user 的 is_asking 狀態
+                                            ship = UserCaseShip.objects.filter(case=case).first()
+                                            user = ship.user
+                                            user.is_asking = False
+                                            user.save()
+
+                                        # 刪除詢問中 ship
+                                        UserCaseShip.objects.filter(case=case).delete()
+
                                         tel_send_message(chat_id,f'{case.case_number}-{car_teams_string}\n--------------------------\n取消成功\n--------------------------\n上車:{case.on_address}')
                                     else:
                                         if case.user != None:

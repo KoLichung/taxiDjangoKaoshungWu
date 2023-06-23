@@ -109,6 +109,9 @@ class UpdateLatLngView(APIView):
         lat = self.request.query_params.get('lat')
         lng = self.request.query_params.get('lng')
 
+        logger.info(self.request.user)
+        logger.info(self.request.query_params)
+
         if lat!=None:
             user = self.request.user
             user.current_lat = lat
