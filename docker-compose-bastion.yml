@@ -1,0 +1,82 @@
+version: "3"
+
+services:
+  # Redis
+  redis:
+    image: redis:6-alpine
+    container_name: redis
+
+  app:
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app:/app
+    command: >
+      sh -c "sleep 20;
+             python manage.py wait_for_db &&
+             python manage.py migrate &&
+             python manage.py initadmin &&
+             tail -F anything"
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+      - DEBUG=1
+      - S3_STORAGE_BACKEND=0
+    logging:
+      driver: "json-file"
+      options:
+          max-size: "100m"
+          max-file: "10"
+
+  # Celery
+  celery_worker:
+    restart: always
+    build:
+      context: .
+    command: >
+      sh -c "sleep 20;
+            celery -A app worker -l INFO"
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+    logging:
+      driver: "json-file"
+      options:
+          max-size: "100m"
+          max-file: "10"
+    volumes:
+      - .:/django
+    container_name: celery_worker
+    depends_on:
+      - redis
+      - app
+
+  celery_beat:
+    restart: always
+    build:
+      context: .
+    command: >
+      sh -c "sleep 20;
+             celery -A app beat -l INFO"
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+    logging:
+      driver: "json-file"
+      options:
+          max-size: "100m"
+          max-file: "10"
+    volumes:
+      - .:/django
+    container_name: celery_beat
+    depends_on:
+      - redis
+      - app

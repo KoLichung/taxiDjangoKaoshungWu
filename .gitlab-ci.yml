@@ -1,0 +1,66 @@
+image:
+  name: hashicorp/terraform:0.15.2
+  entrypoint:
+    - '/usr/bin/env'
+    - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+
+stages:
+  - Terraform Lint and Validate
+  - Build and Push 
+  - Terraform Plan
+  - Terraform Apply
+  - Destroy
+
+Terraform Lint and Validate:
+  stage: Terraform Lint and Validate
+  script:
+    - cd deploy/
+    - terraform init -backend=false
+    - terraform validate
+    - terraform fmt -check
+  rules:
+    - if: '$CI_COMMIT_BRANCH =~ /^(master|production)$/'
+
+Build and Push:
+  image: docker:19.03.5
+  services:
+    - docker:19.03.5-dind
+  stage: Build and Push
+  script: 
+    - apk add python3
+    - pip3 install awscli
+    - docker build --compress -t $ECR_REPO:$CI_COMMIT_SHORT_SHA .
+    - $(aws ecr get-login --no-include-email --region ap-northeast-1)
+    - docker push $ECR_REPO:$CI_COMMIT_SHORT_SHA
+    - docker tag $ECR_REPO:$CI_COMMIT_SHORT_SHA $ECR_REPO:latest
+    - docker push $ECR_REPO:latest
+  rules:
+    - if: '$CI_COMMIT_BRANCH =~ /^(master|production)$/'
+
+Terraform Plan:
+  stage: Terraform Plan
+  script:
+    - cd deploy/
+    - terraform init
+    - terraform plan
+  rules:
+    - if: '$CI_COMMIT_BRANCH =~ /^(master|production)$/'
+
+Terraform Apply:
+  stage: Terraform Apply
+  script:
+    - cd deploy/
+    - terraform init
+    - terraform apply -auto-approve
+  rules:
+    - if: '$CI_COMMIT_BRANCH =~ /^(master|production)$/'
+
+Destroy:
+  stage: Destroy
+  script:
+    - cd deploy/
+    - terraform init
+    - terraform destroy -auto-approve
+  rules:
+    - if: '$CI_COMMIT_BRANCH =~ /^(master|production)$/'
+      when: manual

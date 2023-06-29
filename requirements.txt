@@ -1,12 +1,12 @@
-django>=3.2.12
-djangorestframework>=3.9.0
-Pillow>=9.0.1
-requests>=2.27.1
-firebase_admin>=5.2.0
-fcm_django>=1.0.8
-python-dotenv
-uwsgi>=2.0.18
-psycopg2-binary>=2.7.5
+django==4.2.1
+djangorestframework==3.14.0
+Pillow==9.5.0
+requests==2.31.0
+firebase_admin==5.4.0
+fcm_django==1.0.14
+python-dotenv==1.0.0
+uwsgi==2.0.21
+psycopg2-binary==2.9.6
 # psycopg2>=2.9.3
 celery==5.2.1
 redis==4.0.2
