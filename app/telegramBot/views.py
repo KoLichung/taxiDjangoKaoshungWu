@@ -244,19 +244,19 @@ def parse_message(message):
     #         except:
     #             logger('parse error')
     
-    if message['message'] != None:
+    if message.get('message') != None:
         chat_id = message['message']['chat']['id']
         try:
             txt = message['message']['text']
         except:
             txt = 'error'
-    elif message['edited_message'] != None:
+    elif message.get('edited_message') != None:
         chat_id = message['edited_message']['chat']['id']
         try:
             txt = message['edited_message']['text']
         except:
             txt = 'error'
-    elif message['my_chat_member'] != None:
+    elif message.get('my_chat_member') != None:
         chat_id = message['my_chat_member']['chat']['id']
         txt = 'error'
     else:
